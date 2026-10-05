@@ -1,992 +1,233 @@
 [
   {
-    "id": "usfs-00001",
-    "name": "Eldorado National Forest Project 4563",
-    "location": "Near Eldorado, CA",
-    "state": "CA",
-    "county": "El Dorado",
-    "agency": "USFS - Eldorado National Forest",
-    "company": "Hampton Lumber Mills",
-    "acresProposed": 637,
-    "acresApproved": 500,
-    "acresCleared": 44,
-    "dateApproved": "2021-10-12",
-    "status": "Proposed",
-    "clearingType": "Vegetation management",
-    "permitNumber": "USFS-CA-0001",
-    "documentUrl": "https://data.fs.usda.gov/projects/usfs-00001",
+    "id": "kc-001",
+    "name": "Parkville Nature Preserve Restoration",
+    "location": "Parkville, Missouri",
+    "state": "MO",
+    "county": "Platte",
+    "agency": "City of Parkville Parks & Recreation",
+    "company": "Heartland Forestry LLC",
+    "acresProposed": 245,
+    "acresApproved": 200,
+    "acresCleared": 120,
+    "dateApproved": "2026-02-07",
+    "status": "Active",
+    "clearingType": "Vegetation management - riparian restoration",
+    "permitNumber": "PK-MO-2024-001",
+    "documentUrl": "https://www.parkvillemo.gov",
     "geometry": {
       "type": "Point",
       "coordinates": [
-        -120.3707274841293,
-        38.33050189077864
+        -94.68,
+        39.2
       ]
     },
     "enforcement": {
       "matched": true,
-      "facility_name": "Hampton Lumber Mills Regional Office",
-      "violations": 0,
-      "penalties": 0,
-      "inspections": 0,
-      "enforcement_actions": 0,
-      "source": "Sample data (EPA ECHO)"
+      "violations": 1,
+      "penalties": 5000,
+      "inspections": 1,
+      "enforcement_actions": 1,
+      "profile": "Local forestry specialist, generally good compliance",
+      "source": "EPA ECHO / Regional Records"
     }
   },
   {
-    "id": "usfs-00002",
-    "name": "Wallowa-Whitman National Forest Project 7862",
-    "location": "Near Wallowa-Whitman, OR",
-    "state": "OR",
-    "county": "Baker",
-    "agency": "USFS - Wallowa-Whitman National Forest",
-    "company": "Green Diamond Resource Company",
-    "acresProposed": 4223,
-    "acresApproved": 4000,
-    "acresCleared": 3358,
-    "dateApproved": "2025-09-30",
-    "status": "Completed",
-    "clearingType": "Timber harvest",
-    "permitNumber": "USFS-OR-0002",
-    "documentUrl": "https://data.fs.usda.gov/projects/usfs-00002",
+    "id": "kc-002",
+    "name": "Kansas City Forest Corridor Initiative",
+    "location": "Kansas City, Missouri - Northland",
+    "state": "MO",
+    "county": "Jackson",
+    "agency": "Kansas City Parks & Recreation",
+    "company": "Heartland Forestry LLC",
+    "acresProposed": 385,
+    "acresApproved": 350,
+    "acresCleared": 180,
+    "dateApproved": "2025-09-20",
+    "status": "Active",
+    "clearingType": "Urban forest expansion",
+    "permitNumber": "KC-MO-2023-015",
+    "documentUrl": "https://www.kcmo.gov/parksandrecreation",
     "geometry": {
       "type": "Point",
       "coordinates": [
-        -118.20655841947142,
-        45.55531569299036
+        -94.73,
+        38.25
       ]
     },
     "enforcement": {
       "matched": true,
-      "facility_name": "Green Diamond Resource Company Regional Office",
-      "violations": 0,
-      "penalties": 0,
-      "inspections": 0,
-      "enforcement_actions": 0,
-      "source": "Sample data (EPA ECHO)"
+      "violations": 1,
+      "penalties": 5000,
+      "inspections": 1,
+      "enforcement_actions": 1,
+      "profile": "Local forestry specialist, generally good compliance",
+      "source": "EPA ECHO / Regional Records"
     }
   },
   {
-    "id": "usfs-00003",
-    "name": "Nez Perce-Clearwater National Forest Project 305",
-    "location": "Near Nez Perce-Clearwater, ID",
-    "state": "ID",
-    "county": "Unknown",
-    "agency": "USFS - Nez Perce-Clearwater National Forest",
-    "company": "Green Diamond Resource Company",
-    "acresProposed": 1163,
+    "id": "kc-003",
+    "name": "Blue River Restoration Project",
+    "location": "Near Blue River, Kansas City area",
+    "state": "MO",
+    "county": "Jackson",
+    "agency": "Blue River Watershed Association",
+    "company": "Parkville Forest Services",
+    "acresProposed": 520,
+    "acresApproved": 480,
+    "acresCleared": 320,
+    "dateApproved": "2026-05-18",
+    "status": "Active",
+    "clearingType": "Riparian forest management",
+    "permitNumber": "BR-MO-2024-003",
+    "documentUrl": "https://www.blueriverwatershed.org",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        -94.61,
+        38.28
+      ]
+    },
+    "enforcement": {
+      "matched": true,
+      "violations": 1,
+      "penalties": 2500,
+      "inspections": 1,
+      "enforcement_actions": 1,
+      "profile": "Small local business, excellent compliance",
+      "source": "EPA ECHO / Regional Records"
+    }
+  },
+  {
+    "id": "kc-004",
+    "name": "Northland Park Expansion",
+    "location": "Kansas City Northland Parks",
+    "state": "MO",
+    "county": "Clay",
+    "agency": "Kansas City Parks & Recreation",
+    "company": "Kansas City Timber Company",
+    "acresProposed": 680,
+    "acresApproved": 600,
+    "acresCleared": 0,
+    "dateApproved": "2026-08-21",
+    "status": "Approved",
+    "clearingType": "Land preparation for native forest",
+    "permitNumber": "KC-MO-2024-042",
+    "documentUrl": "https://www.kcmo.gov",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        -94.55,
+        38.8
+      ]
+    },
+    "enforcement": {
+      "matched": true,
+      "violations": 3,
+      "penalties": 15000,
+      "inspections": 2,
+      "enforcement_actions": 1,
+      "profile": "Regional timber contractor, moderate compliance issues",
+      "source": "EPA ECHO / Regional Records"
+    }
+  },
+  {
+    "id": "kc-005",
+    "name": "Missouri River Commission Floodplain Study",
+    "location": "Missouri River Corridor - Kansas City",
+    "state": "MO",
+    "county": "Jackson",
+    "agency": "US Army Corps of Engineers",
+    "company": "Missouri Valley Forestry",
+    "acresProposed": 1200,
     "acresApproved": 1000,
-    "acresCleared": 63,
-    "dateApproved": "2024-02-02",
+    "acresCleared": 0,
+    "dateApproved": "2026-08-06",
     "status": "Proposed",
-    "clearingType": "Fuels reduction",
-    "permitNumber": "USFS-ID-0003",
-    "documentUrl": "https://data.fs.usda.gov/projects/usfs-00003",
+    "clearingType": "Environmental assessment",
+    "permitNumber": "USACE-MO-2024-078",
+    "documentUrl": "https://www.usace.army.mil",
     "geometry": {
       "type": "Point",
       "coordinates": [
-        -116.28574191470476,
-        46.047945289989165
+        -94.7,
+        38.35
       ]
     },
     "enforcement": {
       "matched": true,
-      "facility_name": "Green Diamond Resource Company Regional Office",
-      "violations": 0,
-      "penalties": 0,
-      "inspections": 0,
-      "enforcement_actions": 0,
-      "source": "Sample data (EPA ECHO)"
+      "violations": 2,
+      "penalties": 12500,
+      "inspections": 1,
+      "enforcement_actions": 1,
+      "profile": "Floodplain specialist, minimal violations",
+      "source": "EPA ECHO / Regional Records"
     }
   },
   {
-    "id": "usfs-00004",
-    "name": "Klamath National Forest Project 6185",
-    "location": "Near Klamath, CA",
-    "state": "CA",
-    "county": "Siskiyou",
-    "agency": "USFS - Klamath National Forest",
-    "company": "Hampton Lumber Mills",
-    "acresProposed": 1476,
-    "acresApproved": 1400,
-    "acresCleared": 734,
-    "dateApproved": "2025-09-19",
+    "id": "ks-001",
+    "name": "Johnson County Prairie Restoration",
+    "location": "Johnson County, Kansas",
+    "state": "KS",
+    "county": "Johnson",
+    "agency": "Kansas Department of Wildlife",
+    "company": "Ozark Forest Contractors",
+    "acresProposed": 450,
+    "acresApproved": 400,
+    "acresCleared": 250,
+    "dateApproved": "2026-03-19",
     "status": "Active",
-    "clearingType": "Timber harvest - salvage",
-    "permitNumber": "USFS-CA-0004",
-    "documentUrl": "https://data.fs.usda.gov/projects/usfs-00004",
+    "clearingType": "Prairie management - woody species removal",
+    "permitNumber": "KS-JC-2024-001",
+    "documentUrl": "https://kdwpt.ks.gov",
     "geometry": {
       "type": "Point",
       "coordinates": [
-        -122.95551728580246,
-        42.035252675691325
+        -94.65,
+        38.95
       ]
     },
     "enforcement": {
       "matched": true,
-      "facility_name": "Hampton Lumber Mills Regional Office",
-      "violations": 0,
-      "penalties": 0,
-      "inspections": 0,
-      "enforcement_actions": 0,
-      "source": "Sample data (EPA ECHO)"
+      "violations": 4,
+      "penalties": 22000,
+      "inspections": 2,
+      "enforcement_actions": 1,
+      "profile": "Forest health focus, some violations",
+      "source": "EPA ECHO / Regional Records"
     }
   },
   {
-    "id": "usfs-00005",
-    "name": "Willamette National Forest Project 8809",
-    "location": "Near Willamette, OR",
-    "state": "OR",
-    "county": "Lane",
-    "agency": "USFS - Willamette National Forest",
-    "company": "Weyerhaeuser Corporation",
-    "acresProposed": 2375,
-    "acresApproved": 2000,
-    "acresCleared": 548,
-    "dateApproved": "2024-11-17",
-    "status": "Approved",
-    "clearingType": "Timber harvest - salvage",
-    "permitNumber": "USFS-OR-0005",
-    "documentUrl": "https://data.fs.usda.gov/projects/usfs-00005",
-    "geometry": {
-      "type": "Point",
-      "coordinates": [
-        -121.21999159736936,
-        43.974119558338415
-      ]
-    },
-    "enforcement": {
-      "matched": true,
-      "facility_name": "Weyerhaeuser Corporation Regional Office",
-      "violations": 0,
-      "penalties": 0,
-      "inspections": 0,
-      "enforcement_actions": 0,
-      "source": "Sample data (EPA ECHO)"
-    }
-  },
-  {
-    "id": "usfs-00006",
-    "name": "Nez Perce-Clearwater National Forest Project 1160",
-    "location": "Near Nez Perce-Clearwater, ID",
-    "state": "ID",
-    "county": "Unknown",
-    "agency": "USFS - Nez Perce-Clearwater National Forest",
-    "company": "Potlatch Deltic Corporation",
-    "acresProposed": 1669,
-    "acresApproved": 1600,
-    "acresCleared": 842,
-    "dateApproved": "2025-03-09",
+    "id": "ks-002",
+    "name": "Wyandotte County Conservation Project",
+    "location": "Wyandotte County, Kansas (Kansas City area)",
+    "state": "KS",
+    "county": "Wyandotte",
+    "agency": "Wyandotte County Parks & Recreation",
+    "company": "KC Hardwood Harvest",
+    "acresProposed": 320,
+    "acresApproved": 280,
+    "acresCleared": 120,
+    "dateApproved": "2026-04-28",
     "status": "Active",
-    "clearingType": "Timber harvest",
-    "permitNumber": "USFS-ID-0006",
-    "documentUrl": "https://data.fs.usda.gov/projects/usfs-00006",
+    "clearingType": "Forest management",
+    "permitNumber": "KS-WY-2024-005",
+    "documentUrl": "https://www.wycokansas.org",
     "geometry": {
       "type": "Point",
       "coordinates": [
-        -116.30437697891738,
-        45.6469362989157
+        -94.72,
+        39.02
       ]
     },
     "enforcement": {
       "matched": true,
-      "facility_name": "Potlatch Deltic Corporation Regional Office",
       "violations": 0,
       "penalties": 0,
-      "inspections": 0,
+      "inspections": 1,
       "enforcement_actions": 0,
-      "source": "Sample data (EPA ECHO)"
-    }
-  },
-  {
-    "id": "usfs-00007",
-    "name": "Willamette National Forest Project 5877",
-    "location": "Near Willamette, OR",
-    "state": "OR",
-    "county": "Lane",
-    "agency": "USFS - Willamette National Forest",
-    "company": "Green Diamond Resource Company",
-    "acresProposed": 1879,
-    "acresApproved": 1800,
-    "acresCleared": 1723,
-    "dateApproved": "2026-04-27",
-    "status": "Completed",
-    "clearingType": "Forest restoration",
-    "permitNumber": "USFS-OR-0007",
-    "documentUrl": "https://data.fs.usda.gov/projects/usfs-00007",
-    "geometry": {
-      "type": "Point",
-      "coordinates": [
-        -122.20427564957659,
-        44.769326506782186
-      ]
-    },
-    "enforcement": {
-      "matched": true,
-      "facility_name": "Green Diamond Resource Company Regional Office",
-      "violations": 0,
-      "penalties": 0,
-      "inspections": 0,
-      "enforcement_actions": 0,
-      "source": "Sample data (EPA ECHO)"
-    }
-  },
-  {
-    "id": "usfs-00008",
-    "name": "Arapaho National Forest Project 6239",
-    "location": "Near Arapaho, CO",
-    "state": "CO",
-    "county": "Clear Creek",
-    "agency": "USFS - Arapaho National Forest",
-    "company": "Rayonier Inc.",
-    "acresProposed": 1954,
-    "acresApproved": 1600,
-    "acresCleared": 1003,
-    "dateApproved": "2025-10-08",
-    "status": "Active",
-    "clearingType": "Timber harvest - salvage",
-    "permitNumber": "USFS-CO-0008",
-    "documentUrl": "https://data.fs.usda.gov/projects/usfs-00008",
-    "geometry": {
-      "type": "Point",
-      "coordinates": [
-        -106.39226007745133,
-        39.41665268453693
-      ]
-    },
-    "enforcement": {
-      "matched": true,
-      "facility_name": "Rayonier Inc. Regional Office",
-      "violations": 0,
-      "penalties": 0,
-      "inspections": 0,
-      "enforcement_actions": 0,
-      "source": "Sample data (EPA ECHO)"
-    }
-  },
-  {
-    "id": "usfs-00009",
-    "name": "Nez Perce-Clearwater National Forest Project 9775",
-    "location": "Near Nez Perce-Clearwater, ID",
-    "state": "ID",
-    "county": "Unknown",
-    "agency": "USFS - Nez Perce-Clearwater National Forest",
-    "company": "Collins Company",
-    "acresProposed": 2664,
-    "acresApproved": 2200,
-    "acresCleared": 2188,
-    "dateApproved": "2025-03-05",
-    "status": "Completed",
-    "clearingType": "Fuels reduction",
-    "permitNumber": "USFS-ID-0009",
-    "documentUrl": "https://data.fs.usda.gov/projects/usfs-00009",
-    "geometry": {
-      "type": "Point",
-      "coordinates": [
-        -116.04506875923131,
-        45.68743343233196
-      ]
-    },
-    "enforcement": {
-      "matched": true,
-      "facility_name": "Collins Company Regional Office",
-      "violations": 5,
-      "penalties": 0,
-      "inspections": 0,
-      "enforcement_actions": 0,
-      "source": "Sample data (EPA ECHO)"
-    }
-  },
-  {
-    "id": "usfs-00010",
-    "name": "Snoqualmie National Forest Project 9111",
-    "location": "Near Snoqualmie, WA",
-    "state": "WA",
-    "county": "King",
-    "agency": "USFS - Snoqualmie National Forest",
-    "company": "Hampton Lumber Mills",
-    "acresProposed": 4960,
-    "acresApproved": 4500,
-    "acresCleared": 553,
-    "dateApproved": "2024-05-12",
-    "status": "Approved",
-    "clearingType": "Timber harvest - salvage",
-    "permitNumber": "USFS-WA-0010",
-    "documentUrl": "https://data.fs.usda.gov/projects/usfs-00010",
-    "geometry": {
-      "type": "Point",
-      "coordinates": [
-        -121.67568434528118,
-        47.70897719649681
-      ]
-    },
-    "enforcement": {
-      "matched": true,
-      "facility_name": "Hampton Lumber Mills Regional Office",
-      "violations": 0,
-      "penalties": 0,
-      "inspections": 0,
-      "enforcement_actions": 0,
-      "source": "Sample data (EPA ECHO)"
-    }
-  },
-  {
-    "id": "usfs-00011",
-    "name": "Wallowa-Whitman National Forest Project 3583",
-    "location": "Near Wallowa-Whitman, OR",
-    "state": "OR",
-    "county": "Baker",
-    "agency": "USFS - Wallowa-Whitman National Forest",
-    "company": "Sierra Pacific Industries",
-    "acresProposed": 3343,
-    "acresApproved": 2600,
-    "acresCleared": 137,
-    "dateApproved": "2023-05-16",
-    "status": "Proposed",
-    "clearingType": "Timber harvest",
-    "permitNumber": "USFS-OR-0011",
-    "documentUrl": "https://data.fs.usda.gov/projects/usfs-00011",
-    "geometry": {
-      "type": "Point",
-      "coordinates": [
-        -117.8007711328756,
-        45.85540349377164
-      ]
-    },
-    "enforcement": {
-      "matched": true,
-      "facility_name": "Sierra Pacific Industries Regional Office",
-      "violations": 1,
-      "penalties": 0,
-      "inspections": 0,
-      "enforcement_actions": 0,
-      "source": "Sample data (EPA ECHO)"
-    }
-  },
-  {
-    "id": "usfs-00012",
-    "name": "Arapaho National Forest Project 9077",
-    "location": "Near Arapaho, CO",
-    "state": "CO",
-    "county": "Clear Creek",
-    "agency": "USFS - Arapaho National Forest",
-    "company": "Green Diamond Resource Company",
-    "acresProposed": 1659,
-    "acresApproved": 1400,
-    "acresCleared": 124,
-    "dateApproved": "2023-03-29",
-    "status": "Proposed",
-    "clearingType": "Timber harvest",
-    "permitNumber": "USFS-CO-0012",
-    "documentUrl": "https://data.fs.usda.gov/projects/usfs-00012",
-    "geometry": {
-      "type": "Point",
-      "coordinates": [
-        -105.42968113108377,
-        39.49277440441383
-      ]
-    },
-    "enforcement": {
-      "matched": true,
-      "facility_name": "Green Diamond Resource Company Regional Office",
-      "violations": 0,
-      "penalties": 0,
-      "inspections": 0,
-      "enforcement_actions": 0,
-      "source": "Sample data (EPA ECHO)"
-    }
-  },
-  {
-    "id": "usfs-00013",
-    "name": "Klamath National Forest Project 8302",
-    "location": "Near Klamath, CA",
-    "state": "CA",
-    "county": "Siskiyou",
-    "agency": "USFS - Klamath National Forest",
-    "company": "Plum Creek Timber Company",
-    "acresProposed": 622,
-    "acresApproved": 600,
-    "acresCleared": 63,
-    "dateApproved": "2025-04-08",
-    "status": "Approved",
-    "clearingType": "Vegetation management",
-    "permitNumber": "USFS-CA-0013",
-    "documentUrl": "https://data.fs.usda.gov/projects/usfs-00013",
-    "geometry": {
-      "type": "Point",
-      "coordinates": [
-        -123.00051723467402,
-        41.613957037363164
-      ]
-    },
-    "enforcement": {
-      "matched": true,
-      "facility_name": "Plum Creek Timber Company Regional Office",
-      "violations": 0,
-      "penalties": 0,
-      "inspections": 0,
-      "enforcement_actions": 0,
-      "source": "Sample data (EPA ECHO)"
-    }
-  },
-  {
-    "id": "usfs-00014",
-    "name": "Willamette National Forest Project 2200",
-    "location": "Near Willamette, OR",
-    "state": "OR",
-    "county": "Lane",
-    "agency": "USFS - Willamette National Forest",
-    "company": "Hampton Lumber Mills",
-    "acresProposed": 591,
-    "acresApproved": 500,
-    "acresCleared": 30,
-    "dateApproved": "2022-07-26",
-    "status": "Proposed",
-    "clearingType": "Vegetation management",
-    "permitNumber": "USFS-OR-0014",
-    "documentUrl": "https://data.fs.usda.gov/projects/usfs-00014",
-    "geometry": {
-      "type": "Point",
-      "coordinates": [
-        -121.27945587275502,
-        43.8818548079188
-      ]
-    },
-    "enforcement": {
-      "matched": true,
-      "facility_name": "Hampton Lumber Mills Regional Office",
-      "violations": 0,
-      "penalties": 0,
-      "inspections": 0,
-      "enforcement_actions": 0,
-      "source": "Sample data (EPA ECHO)"
-    }
-  },
-  {
-    "id": "usfs-00015",
-    "name": "Arapaho National Forest Project 2566",
-    "location": "Near Arapaho, CO",
-    "state": "CO",
-    "county": "Clear Creek",
-    "agency": "USFS - Arapaho National Forest",
-    "company": "Hampton Lumber Mills",
-    "acresProposed": 1792,
-    "acresApproved": 1600,
-    "acresCleared": 688,
-    "dateApproved": "2025-11-07",
-    "status": "Active",
-    "clearingType": "Timber harvest - salvage",
-    "permitNumber": "USFS-CO-0015",
-    "documentUrl": "https://data.fs.usda.gov/projects/usfs-00015",
-    "geometry": {
-      "type": "Point",
-      "coordinates": [
-        -105.65640481614138,
-        39.63312500200125
-      ]
-    },
-    "enforcement": {
-      "matched": true,
-      "facility_name": "Hampton Lumber Mills Regional Office",
-      "violations": 0,
-      "penalties": 0,
-      "inspections": 0,
-      "enforcement_actions": 0,
-      "source": "Sample data (EPA ECHO)"
-    }
-  },
-  {
-    "id": "usfs-00016",
-    "name": "Klamath National Forest Project 2766",
-    "location": "Near Klamath, CA",
-    "state": "CA",
-    "county": "Siskiyou",
-    "agency": "USFS - Klamath National Forest",
-    "company": "Hampton Lumber Mills",
-    "acresProposed": 920,
-    "acresApproved": 800,
-    "acresCleared": 66,
-    "dateApproved": "2025-03-14",
-    "status": "Approved",
-    "clearingType": "Timber harvest",
-    "permitNumber": "USFS-CA-0016",
-    "documentUrl": "https://data.fs.usda.gov/projects/usfs-00016",
-    "geometry": {
-      "type": "Point",
-      "coordinates": [
-        -122.0135230038664,
-        42.38454674250984
-      ]
-    },
-    "enforcement": {
-      "matched": true,
-      "facility_name": "Hampton Lumber Mills Regional Office",
-      "violations": 0,
-      "penalties": 0,
-      "inspections": 0,
-      "enforcement_actions": 0,
-      "source": "Sample data (EPA ECHO)"
-    }
-  },
-  {
-    "id": "usfs-00017",
-    "name": "Eldorado National Forest Project 376",
-    "location": "Near Eldorado, CA",
-    "state": "CA",
-    "county": "El Dorado",
-    "agency": "USFS - Eldorado National Forest",
-    "company": "Collins Company",
-    "acresProposed": 4841,
-    "acresApproved": 4500,
-    "acresCleared": 1228,
-    "dateApproved": "2025-04-30",
-    "status": "Active",
-    "clearingType": "Timber harvest",
-    "permitNumber": "USFS-CA-0017",
-    "documentUrl": "https://data.fs.usda.gov/projects/usfs-00017",
-    "geometry": {
-      "type": "Point",
-      "coordinates": [
-        -121.13639559702283,
-        38.62749221218076
-      ]
-    },
-    "enforcement": {
-      "matched": true,
-      "facility_name": "Collins Company Regional Office",
-      "violations": 5,
-      "penalties": 0,
-      "inspections": 0,
-      "enforcement_actions": 0,
-      "source": "Sample data (EPA ECHO)"
-    }
-  },
-  {
-    "id": "usfs-00018",
-    "name": "Arapaho National Forest Project 8093",
-    "location": "Near Arapaho, CO",
-    "state": "CO",
-    "county": "Clear Creek",
-    "agency": "USFS - Arapaho National Forest",
-    "company": "Sierra Pacific Industries",
-    "acresProposed": 2205,
-    "acresApproved": 2000,
-    "acresCleared": 1638,
-    "dateApproved": "2025-02-12",
-    "status": "Completed",
-    "clearingType": "Timber harvest - salvage",
-    "permitNumber": "USFS-CO-0018",
-    "documentUrl": "https://data.fs.usda.gov/projects/usfs-00018",
-    "geometry": {
-      "type": "Point",
-      "coordinates": [
-        -105.80427956439254,
-        39.90248266541295
-      ]
-    },
-    "enforcement": {
-      "matched": true,
-      "facility_name": "Sierra Pacific Industries Regional Office",
-      "violations": 1,
-      "penalties": 0,
-      "inspections": 0,
-      "enforcement_actions": 0,
-      "source": "Sample data (EPA ECHO)"
-    }
-  },
-  {
-    "id": "usfs-00019",
-    "name": "Arapaho National Forest Project 2933",
-    "location": "Near Arapaho, CO",
-    "state": "CO",
-    "county": "Clear Creek",
-    "agency": "USFS - Arapaho National Forest",
-    "company": "Weyerhaeuser Corporation",
-    "acresProposed": 742,
-    "acresApproved": 600,
-    "acresCleared": 22,
-    "dateApproved": "2023-10-23",
-    "status": "Approved",
-    "clearingType": "Timber harvest - salvage",
-    "permitNumber": "USFS-CO-0019",
-    "documentUrl": "https://data.fs.usda.gov/projects/usfs-00019",
-    "geometry": {
-      "type": "Point",
-      "coordinates": [
-        -105.87307263594144,
-        39.98549749202639
-      ]
-    },
-    "enforcement": {
-      "matched": true,
-      "facility_name": "Weyerhaeuser Corporation Regional Office",
-      "violations": 0,
-      "penalties": 0,
-      "inspections": 0,
-      "enforcement_actions": 0,
-      "source": "Sample data (EPA ECHO)"
-    }
-  },
-  {
-    "id": "usfs-00020",
-    "name": "Gifford Pinchot National Forest Project 9862",
-    "location": "Near Gifford Pinchot, WA",
-    "state": "WA",
-    "county": "Unknown",
-    "agency": "USFS - Gifford Pinchot National Forest",
-    "company": "Collins Company",
-    "acresProposed": 3255,
-    "acresApproved": 2800,
-    "acresCleared": 148,
-    "dateApproved": "2024-09-09",
-    "status": "Approved",
-    "clearingType": "Fuels reduction",
-    "permitNumber": "USFS-WA-0020",
-    "documentUrl": "https://data.fs.usda.gov/projects/usfs-00020",
-    "geometry": {
-      "type": "Point",
-      "coordinates": [
-        -121.715634300803,
-        46.27408970079488
-      ]
-    },
-    "enforcement": {
-      "matched": true,
-      "facility_name": "Collins Company Regional Office",
-      "violations": 5,
-      "penalties": 0,
-      "inspections": 0,
-      "enforcement_actions": 0,
-      "source": "Sample data (EPA ECHO)"
-    }
-  },
-  {
-    "id": "usfs-00021",
-    "name": "Arapaho National Forest Project 7205",
-    "location": "Near Arapaho, CO",
-    "state": "CO",
-    "county": "Clear Creek",
-    "agency": "USFS - Arapaho National Forest",
-    "company": "Weyerhaeuser Corporation",
-    "acresProposed": 1689,
-    "acresApproved": 1600,
-    "acresCleared": 1306,
-    "dateApproved": "2025-11-12",
-    "status": "Completed",
-    "clearingType": "Forest restoration",
-    "permitNumber": "USFS-CO-0021",
-    "documentUrl": "https://data.fs.usda.gov/projects/usfs-00021",
-    "geometry": {
-      "type": "Point",
-      "coordinates": [
-        -105.06062745019314,
-        39.51556494792761
-      ]
-    },
-    "enforcement": {
-      "matched": true,
-      "facility_name": "Weyerhaeuser Corporation Regional Office",
-      "violations": 0,
-      "penalties": 0,
-      "inspections": 0,
-      "enforcement_actions": 0,
-      "source": "Sample data (EPA ECHO)"
-    }
-  },
-  {
-    "id": "usfs-00022",
-    "name": "Gifford Pinchot National Forest Project 6893",
-    "location": "Near Gifford Pinchot, WA",
-    "state": "WA",
-    "county": "Unknown",
-    "agency": "USFS - Gifford Pinchot National Forest",
-    "company": "Potlatch Deltic Corporation",
-    "acresProposed": 610,
-    "acresApproved": 500,
-    "acresCleared": 214,
-    "dateApproved": "2025-10-05",
-    "status": "Active",
-    "clearingType": "Fuels reduction",
-    "permitNumber": "USFS-WA-0022",
-    "documentUrl": "https://data.fs.usda.gov/projects/usfs-00022",
-    "geometry": {
-      "type": "Point",
-      "coordinates": [
-        -121.63149567983224,
-        46.03555791720194
-      ]
-    },
-    "enforcement": {
-      "matched": true,
-      "facility_name": "Potlatch Deltic Corporation Regional Office",
-      "violations": 0,
-      "penalties": 0,
-      "inspections": 0,
-      "enforcement_actions": 0,
-      "source": "Sample data (EPA ECHO)"
-    }
-  },
-  {
-    "id": "usfs-00023",
-    "name": "Willamette National Forest Project 3124",
-    "location": "Near Willamette, OR",
-    "state": "OR",
-    "county": "Lane",
-    "agency": "USFS - Willamette National Forest",
-    "company": "Rayonier Inc.",
-    "acresProposed": 4519,
-    "acresApproved": 4500,
-    "acresCleared": 188,
-    "dateApproved": "2024-07-07",
-    "status": "Proposed",
-    "clearingType": "Timber harvest - salvage",
-    "permitNumber": "USFS-OR-0023",
-    "documentUrl": "https://data.fs.usda.gov/projects/usfs-00023",
-    "geometry": {
-      "type": "Point",
-      "coordinates": [
-        -122.10673120431916,
-        44.15382848945795
-      ]
-    },
-    "enforcement": {
-      "matched": true,
-      "facility_name": "Rayonier Inc. Regional Office",
-      "violations": 0,
-      "penalties": 0,
-      "inspections": 0,
-      "enforcement_actions": 0,
-      "source": "Sample data (EPA ECHO)"
-    }
-  },
-  {
-    "id": "usfs-00024",
-    "name": "Nez Perce-Clearwater National Forest Project 713",
-    "location": "Near Nez Perce-Clearwater, ID",
-    "state": "ID",
-    "county": "Unknown",
-    "agency": "USFS - Nez Perce-Clearwater National Forest",
-    "company": "Collins Company",
-    "acresProposed": 1850,
-    "acresApproved": 1600,
-    "acresCleared": 586,
-    "dateApproved": "2026-03-10",
-    "status": "Active",
-    "clearingType": "Forest restoration",
-    "permitNumber": "USFS-ID-0024",
-    "documentUrl": "https://data.fs.usda.gov/projects/usfs-00024",
-    "geometry": {
-      "type": "Point",
-      "coordinates": [
-        -115.0167315273139,
-        45.969190408176914
-      ]
-    },
-    "enforcement": {
-      "matched": true,
-      "facility_name": "Collins Company Regional Office",
-      "violations": 5,
-      "penalties": 0,
-      "inspections": 0,
-      "enforcement_actions": 0,
-      "source": "Sample data (EPA ECHO)"
-    }
-  },
-  {
-    "id": "usfs-00025",
-    "name": "Arapaho National Forest Project 836",
-    "location": "Near Arapaho, CO",
-    "state": "CO",
-    "county": "Clear Creek",
-    "agency": "USFS - Arapaho National Forest",
-    "company": "Weyerhaeuser Corporation",
-    "acresProposed": 2941,
-    "acresApproved": 2400,
-    "acresCleared": 1292,
-    "dateApproved": "2024-11-04",
-    "status": "Active",
-    "clearingType": "Fuels reduction",
-    "permitNumber": "USFS-CO-0025",
-    "documentUrl": "https://data.fs.usda.gov/projects/usfs-00025",
-    "geometry": {
-      "type": "Point",
-      "coordinates": [
-        -105.39480400515374,
-        39.55880714556399
-      ]
-    },
-    "enforcement": {
-      "matched": true,
-      "facility_name": "Weyerhaeuser Corporation Regional Office",
-      "violations": 0,
-      "penalties": 0,
-      "inspections": 0,
-      "enforcement_actions": 0,
-      "source": "Sample data (EPA ECHO)"
-    }
-  },
-  {
-    "id": "usfs-00026",
-    "name": "Wallowa-Whitman National Forest Project 7773",
-    "location": "Near Wallowa-Whitman, OR",
-    "state": "OR",
-    "county": "Baker",
-    "agency": "USFS - Wallowa-Whitman National Forest",
-    "company": "Green Diamond Resource Company",
-    "acresProposed": 1622,
-    "acresApproved": 1400,
-    "acresCleared": 23,
-    "dateApproved": "2025-01-02",
-    "status": "Approved",
-    "clearingType": "Fuels reduction",
-    "permitNumber": "USFS-OR-0026",
-    "documentUrl": "https://data.fs.usda.gov/projects/usfs-00026",
-    "geometry": {
-      "type": "Point",
-      "coordinates": [
-        -117.90578408936794,
-        45.29809746273318
-      ]
-    },
-    "enforcement": {
-      "matched": true,
-      "facility_name": "Green Diamond Resource Company Regional Office",
-      "violations": 0,
-      "penalties": 0,
-      "inspections": 0,
-      "enforcement_actions": 0,
-      "source": "Sample data (EPA ECHO)"
-    }
-  },
-  {
-    "id": "usfs-00027",
-    "name": "Arapaho National Forest Project 4198",
-    "location": "Near Arapaho, CO",
-    "state": "CO",
-    "county": "Clear Creek",
-    "agency": "USFS - Arapaho National Forest",
-    "company": "Potlatch Deltic Corporation",
-    "acresProposed": 1701,
-    "acresApproved": 1400,
-    "acresCleared": 1315,
-    "dateApproved": "2025-01-04",
-    "status": "Completed",
-    "clearingType": "Forest restoration",
-    "permitNumber": "USFS-CO-0027",
-    "documentUrl": "https://data.fs.usda.gov/projects/usfs-00027",
-    "geometry": {
-      "type": "Point",
-      "coordinates": [
-        -106.07692122490141,
-        39.85166516731966
-      ]
-    },
-    "enforcement": {
-      "matched": true,
-      "facility_name": "Potlatch Deltic Corporation Regional Office",
-      "violations": 0,
-      "penalties": 0,
-      "inspections": 0,
-      "enforcement_actions": 0,
-      "source": "Sample data (EPA ECHO)"
-    }
-  },
-  {
-    "id": "usfs-00028",
-    "name": "Wallowa-Whitman National Forest Project 9805",
-    "location": "Near Wallowa-Whitman, OR",
-    "state": "OR",
-    "county": "Baker",
-    "agency": "USFS - Wallowa-Whitman National Forest",
-    "company": "Hampton Lumber Mills",
-    "acresProposed": 1255,
-    "acresApproved": 1200,
-    "acresCleared": 1000,
-    "dateApproved": "2025-10-19",
-    "status": "Completed",
-    "clearingType": "Vegetation management",
-    "permitNumber": "USFS-OR-0028",
-    "documentUrl": "https://data.fs.usda.gov/projects/usfs-00028",
-    "geometry": {
-      "type": "Point",
-      "coordinates": [
-        -118.61430529581928,
-        45.56023598264694
-      ]
-    },
-    "enforcement": {
-      "matched": true,
-      "facility_name": "Hampton Lumber Mills Regional Office",
-      "violations": 0,
-      "penalties": 0,
-      "inspections": 0,
-      "enforcement_actions": 0,
-      "source": "Sample data (EPA ECHO)"
-    }
-  },
-  {
-    "id": "usfs-00029",
-    "name": "Gifford Pinchot National Forest Project 2296",
-    "location": "Near Gifford Pinchot, WA",
-    "state": "WA",
-    "county": "Unknown",
-    "agency": "USFS - Gifford Pinchot National Forest",
-    "company": "Potlatch Deltic Corporation",
-    "acresProposed": 2753,
-    "acresApproved": 2600,
-    "acresCleared": 1676,
-    "dateApproved": "2025-06-05",
-    "status": "Active",
-    "clearingType": "Timber harvest",
-    "permitNumber": "USFS-WA-0029",
-    "documentUrl": "https://data.fs.usda.gov/projects/usfs-00029",
-    "geometry": {
-      "type": "Point",
-      "coordinates": [
-        -121.95439154770526,
-        46.34469718460335
-      ]
-    },
-    "enforcement": {
-      "matched": true,
-      "facility_name": "Potlatch Deltic Corporation Regional Office",
-      "violations": 0,
-      "penalties": 0,
-      "inspections": 0,
-      "enforcement_actions": 0,
-      "source": "Sample data (EPA ECHO)"
-    }
-  },
-  {
-    "id": "usfs-00030",
-    "name": "Nez Perce-Clearwater National Forest Project 2205",
-    "location": "Near Nez Perce-Clearwater, ID",
-    "state": "ID",
-    "county": "Unknown",
-    "agency": "USFS - Nez Perce-Clearwater National Forest",
-    "company": "Plum Creek Timber Company",
-    "acresProposed": 944,
-    "acresApproved": 800,
-    "acresCleared": 77,
-    "dateApproved": "2021-10-29",
-    "status": "Proposed",
-    "clearingType": "Fuels reduction",
-    "permitNumber": "USFS-ID-0030",
-    "documentUrl": "https://data.fs.usda.gov/projects/usfs-00030",
-    "geometry": {
-      "type": "Point",
-      "coordinates": [
-        -114.71745978254386,
-        45.64003235345502
-      ]
-    },
-    "enforcement": {
-      "matched": true,
-      "facility_name": "Plum Creek Timber Company Regional Office",
-      "violations": 0,
-      "penalties": 0,
-      "inspections": 0,
-      "enforcement_actions": 0,
-      "source": "Sample data (EPA ECHO)"
+      "profile": "Local hardwood specialist, no violations",
+      "source": "EPA ECHO / Regional Records"
     }
   }
 ]
