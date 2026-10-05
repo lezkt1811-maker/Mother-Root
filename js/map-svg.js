@@ -3,6 +3,8 @@
 
 let currentProjects = [];
 let filteredProjects = [];
+let currentView = 'projects'; // 'projects' or 'entities'
+let currentEntities = {};
 
 // Load USFS project data with EPA enforcement enrichment
 async function loadProjectData() {
@@ -419,6 +421,206 @@ function getEnforcementSection(project) {
   }
 }
 
+// Aggregate projects by entity (company/contractor)
+function aggregateByEntity(projects) {
+  const entities = {};
+
+  projects.forEach(project => {
+    const company = project.company || "Not disclosed";
+
+    if (!entities[company]) {
+      entities[company] = {
+        name: company,
+        projects: [],
+        totalAcresProposed: 0,
+        totalAcresApproved: 0,
+        totalAcresCleared: 0,
+        totalViolations: 0,
+        totalPenalties: 0,
+        totalInspections: 0,
+        states: new Set(),
+        statuses: {}
+      };
+    }
+
+    entities[company].projects.push(project);
+    entities[company].totalAcresProposed += project.acresProposed || 0;
+    entities[company].totalAcresApproved += project.acresApproved || 0;
+    entities[company].totalAcresCleared += project.acresCleared || 0;
+
+    const enforcement = project.enforcement || {};
+    entities[company].totalViolations += enforcement.violations || 0;
+    entities[company].totalPenalties += enforcement.penalties || 0;
+    entities[company].totalInspections += enforcement.inspections || 0;
+
+    if (project.state) {
+      entities[company].states.add(project.state);
+    }
+
+    const status = project.status || "Unknown";
+    entities[company].statuses[status] = (entities[company].statuses[status] || 0) + 1;
+  });
+
+  return entities;
+}
+
+// Display entity accountability view
+function displayEntityView(entities, sortBy = 'violations') {
+  const entityList = document.getElementById('entityList');
+
+  // Convert to array and sort
+  let entityArray = Object.values(entities);
+
+  switch(sortBy) {
+    case 'violations':
+      entityArray.sort((a, b) => b.totalViolations - a.totalViolations);
+      break;
+    case 'acreage':
+      entityArray.sort((a, b) => b.totalAcresCleared - a.totalAcresCleared);
+      break;
+    case 'projects':
+      entityArray.sort((a, b) => b.projects.length - a.projects.length);
+      break;
+    case 'name':
+      entityArray.sort((a, b) => a.name.localeCompare(b.name));
+      break;
+  }
+
+  let html = '<div class="entity-list">';
+
+  entityArray.forEach(entity => {
+    const hasViolations = entity.totalViolations > 0;
+    const violationClass = hasViolations ? 'entity-stat-violations' : '';
+
+    html += `
+      <div class="entity-card" data-company="${entity.name}">
+        <div class="entity-name">${entity.name}</div>
+        <div class="entity-stat">
+          <span>Projects:</span>
+          <span class="entity-stat-value">${entity.projects.length}</span>
+        </div>
+        <div class="entity-stat">
+          <span>Total Acres Cleared:</span>
+          <span class="entity-stat-value">${entity.totalAcresCleared.toLocaleString()}</span>
+        </div>
+        <div class="entity-stat">
+          <span>EPA Violations:</span>
+          <span class="entity-stat-value ${violationClass}">${entity.totalViolations}</span>
+        </div>
+        <div class="entity-stat">
+          <span>Total Penalties:</span>
+          <span class="entity-stat-value">$${entity.totalPenalties.toLocaleString()}</span>
+        </div>
+        <div class="entity-stat" style="font-size: 10px; color: #666; margin-top: 6px;">
+          <span>Active in: ${Array.from(entity.states).sort().join(', ')}</span>
+        </div>
+      </div>
+    `;
+  });
+
+  html += '</div>';
+  entityList.innerHTML = html;
+  entityList.classList.remove('empty');
+
+  // Add click handlers to entity cards
+  document.querySelectorAll('.entity-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const company = card.getAttribute('data-company');
+      displayEntityDetails(entities[company]);
+      highlightEntityProjects(company);
+    });
+  });
+}
+
+// Display detailed entity information
+function displayEntityDetails(entity) {
+  const detailsDiv = document.getElementById('entityList');
+  const clearancePercent = entity.totalAcresApproved > 0
+    ? ((entity.totalAcresCleared / entity.totalAcresApproved) * 100).toFixed(1)
+    : 0;
+
+  let statusHtml = '';
+  Object.entries(entity.statuses).forEach(([status, count]) => {
+    statusHtml += `<div class="entity-stat"><span>${status}:</span><span class="entity-stat-value">${count}</span></div>`;
+  });
+
+  const violationIndicator = entity.totalViolations > 0
+    ? `<div style="background: rgba(239, 68, 68, 0.1); padding: 10px; border-left: 3px solid #ef4444; margin-top: 10px;">
+         <div class="project-label">⚠️ EPA Enforcement Summary</div>
+         <div class="entity-stat">
+           <span>Total Violations:</span>
+           <span class="entity-stat-value entity-stat-violations">${entity.totalViolations}</span>
+         </div>
+         <div class="entity-stat">
+           <span>Total Penalties:</span>
+           <span class="entity-stat-value">$${entity.totalPenalties.toLocaleString()}</span>
+         </div>
+         <div class="entity-stat">
+           <span>Total Inspections:</span>
+           <span class="entity-stat-value">${entity.totalInspections}</span>
+         </div>
+       </div>`
+    : `<div style="background: rgba(34, 197, 94, 0.1); padding: 10px; border-left: 3px solid #22c55e; margin-top: 10px;">
+         <div class="project-label">✓ No EPA Violations Documented</div>
+       </div>`;
+
+  const html = `
+    <div class="project-card">
+      <h3>${entity.name}</h3>
+
+      <div class="project-field">
+        <div class="project-label">Projects</div>
+        <div class="project-value">${entity.projects.length} total projects</div>
+      </div>
+
+      <div class="project-field">
+        <div class="project-label">Project Status</div>
+        <div class="project-value">${statusHtml}</div>
+      </div>
+
+      <div class="project-field">
+        <div class="project-label">Acreage Summary</div>
+        <div class="project-value">
+          Proposed: ${entity.totalAcresProposed.toLocaleString()}<br>
+          Approved: ${entity.totalAcresApproved.toLocaleString()}<br>
+          <span style="color: #00d9ff;">Cleared: ${entity.totalAcresCleared.toLocaleString()} (${clearancePercent}%)</span>
+        </div>
+      </div>
+
+      <div class="project-field">
+        <div class="project-label">States Active In</div>
+        <div class="project-value">${Array.from(entity.states).sort().join(', ')}</div>
+      </div>
+
+      ${violationIndicator}
+    </div>
+  `;
+
+  detailsDiv.innerHTML = html;
+}
+
+// Highlight projects from a specific entity on the map
+function highlightEntityProjects(company) {
+  const svg = document.querySelector('#map svg');
+  if (!svg) return;
+
+  const circles = svg.querySelectorAll('.project-circle');
+  circles.forEach(circle => {
+    const project = currentProjects.find(p =>
+      p.x === parseFloat(circle.getAttribute('cx')) - 5 &&
+      p.y === parseFloat(circle.getAttribute('cy')) - 10
+    );
+
+    if (project && project.company === company) {
+      circle.setAttribute('stroke-width', '1');
+      circle.setAttribute('fill-opacity', '0.7');
+    } else {
+      circle.setAttribute('stroke-width', '0.2');
+      circle.setAttribute('fill-opacity', '0.2');
+    }
+  });
+}
+
 // Filter projects
 function applyFilters() {
   const state = document.getElementById('stateSelect').value;
@@ -440,11 +642,37 @@ function applyFilters() {
   }
 }
 
+// Toggle between project and entity view
+function toggleView(view) {
+  currentView = view;
+
+  document.getElementById('projectView').classList.toggle('active', view === 'projects');
+  document.getElementById('entityView').classList.toggle('active', view === 'entities');
+  document.getElementById('viewToggleProject').classList.toggle('active', view === 'projects');
+  document.getElementById('viewToggleEntity').classList.toggle('active', view === 'entities');
+
+  if (view === 'entities') {
+    currentEntities = aggregateByEntity(currentProjects);
+    displayEntityView(currentEntities, 'violations');
+  } else {
+    applyFilters();
+  }
+}
+
 // Setup event listeners
 function setupEventListeners() {
   document.getElementById('stateSelect').addEventListener('change', applyFilters);
   document.getElementById('statusSelect').addEventListener('change', applyFilters);
   document.getElementById('minAcreage').addEventListener('change', applyFilters);
+
+  document.getElementById('viewToggleProject').addEventListener('click', () => toggleView('projects'));
+  document.getElementById('viewToggleEntity').addEventListener('click', () => toggleView('entities'));
+
+  document.getElementById('entitySort').addEventListener('change', (e) => {
+    if (currentView === 'entities') {
+      displayEntityView(currentEntities, e.target.value);
+    }
+  });
 }
 
 // Initialize when DOM is ready

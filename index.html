@@ -94,6 +94,91 @@
       box-shadow: 0 0 10px rgba(0, 217, 255, 0.3);
     }
 
+    .view-toggle {
+      flex: 1;
+      padding: 10px 12px;
+      background: #0a0e27;
+      color: #888;
+      border: 1px solid #333;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .view-toggle:hover {
+      border-color: #00d9ff;
+      color: #00d9ff;
+    }
+
+    .view-toggle.active {
+      background: #00d9ff;
+      color: #0a0e27;
+      border-color: #00d9ff;
+    }
+
+    .view-section {
+      display: none;
+    }
+
+    .view-section.active {
+      display: block;
+    }
+
+    .entity-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .entity-card {
+      background: #0a0e27;
+      border: 1px solid #00d9ff;
+      border-radius: 6px;
+      padding: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .entity-card:hover {
+      border-color: #00ffff;
+      box-shadow: 0 0 10px rgba(0, 217, 255, 0.2);
+      background: #1a1f3a;
+    }
+
+    .entity-card.selected {
+      background: rgba(0, 217, 255, 0.1);
+      border-color: #00ffff;
+    }
+
+    .entity-name {
+      color: #00d9ff;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .entity-stat {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      margin-bottom: 4px;
+      color: #888;
+    }
+
+    .entity-stat-value {
+      color: #e0e0e0;
+      font-weight: 600;
+    }
+
+    .entity-stat-violations {
+      color: #ef4444;
+    }
+
     .project-details {
       flex: 1;
       margin-bottom: 20px;
@@ -249,60 +334,84 @@
       <div class="logo">MotherRoot</div>
       <div class="tagline">Know who is cutting the forest</div>
 
-      <div class="controls">
-        <div class="control-group">
-          <div class="control-label">State</div>
-          <select id="stateSelect">
-            <option value="">Select a state...</option>
-            <option value="OR">Oregon</option>
-            <option value="CA">California</option>
-            <option value="WA">Washington</option>
-            <option value="CO">Colorado</option>
-            <option value="ID">Idaho</option>
-            <option value="MT">Montana</option>
-            <option value="NM">New Mexico</option>
-            <option value="UT">Utah</option>
-          </select>
+      <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+        <button id="viewToggleProject" class="view-toggle active">Projects</button>
+        <button id="viewToggleEntity" class="view-toggle">Entities</button>
+      </div>
+
+      <div id="projectView" class="view-section active">
+        <div class="controls">
+          <div class="control-group">
+            <div class="control-label">State</div>
+            <select id="stateSelect">
+              <option value="">Select a state...</option>
+              <option value="OR">Oregon</option>
+              <option value="CA">California</option>
+              <option value="WA">Washington</option>
+              <option value="CO">Colorado</option>
+              <option value="ID">Idaho</option>
+              <option value="MT">Montana</option>
+              <option value="NM">New Mexico</option>
+              <option value="UT">Utah</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <div class="control-label">Status</div>
+            <select id="statusSelect">
+              <option value="">All statuses</option>
+              <option value="Proposed">Proposed 🟢</option>
+              <option value="Approved">Approved 🟡</option>
+              <option value="Active">Active 🟠</option>
+              <option value="Completed">Completed 🔴</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <div class="control-label">Min Acreage</div>
+            <input type="number" id="minAcreage" placeholder="0" min="0">
+          </div>
         </div>
 
-        <div class="control-group">
-          <div class="control-label">Status</div>
-          <select id="statusSelect">
-            <option value="">All statuses</option>
-            <option value="Proposed">Proposed 🟢</option>
-            <option value="Approved">Approved 🟡</option>
-            <option value="Active">Active 🟠</option>
-            <option value="Completed">Completed 🔴</option>
-          </select>
+        <div class="project-details empty" id="projectDetails">
+          Click a project on the map to see details
         </div>
 
-        <div class="control-group">
-          <div class="control-label">Min Acreage</div>
-          <input type="number" id="minAcreage" placeholder="0" min="0">
+        <div class="legend">
+          <div style="margin-bottom: 10px; font-weight: 600; color: #00d9ff;">Status Legend</div>
+          <div class="legend-item">
+            <div class="legend-color" style="background: #22c55e;"></div>
+            <span>Proposed</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background: #eab308;"></div>
+            <span>Approved</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background: #f97316;"></div>
+            <span>Active</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background: #ef4444;"></div>
+            <span>Completed</span>
+          </div>
         </div>
       </div>
 
-      <div class="project-details empty" id="projectDetails">
-        Click a project on the map to see details
-      </div>
-
-      <div class="legend">
-        <div style="margin-bottom: 10px; font-weight: 600; color: #00d9ff;">Status Legend</div>
-        <div class="legend-item">
-          <div class="legend-color" style="background: #22c55e;"></div>
-          <span>Proposed</span>
+      <div id="entityView" class="view-section">
+        <div class="controls" style="margin-bottom: 15px;">
+          <div class="control-group">
+            <div class="control-label">Sort by</div>
+            <select id="entitySort">
+              <option value="violations">Most Violations</option>
+              <option value="acreage">Most Acreage Cleared</option>
+              <option value="projects">Most Projects</option>
+              <option value="name">Company Name</option>
+            </select>
+          </div>
         </div>
-        <div class="legend-item">
-          <div class="legend-color" style="background: #eab308;"></div>
-          <span>Approved</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color" style="background: #f97316;"></div>
-          <span>Active</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color" style="background: #ef4444;"></div>
-          <span>Completed</span>
+        <div class="project-details empty" id="entityList">
+          Loading entity data...
         </div>
       </div>
     </div>
