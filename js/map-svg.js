@@ -52,6 +52,43 @@ function getDefaultSampleData() {
   ];
 }
 
+// Generate polygon boundary for cleared land parcel based on acreage
+function generateParcelPolygon(centerLat, centerLng, acresCleared) {
+  // Convert acres to approximate square meters (1 acre ≈ 4047 m²)
+  const areaSqMeters = Math.max(1, acresCleared) * 4047;
+
+  // Approximate side length in meters (assuming roughly square parcel)
+  const sideLengthMeters = Math.sqrt(areaSqMeters);
+
+  // Convert meters to degrees (rough approximation: 1 degree ≈ 111 km)
+  const degreesPerMeter = 1 / 111000;
+  const halfSideDegrees = (sideLengthMeters / 2) * degreesPerMeter;
+
+  // Create irregular polygon shape (8 points around rectangle with slight variations)
+  const polygon = [
+    // NW corner
+    [centerLat + halfSideDegrees * 1.1, centerLng - halfSideDegrees * 0.95],
+    // N side
+    [centerLat + halfSideDegrees * 1.05, centerLng - halfSideDegrees * 0.5],
+    // NE corner
+    [centerLat + halfSideDegrees * 0.9, centerLng + halfSideDegrees * 0.95],
+    // E side
+    [centerLat + halfSideDegrees * 0.5, centerLng + halfSideDegrees * 1.1],
+    // SE corner
+    [centerLat - halfSideDegrees * 0.95, centerLng + halfSideDegrees * 0.9],
+    // S side
+    [centerLat - halfSideDegrees * 1.05, centerLng + halfSideDegrees * 0.45],
+    // SW corner
+    [centerLat - halfSideDegrees * 0.85, centerLng - halfSideDegrees * 0.95],
+    // W side
+    [centerLat - halfSideDegrees * 0.5, centerLng - halfSideDegrees * 1.05],
+    // Back to start
+    [centerLat + halfSideDegrees * 1.1, centerLng - halfSideDegrees * 0.95]
+  ];
+
+  return polygon;
+}
+
 // Get Indigenous burial and sacred sites
 function getBurialSites() {
   return [
@@ -172,30 +209,38 @@ function displayProjectsOnMap(projects) {
 
     const [lon, lat] = project.geometry.coordinates;
     const statusColor = getStatusColor(project.status);
-    const acreage = project.acresApproved || 100;
+    const acresCleared = project.acresCleared || project.acresApproved || 100;
 
-    // Calculate radius based on acreage (0.5 to 2 km radius)
-    const radius = Math.max(5000, Math.min(50000, acreage * 100));
+    // Generate polygon boundary for cleared parcel
+    const polygonBounds = generateParcelPolygon(lat, lon, acresCleared);
 
-    // Create main project circle marker
-    const circle = L.circle([lat, lon], {
-      radius: radius,
+    // Create land parcel polygon
+    const polygon = L.polygon(polygonBounds, {
       color: statusColor,
       fillColor: statusColor,
-      fillOpacity: 0.6,
+      fillOpacity: 0.5,
       weight: 2,
-      dashArray: '5, 5'
+      opacity: 0.8
     });
 
     // Create popup content
     const popupContent = getProjectPopup(project);
-    circle.bindPopup(popupContent, {
+    polygon.bindPopup(popupContent, {
       maxWidth: 350,
       className: 'project-popup'
     });
 
+    // Add project name label at center
+    const label = L.marker([lat, lon], {
+      icon: L.divIcon({
+        html: `<div style="background: transparent; color: #fff; font-size: 11px; font-weight: bold; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); text-align: center; white-space: nowrap; max-width: 100px; padding: 4px;">${project.name}</div>`,
+        iconSize: [110, 50],
+        className: 'parcel-label'
+      })
+    });
+
     // Click to show details in sidebar
-    circle.on('click', () => {
+    polygon.on('click', () => {
       currentView = 'projects';
       displayProjectDetails(project);
       updateViewToggle();
@@ -207,14 +252,15 @@ function displayProjectsOnMap(projects) {
       }
     });
 
-    circle.addTo(projectsLayerGroup);
+    polygon.addTo(projectsLayerGroup);
+    label.addTo(projectsLayerGroup);
 
     // Add to layer groups based on categories
     const categories = project.layerCategories || [];
     activeLayers.forEach(layer => {
       if (categories.includes(layer)) {
         if (layerGroups[layer]) {
-          circle.addTo(layerGroups[layer]);
+          polygon.addTo(layerGroups[layer]);
         }
       }
     });
