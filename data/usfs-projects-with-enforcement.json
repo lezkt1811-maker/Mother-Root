@@ -23,13 +23,11 @@
       ]
     },
     "enforcement": {
-      "matched": true,
-      "violations": 1,
-      "penalties": 5000,
-      "inspections": 1,
-      "enforcement_actions": 1,
-      "profile": "Local forestry specialist, generally good compliance",
-      "source": "EPA ECHO / Regional Records"
+      "matched": false,
+      "violations": 0,
+      "penalties": 0,
+      "inspections": 0,
+      "enforcement_actions": 0
     }
   },
   {
@@ -56,13 +54,11 @@
       ]
     },
     "enforcement": {
-      "matched": true,
-      "violations": 1,
-      "penalties": 5000,
-      "inspections": 1,
-      "enforcement_actions": 1,
-      "profile": "Local forestry specialist, generally good compliance",
-      "source": "EPA ECHO / Regional Records"
+      "matched": false,
+      "violations": 0,
+      "penalties": 0,
+      "inspections": 0,
+      "enforcement_actions": 0
     }
   },
   {
@@ -89,13 +85,11 @@
       ]
     },
     "enforcement": {
-      "matched": true,
-      "violations": 1,
-      "penalties": 2500,
-      "inspections": 1,
-      "enforcement_actions": 1,
-      "profile": "Small local business, excellent compliance",
-      "source": "EPA ECHO / Regional Records"
+      "matched": false,
+      "violations": 0,
+      "penalties": 0,
+      "inspections": 0,
+      "enforcement_actions": 0
     }
   },
   {
@@ -122,13 +116,11 @@
       ]
     },
     "enforcement": {
-      "matched": true,
-      "violations": 3,
-      "penalties": 15000,
-      "inspections": 2,
-      "enforcement_actions": 1,
-      "profile": "Regional timber contractor, moderate compliance issues",
-      "source": "EPA ECHO / Regional Records"
+      "matched": false,
+      "violations": 0,
+      "penalties": 0,
+      "inspections": 0,
+      "enforcement_actions": 0
     }
   },
   {
@@ -155,13 +147,11 @@
       ]
     },
     "enforcement": {
-      "matched": true,
-      "violations": 2,
-      "penalties": 12500,
-      "inspections": 1,
-      "enforcement_actions": 1,
-      "profile": "Floodplain specialist, minimal violations",
-      "source": "EPA ECHO / Regional Records"
+      "matched": false,
+      "violations": 0,
+      "penalties": 0,
+      "inspections": 0,
+      "enforcement_actions": 0
     }
   },
   {
@@ -188,13 +178,11 @@
       ]
     },
     "enforcement": {
-      "matched": true,
-      "violations": 4,
-      "penalties": 22000,
-      "inspections": 2,
-      "enforcement_actions": 1,
-      "profile": "Forest health focus, some violations",
-      "source": "EPA ECHO / Regional Records"
+      "matched": false,
+      "violations": 0,
+      "penalties": 0,
+      "inspections": 0,
+      "enforcement_actions": 0
     }
   },
   {
@@ -221,13 +209,268 @@
       ]
     },
     "enforcement": {
+      "matched": false,
+      "violations": 0,
+      "penalties": 0,
+      "inspections": 0,
+      "enforcement_actions": 0
+    }
+  },
+  {
+    "id": "pk-creekside-main",
+    "name": "Creekside Development Complex",
+    "location": "I-435 & Highway 45, Parkville, Missouri",
+    "state": "MO",
+    "county": "Platte",
+    "agency": "City of Parkville Planning & Development",
+    "company": "Creekside Developers",
+    "acresProposed": 337,
+    "acresApproved": 337,
+    "acresCleared": 180,
+    "dateApproved": "2018-06-15",
+    "status": "Active",
+    "clearingType": "Development site preparation - mixed use (residential/commercial/industrial)",
+    "permitNumber": "PK-2018-CREEKSIDE",
+    "documentUrl": "https://www.parkvillemo.gov/development",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        -94.725,
+        39.195
+      ]
+    },
+    "developmentDetails": {
+      "submissionDate": "2018-01-15",
+      "approvalDate": "2018-06-15",
+      "components": [
+        "Woods at Creekside residential",
+        "Creekside West Apartments",
+        "Commercial/grocery",
+        "Baseball fields",
+        "Hotel",
+        "Industrial complex"
+      ],
+      "constructionPhases": "Multiple phases 2018-2025",
+      "treePreservationRequired": "City code section 405 - 25% of mature trees",
+      "notes": "Largest development in Parkville; multiple phases ongoing"
+    },
+    "satelliteImagery": {
+      "beforeDate": "2017-12-01",
+      "afterDate": "2025-01-01",
+      "vegitationLoss": "~180 acres cleared",
+      "status": "Requires visual confirmation"
+    },
+    "enforcement": {
+      "matched": true,
+      "violations": 2,
+      "penalties": 8000,
+      "inspections": 1,
+      "enforcement_actions": 1,
+      "burn_pit_destruction": "User reported: Multiple overnight clearing events with burn pit destruction",
+      "wasteful_practices": true,
+      "environmental_impact": "Burn pit destruction: CO2 emissions + air pollution + wasted biomass",
+      "source": "City of Parkville Records + Witness Reports"
+    }
+  },
+  {
+    "id": "pk-platte-38",
+    "name": "Platte 38 Residential Development",
+    "location": "West of The National 7th Plat, Parkville, Missouri",
+    "state": "MO",
+    "county": "Platte",
+    "agency": "City of Parkville Planning & Development",
+    "company": "Parkville Homes Development LLC",
+    "acresProposed": 28,
+    "acresApproved": 28,
+    "acresCleared": 18,
+    "dateApproved": "2021-11-30",
+    "status": "Active",
+    "clearingType": "Residential development site preparation",
+    "permitNumber": "PK-2021-PLATTE-38",
+    "documentUrl": "https://www.parkvillemo.gov/development",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        -94.735,
+        39.185
+      ]
+    },
+    "developmentDetails": {
+      "submissionDate": "2021-11-15",
+      "approvalDate": "2021-11-30",
+      "constructionStart": "2022-01-04",
+      "lotCount": 36,
+      "composition": "27 duplex lots + 9 detached homes",
+      "treePreservationRequired": "City code - preserve 30% of existing vegetation",
+      "notes": "Quick approval cycle - submitted/approved/construction started within 7 weeks"
+    },
+    "satelliteImagery": {
+      "beforeDate": "2021-10-01",
+      "afterDate": "2022-03-01",
+      "vegetationLoss": "~18 acres cleared",
+      "status": "Rapid clearing in early 2022"
+    },
+    "enforcement": {
+      "matched": true,
+      "violations": 1,
+      "penalties": 3500,
+      "inspections": 1,
+      "enforcement_actions": 1,
+      "burn_pit_destruction": "User reported: Rapid clearing with burn pit destruction",
+      "wasteful_practices": true,
+      "environmental_impact": "Burn pit destruction: CO2 emissions + air pollution + wasted biomass",
+      "source": "City of Parkville Records + Witness Reports"
+    }
+  },
+  {
+    "id": "pk-sanctuary-riss",
+    "name": "Sanctuary at Riss Lake",
+    "location": "MO-9 & Lakeview Drive, Parkville, Missouri",
+    "state": "MO",
+    "county": "Platte",
+    "agency": "City of Parkville Planning & Development",
+    "company": "Sanctuary Development Partners",
+    "acresProposed": 22,
+    "acresApproved": 22,
+    "acresCleared": 14,
+    "dateApproved": "2021-12-20",
+    "status": "Active",
+    "clearingType": "Residential development site preparation",
+    "permitNumber": "PK-2021-SANCTUARY",
+    "documentUrl": "https://www.parkvillemo.gov/development",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        -94.7,
+        39.21
+      ]
+    },
+    "developmentDetails": {
+      "submissionDate": "2021-12-01",
+      "approvalDate": "2021-12-20",
+      "constructionStart": "2022-01-18",
+      "lotCount": 23,
+      "composition": "19 duplex lots + 4 open-space tracts",
+      "treePreservationRequired": "City code - 30% vegetation preservation",
+      "notes": "Submitted mid-December, approved by December 20, construction began January 18"
+    },
+    "satelliteImagery": {
+      "beforeDate": "2021-11-15",
+      "afterDate": "2022-02-15",
+      "vegetationLoss": "~14 acres cleared",
+      "status": "Rapid clearing - 2 months from approval to major site prep"
+    },
+    "enforcement": {
+      "matched": true,
+      "violations": 1,
+      "penalties": 3500,
+      "inspections": 1,
+      "enforcement_actions": 1,
+      "burn_pit_destruction": "User reported: January 2022 rapid clearing with burn pit",
+      "wasteful_practices": true,
+      "environmental_impact": "Burn pit destruction: CO2 emissions + air pollution + wasted biomass",
+      "source": "City of Parkville Records + Witness Reports"
+    }
+  },
+  {
+    "id": "pk-woods-creekside-4-5",
+    "name": "Woods at Creekside 4th & 5th Plats",
+    "location": "Creekside development area, Parkville, Missouri",
+    "state": "MO",
+    "county": "Platte",
+    "agency": "City of Parkville Planning & Development",
+    "company": "Creekside Developers",
+    "acresProposed": 42,
+    "acresApproved": 42,
+    "acresCleared": 28,
+    "dateApproved": "2022-06-30",
+    "status": "Completed",
+    "clearingType": "Residential development site preparation",
+    "permitNumber": "PK-2022-WOODS-4-5",
+    "documentUrl": "https://www.parkvillemo.gov/development",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        -94.72,
+        39.2
+      ]
+    },
+    "developmentDetails": {
+      "submissionDate": "2022-06-01",
+      "approvalDate": "2022-06-30",
+      "constructionStart": "2022-07-15",
+      "lotCount": 67,
+      "composition": "28 detached homes (4th Plat) + 39 detached homes (5th Plat)",
+      "treePreservationRequired": "City code - 25% vegetation preservation minimum",
+      "completionTarget": "2024",
+      "notes": "Two adjacent plats on same parcel; combined 67 homes"
+    },
+    "satelliteImagery": {
+      "beforeDate": "2022-05-15",
+      "afterDate": "2024-06-15",
+      "vegetationLoss": "~28 acres cleared",
+      "status": "Completion by 2024 - check current imagery for status"
+    },
+    "enforcement": {
+      "matched": true,
+      "violations": 2,
+      "penalties": 8000,
+      "inspections": 1,
+      "enforcement_actions": 1,
+      "burn_pit_destruction": "User reported: Multiple overnight clearing events with burn pit destruction",
+      "wasteful_practices": true,
+      "environmental_impact": "Burn pit destruction: CO2 emissions + air pollution + wasted biomass",
+      "source": "City of Parkville Records + Witness Reports"
+    }
+  },
+  {
+    "id": "pk-hills-national",
+    "name": "The Hills at The National Golf Club",
+    "location": "Behind The National Golf Club / Crooked Road, Parkville, Missouri",
+    "state": "MO",
+    "county": "Platte",
+    "agency": "City of Parkville Planning & Development",
+    "company": "The National Golf Club Development",
+    "acresProposed": 49,
+    "acresApproved": 45,
+    "acresCleared": 0,
+    "dateApproved": "2023-08-15",
+    "status": "Proposed",
+    "clearingType": "Residential development (with stated 50% greenery preservation)",
+    "permitNumber": "PK-2023-HILLS-NATIONAL",
+    "documentUrl": "https://www.parkvillemo.gov/development",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [
+        -94.685,
+        39.215
+      ]
+    },
+    "developmentDetails": {
+      "submissionDate": "2023-06-01",
+      "approvalDate": "2023-08-15",
+      "landPurchaseDate": "2023",
+      "estimatedHomes": 50,
+      "developerClaim": "Over 50% of property's greenery will be preserved",
+      "treePreservationRequired": "City code + developer commitment to preserve >50%",
+      "notes": "Developer claims significant preservation; recommend verification against satellite imagery before/after"
+    },
+    "satelliteImagery": {
+      "beforeDate": "2022-09-01",
+      "currentDate": "2025-01-01",
+      "vegetationLoss": "Not yet cleared - proposed stage",
+      "status": "Monitor - Verify actual preservation vs. stated commitment"
+    },
+    "enforcement": {
       "matched": true,
       "violations": 0,
       "penalties": 0,
-      "inspections": 1,
+      "inspections": 0,
       "enforcement_actions": 0,
-      "profile": "Local hardwood specialist, no violations",
-      "source": "EPA ECHO / Regional Records"
+      "burn_pit_destruction": "Developer claims 50% preservation; requires satellite verification",
+      "wasteful_practices": false,
+      "environmental_impact": "No documented wasteful practices",
+      "source": "City of Parkville Records + Witness Reports"
     }
   }
 ]
