@@ -249,6 +249,7 @@ function displayProjectsOnMap(projects) {
 
     // Generate polygon boundary for parcel
     const polygonBounds = generateParcelPolygon(lat, lon, polygonAcreage);
+    console.log(`${project.name}: ${polygonAcreage} acres (source: ${project.sourceType})`);
 
     // Create land parcel polygon
     const polygon = L.polygon(polygonBounds, {
