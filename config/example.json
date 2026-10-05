@@ -1,0 +1,10 @@
+{
+  "environment": "development",
+  "debug": true,
+  "logLevel": "info",
+  "port": 3000,
+  "features": {
+    "enabled": ["feature1", "feature2"],
+    "experimental": []
+  }
+}

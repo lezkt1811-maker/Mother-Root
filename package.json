@@ -1,0 +1,31 @@
+{
+  "name": "mother-root",
+  "version": "0.1.0",
+  "description": "A comprehensive project for managing and optimizing root-level operations and configurations",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "NODE_ENV=development node src/index.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint src tests",
+    "format": "prettier --write \"**/*.{js,json,md}\""
+  },
+  "keywords": [
+    "root",
+    "configuration",
+    "management",
+    "optimization"
+  ],
+  "author": "lezkt1811-maker",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "jest": "^29.0.0",
+    "prettier": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
