@@ -406,6 +406,8 @@ function displayProjectDetails(project) {
 
       ${getRapidChangeSection(project)}
 
+      ${getProposedVsActualSection(project)}
+
       <div class="project-field">
         <div class="project-label">Agency</div>
         <div class="project-value">${project.agency}</div>
@@ -512,6 +514,54 @@ function getRapidChangeSection(project) {
         <div style="color: #f97316; font-weight: 600; margin-top: 4px;">${observationWindow}</div>
         <div style="color: #888; margin-top: 4px;">
           Pattern indicates possible overnight/rushed destruction
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// Get proposed vs actual section
+function getProposedVsActualSection(project) {
+  const proposed = project.acresApproved || project.acresProposed || 1;
+  const actual = project.acresCleared || 0;
+  const total = Math.max(proposed, actual, 1);
+
+  const proposedPct = (proposed / total) * 100;
+  const actualPct = (actual / total) * 100;
+
+  let status = 'Within bounds';
+  let statusColor = '#22c55e';
+
+  if (actual > proposed) {
+    status = 'OVER-CLEARING: More cleared than approved';
+    statusColor = '#ef4444';
+  } else if (actual < proposed * 0.5) {
+    status = 'Under-cleared: Less than 50% cleared';
+    statusColor = '#eab308';
+  }
+
+  return `
+    <div class="proposed-actual-comparison">
+      <div class="project-label">📊 Approved vs Actual Clearing</div>
+      <div class="comparison-bar">
+        <div class="comparison-approved" style="width: ${proposedPct}%; background: #3b82f6;">${proposedPct.toFixed(0)}%</div>
+        <div style="width: ${100 - proposedPct}%; background: transparent;"></div>
+      </div>
+      <div style="font-size: 11px; color: #888; margin-bottom: 8px;">
+        Approved: <span style="color: #3b82f6; font-weight: 600;">${proposed.toLocaleString()} acres</span>
+      </div>
+
+      <div class="comparison-bar">
+        <div class="comparison-cleared" style="width: ${actualPct}%; background: #ef4444;">${actualPct.toFixed(0)}%</div>
+        <div style="width: ${100 - actualPct}%; background: transparent;"></div>
+      </div>
+      <div style="font-size: 11px; color: #888; margin-bottom: 8px;">
+        Cleared: <span style="color: #ef4444; font-weight: 600;">${actual.toLocaleString()} acres</span>
+      </div>
+
+      <div style="padding-top: 6px; border-top: 1px solid #333; margin-top: 8px; padding-top: 8px;">
+        <div style="font-size: 11px; color: ${statusColor}; font-weight: 600;">
+          ${status}
         </div>
       </div>
     </div>
