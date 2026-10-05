@@ -1,12 +1,10 @@
-// MotherRoot Deforestation Accountability Map
-// MVP: Display USFS timber harvest projects on an interactive map
+// MotherRoot Deforestation Accountability Map - SVG Implementation
+// Lightweight fallback that works without external CDN dependencies
 
-let map;
-let geoJsonLayer;
 let currentProjects = [];
 let filteredProjects = [];
 
-// Sample project data - replace with real USFS API data
+// Sample project data with simplified coordinates for SVG display
 const sampleProjects = [
   {
     id: 1,
@@ -22,20 +20,9 @@ const sampleProjects = [
     dateApproved: "2022-06-15",
     status: "Active",
     clearingType: "Timber harvest",
-    geometry: {
-      type: "Feature",
-      properties: {},
-      geometry: {
-        type: "Polygon",
-        coordinates: [[
-          [-121.8, 44.1],
-          [-121.7, 44.1],
-          [-121.7, 44.2],
-          [-121.8, 44.2],
-          [-121.8, 44.1]
-        ]]
-      }
-    }
+    x: 30,
+    y: 35,
+    size: 45
   },
   {
     id: 2,
@@ -51,20 +38,9 @@ const sampleProjects = [
     dateApproved: "2023-03-20",
     status: "Proposed",
     clearingType: "Timber harvest",
-    geometry: {
-      type: "Feature",
-      properties: {},
-      geometry: {
-        type: "Polygon",
-        coordinates: [[
-          [-120.8, 38.5],
-          [-120.7, 38.5],
-          [-120.7, 38.6],
-          [-120.8, 38.6],
-          [-120.8, 38.5]
-        ]]
-      }
-    }
+    x: 25,
+    y: 55,
+    size: 55
   },
   {
     id: 3,
@@ -80,20 +56,9 @@ const sampleProjects = [
     dateApproved: "2021-09-10",
     status: "Completed",
     clearingType: "Timber harvest",
-    geometry: {
-      type: "Feature",
-      properties: {},
-      geometry: {
-        type: "Polygon",
-        coordinates: [[
-          [-118.5, 45.3],
-          [-118.4, 45.3],
-          [-118.4, 45.4],
-          [-118.5, 45.4],
-          [-118.5, 45.3]
-        ]]
-      }
-    }
+    x: 35,
+    y: 30,
+    size: 40
   },
   {
     id: 4,
@@ -109,20 +74,9 @@ const sampleProjects = [
     dateApproved: "2023-01-05",
     status: "Active",
     clearingType: "Timber harvest",
-    geometry: {
-      type: "Feature",
-      properties: {},
-      geometry: {
-        type: "Polygon",
-        coordinates: [[
-          [-121.4, 47.6],
-          [-121.3, 47.6],
-          [-121.3, 47.7],
-          [-121.4, 47.7],
-          [-121.4, 47.6]
-        ]]
-      }
-    }
+    x: 32,
+    y: 25,
+    size: 50
   },
   {
     id: 5,
@@ -138,87 +92,13 @@ const sampleProjects = [
     dateApproved: "2024-02-14",
     status: "Approved",
     clearingType: "Timber harvest",
-    geometry: {
-      type: "Feature",
-      properties: {},
-      geometry: {
-        type: "Polygon",
-        coordinates: [[
-          [-105.5, 39.8],
-          [-105.4, 39.8],
-          [-105.4, 39.9],
-          [-105.5, 39.9],
-          [-105.5, 39.8]
-        ]]
-      }
-    }
+    x: 50,
+    y: 45,
+    size: 35
   }
 ];
 
-// Initialize map
-function initMap() {
-  map = L.map('map').setView([39.8, -104.9], 4);
-
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors',
-    maxZoom: 19
-  }).addTo(map);
-
-  currentProjects = sampleProjects;
-  displayProjects(currentProjects);
-  setupEventListeners();
-}
-
-// Display projects on map
-function displayProjects(projects) {
-  if (geoJsonLayer) {
-    map.removeLayer(geoJsonLayer);
-  }
-
-  const geojsonFeatures = projects.map(project => ({
-    type: "Feature",
-    properties: project,
-    geometry: project.geometry.geometry
-  }));
-
-  geoJsonLayer = L.geoJSON(geojsonFeatures, {
-    style: function(feature) {
-      return {
-        color: getStatusColor(feature.properties.status),
-        weight: 3,
-        opacity: 0.8,
-        fillOpacity: 0.4,
-        fillColor: getStatusColor(feature.properties.status)
-      };
-    },
-    onEachFeature: function(feature, layer) {
-      layer.on('click', function() {
-        displayProjectDetails(feature.properties);
-        layer.setStyle({
-          weight: 4,
-          opacity: 1,
-          fillOpacity: 0.6
-        });
-      });
-
-      layer.on('mouseover', function() {
-        layer.setStyle({ weight: 4 });
-      });
-
-      layer.on('mouseout', function() {
-        layer.setStyle({ weight: 3 });
-      });
-    }
-  }).addTo(map);
-
-  // Fit bounds if projects exist
-  if (geojsonFeatures.length > 0) {
-    const bounds = L.geoJSON(geojsonFeatures).getBounds();
-    map.fitBounds(bounds, { padding: [50, 50] });
-  }
-}
-
-// Get color based on status
+// Get status color
 function getStatusColor(status) {
   const colors = {
     "Proposed": "#22c55e",
@@ -229,7 +109,134 @@ function getStatusColor(status) {
   return colors[status] || "#888888";
 }
 
-// Display project details in sidebar
+// Create SVG map
+function initMap() {
+  const mapDiv = document.getElementById('map');
+
+  // Create SVG
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('width', '100%');
+  svg.setAttribute('height', '100%');
+  svg.setAttribute('viewBox', '0 0 100 80');
+  svg.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+  svg.style.background = 'linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%)';
+
+  // Add title text
+  const title = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  title.setAttribute('x', '50');
+  title.setAttribute('y', '5');
+  title.setAttribute('text-anchor', 'middle');
+  title.setAttribute('font-size', '3');
+  title.setAttribute('fill', '#00d9ff');
+  title.setAttribute('font-weight', 'bold');
+  title.setAttribute('letter-spacing', '1');
+  title.textContent = 'United States Deforestation Projects';
+  svg.appendChild(title);
+
+  // Add map background
+  const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  bg.setAttribute('x', '5');
+  bg.setAttribute('y', '10');
+  bg.setAttribute('width', '90');
+  bg.setAttribute('height', '60');
+  bg.setAttribute('fill', '#1a1f3a');
+  bg.setAttribute('stroke', '#00d9ff');
+  bg.setAttribute('stroke-width', '0.3');
+  svg.appendChild(bg);
+
+  // Add grid
+  for (let i = 0; i <= 90; i += 15) {
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', 5 + i);
+    line.setAttribute('y1', '10');
+    line.setAttribute('x2', 5 + i);
+    line.setAttribute('y2', '70');
+    line.setAttribute('stroke', '#333');
+    line.setAttribute('stroke-width', '0.1');
+    svg.appendChild(line);
+  }
+
+  for (let i = 0; i <= 60; i += 15) {
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', '5');
+    line.setAttribute('y1', 10 + i);
+    line.setAttribute('x2', '95');
+    line.setAttribute('y2', 10 + i);
+    line.setAttribute('stroke', '#333');
+    line.setAttribute('stroke-width', '0.1');
+    svg.appendChild(line);
+  }
+
+  // Add region labels
+  const labels = [
+    { text: 'WA', x: 32, y: 15 },
+    { text: 'OR', x: 30, y: 35 },
+    { text: 'CA', x: 28, y: 60 },
+    { text: 'CO', x: 52, y: 40 },
+    { text: 'ID', x: 40, y: 25 }
+  ];
+
+  labels.forEach(label => {
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', label.x);
+    text.setAttribute('y', label.y);
+    text.setAttribute('font-size', '1.5');
+    text.setAttribute('fill', '#555');
+    text.setAttribute('font-weight', 'bold');
+    text.setAttribute('opacity', '0.6');
+    text.textContent = label.text;
+    svg.appendChild(text);
+  });
+
+  currentProjects = sampleProjects;
+  displayProjectsOnMap(svg, currentProjects);
+
+  mapDiv.innerHTML = '';
+  mapDiv.appendChild(svg);
+
+  setupEventListeners();
+}
+
+// Display projects on SVG map
+function displayProjectsOnMap(svg, projects) {
+  // Remove existing project circles
+  const existingCircles = svg.querySelectorAll('.project-circle');
+  existingCircles.forEach(el => el.remove());
+
+  projects.forEach(project => {
+    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    const color = getStatusColor(project.status);
+
+    circle.setAttribute('cx', 5 + project.x);
+    circle.setAttribute('cy', 10 + project.y);
+    circle.setAttribute('r', project.size / 100);
+    circle.setAttribute('fill', color);
+    circle.setAttribute('fill-opacity', '0.5');
+    circle.setAttribute('stroke', color);
+    circle.setAttribute('stroke-width', '0.4');
+    circle.setAttribute('class', 'project-circle');
+    circle.style.cursor = 'pointer';
+    circle.style.transition = 'all 0.2s ease';
+
+    circle.addEventListener('click', () => {
+      displayProjectDetails(project);
+    });
+
+    circle.addEventListener('mouseover', () => {
+      circle.setAttribute('fill-opacity', '0.8');
+      circle.setAttribute('stroke-width', '0.6');
+    });
+
+    circle.addEventListener('mouseout', () => {
+      circle.setAttribute('fill-opacity', '0.5');
+      circle.setAttribute('stroke-width', '0.4');
+    });
+
+    svg.appendChild(circle);
+  });
+}
+
+// Display project details
 function displayProjectDetails(project) {
   const detailsDiv = document.getElementById('projectDetails');
 
@@ -239,6 +246,7 @@ function displayProjectDetails(project) {
     ? ((acreageCleared / acreageApproved) * 100).toFixed(1)
     : 0;
 
+  detailsDiv.classList.remove('empty');
   detailsDiv.innerHTML = `
     <div class="project-card">
       <h3>${project.name}</h3>
@@ -286,7 +294,7 @@ function displayProjectDetails(project) {
   `;
 }
 
-// Filter projects based on controls
+// Filter projects
 function applyFilters() {
   const state = document.getElementById('stateSelect').value;
   const status = document.getElementById('statusSelect').value;
@@ -300,11 +308,11 @@ function applyFilters() {
     return matchesState && matchesStatus && matchesAcreage;
   });
 
-  displayProjects(filteredProjects);
-
-  // Update count
-  const count = filteredProjects.length;
-  console.log(`Showing ${count} project(s)`);
+  // Update map
+  const svg = document.querySelector('#map svg');
+  if (svg) {
+    displayProjectsOnMap(svg, filteredProjects);
+  }
 }
 
 // Setup event listeners
@@ -314,5 +322,5 @@ function setupEventListeners() {
   document.getElementById('minAcreage').addEventListener('change', applyFilters);
 }
 
-// Initialize when DOM is ready
+// Initialize
 document.addEventListener('DOMContentLoaded', initMap);
