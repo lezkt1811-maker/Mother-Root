@@ -226,10 +226,29 @@ function displayProjectsOnMap(projects) {
 
     const [lon, lat] = project.geometry.coordinates;
     const statusColor = getStatusColor(project.status);
-    const acresCleared = project.acresCleared || project.acresApproved || 100;
 
-    // Generate polygon boundary for cleared parcel
-    const polygonBounds = generateParcelPolygon(lat, lon, acresCleared);
+    // Determine acreage for sizing polygon
+    let polygonAcreage = 100; // default
+
+    if (project.sourceType === 'Parkville Development') {
+      // For Parkville projects, use actual acres or estimate from lots
+      if (project.acres) {
+        polygonAcreage = project.acres;
+      } else if (project.lots) {
+        // Rough estimate: 1 lot ≈ 0.25-0.5 acres depending on type
+        const totalLots = typeof project.lots === 'object' ? project.lots.total : project.lots;
+        polygonAcreage = Math.max(totalLots * 0.3, 5);
+      } else if (project.units) {
+        // Apartment: roughly 0.2 acres per unit
+        polygonAcreage = Math.max(project.units * 0.2, 10);
+      }
+    } else {
+      // For USFS timber projects
+      polygonAcreage = project.acresCleared || project.acresApproved || 100;
+    }
+
+    // Generate polygon boundary for parcel
+    const polygonBounds = generateParcelPolygon(lat, lon, polygonAcreage);
 
     // Create land parcel polygon
     const polygon = L.polygon(polygonBounds, {
