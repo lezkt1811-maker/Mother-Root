@@ -52,14 +52,53 @@ function getDefaultSampleData() {
   ];
 }
 
+// Get Indigenous burial and sacred sites
+function getBurialSites() {
+  return [
+    // Ancestral Puebloans
+    { name: "Cahokia Mounds", lat: 38.6549, lng: -90.0619, tribe: "Ancestral Mississippian", state: "IL" },
+    { name: "Mesa Verde", lat: 37.1840, lng: -108.4618, tribe: "Ancestral Puebloan", state: "CO" },
+    { name: "Chaco Canyon", lat: 36.0191, lng: -107.9551, tribe: "Ancestral Puebloan", state: "NM" },
+
+    // Mississippian
+    { name: "Poverty Point", lat: 32.6277, lng: -91.4088, tribe: "Mississippian", state: "LA" },
+
+    // Eastern Woodlands
+    { name: "Serpent Mound", lat: 39.2608, lng: -83.4142, tribe: "Fort Ancient/Adena", state: "OH" },
+    { name: "Grave Creek Mound", lat: 40.7661, lng: -80.7328, tribe: "Adena", state: "WV" },
+    { name: "Hopewell Culture", lat: 39.7372, lng: -82.9880, tribe: "Hopewell", state: "OH" },
+
+    // Great Plains
+    { name: "Spoon River Mississippian", lat: 40.3761, lng: -89.9544, tribe: "Mississippian", state: "IL" },
+    { name: "Running Buttes", lat: 47.8298, lng: -103.1951, tribe: "Mandan", state: "ND" },
+
+    // Southwest
+    { name: "Canyon de Chelly", lat: 36.1280, lng: -109.4138, tribe: "Navajo/Ancestral Puebloan", state: "AZ" },
+    { name: "Gila Cliff Dwellings", lat: 32.8678, lng: -108.2296, tribe: "Mogollon", state: "NM" },
+
+    // Pacific Northwest
+    { name: "Ozette Village", lat: 48.3736, lng: -124.6547, tribe: "Makah", state: "WA" },
+    { name: "Nez Perce Historic Sites", lat: 46.4089, lng: -116.2023, tribe: "Nez Perce", state: "ID" },
+
+    // California
+    { name: "Anza-Borrego Sacred Sites", lat: 32.8945, lng: -116.4441, tribe: "Kumeyaay", state: "CA" },
+
+    // Great Lakes
+    { name: "Aztalan State Park", lat: 43.2858, lng: -88.3100, tribe: "Mississippian", state: "WI" }
+  ];
+}
+
 // Initialize Leaflet map
 async function initMap() {
-  // Create map instance
+  // Create map instance with USA bounds
+  const usaBounds = [[24.5, -125], [49.4, -66]]; // Continental USA bounds
   mapInstance = L.map('map', {
     center: [39.8283, -98.5795], // Center of USA
     zoom: 4,
     minZoom: 3,
     maxZoom: 16,
+    maxBounds: usaBounds,
+    maxBoundsViscosity: 0.8,
     attributionControl: true,
     fadeAnimation: true,
     markerZoomAnimation: true
@@ -79,14 +118,31 @@ async function initMap() {
   // Initialize layer groups
   projectsLayerGroup = L.layerGroup().addTo(mapInstance);
   burnPitLayerGroup = L.layerGroup().addTo(mapInstance);
+  const burialSitesLayerGroup = L.layerGroup().addTo(mapInstance);
 
   layerGroups = {
     'Forest Loss': L.layerGroup().addTo(mapInstance),
     'Documented Burns': L.layerGroup().addTo(mapInstance),
     'Burn Pits': burnPitLayerGroup,
     'Permits': L.layerGroup().addTo(mapInstance),
-    'Responsible Entities': L.layerGroup().addTo(mapInstance)
+    'Responsible Entities': L.layerGroup().addTo(mapInstance),
+    'Indigenous Sacred Sites': burialSitesLayerGroup
   };
+
+  // Add burial/sacred sites to map
+  const burialSites = getBurialSites();
+  burialSites.forEach(site => {
+    const burialIcon = L.divIcon({
+      html: `<div style="background: #8b4789; width: 14px; height: 14px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 6px #8b4789;"></div>`,
+      iconSize: [18, 18],
+      className: 'burial-icon'
+    });
+
+    const burialMarker = L.marker([site.lat, site.lng], { icon: burialIcon });
+    const burialPopup = `<strong>⚱️ ${site.name}</strong><br><small>${site.tribe}</small><br><small>${site.state}</small>`;
+    burialMarker.bindPopup(burialPopup);
+    burialMarker.addTo(burialSitesLayerGroup);
+  });
 
   // Aggregate entities for profile view
   currentEntities = aggregateByEntity(currentProjects);
