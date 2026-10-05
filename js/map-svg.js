@@ -951,7 +951,7 @@ function setupMobileNavigation() {
   // Toggle sidebar visibility on mobile
   if (sidebarToggle) {
     sidebarToggle.addEventListener('click', () => {
-      sidebar.classList.toggle('mobile-open');
+      sidebar.classList.toggle('mobile-closed');
       updateToggleButton();
     });
   }
@@ -997,7 +997,7 @@ function setupMobileNavigation() {
   viewToggles.forEach(toggle => {
     toggle.addEventListener('click', () => {
       if (window.innerWidth <= 768) {
-        sidebar.classList.remove('mobile-open');
+        sidebar.classList.add('mobile-closed');
         updateToggleButton();
       }
     });
@@ -1006,7 +1006,7 @@ function setupMobileNavigation() {
   // Adjust sidebar on orientation change
   window.addEventListener('orientationchange', () => {
     setTimeout(() => {
-      sidebar.classList.remove('mobile-open');
+      sidebar.classList.add('mobile-closed');
       updateToggleButton();
     }, 100);
   });
@@ -1021,7 +1021,7 @@ function updateToggleButton() {
     const isMobile = window.innerWidth <= 768;
     if (isMobile) {
       sidebarToggle.style.display = 'flex';
-      sidebarToggle.textContent = sidebar.classList.contains('mobile-open') ? '✕' : '☰';
+      sidebarToggle.textContent = sidebar.classList.contains('mobile-closed') ? '☰' : '✕';
     } else {
       sidebarToggle.style.display = 'none';
     }
