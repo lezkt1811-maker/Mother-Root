@@ -628,7 +628,15 @@ function aggregateByEntity(projects) {
         totalPenalties: 0,
         totalInspections: 0,
         states: new Set(),
-        statuses: {}
+        statuses: {},
+        // Phase 2: Tree destination tracking
+        totalHarvested: 0,
+        totalBurned: 0,
+        totalUnknown: 0,
+        // Phase 2: Accountability flags
+        burnPitProjectCount: 0,
+        rapidClearingCount: 0,
+        overClearingCount: 0
       };
     }
 
@@ -641,6 +649,25 @@ function aggregateByEntity(projects) {
     entities[company].totalViolations += enforcement.violations || 0;
     entities[company].totalPenalties += enforcement.penalties || 0;
     entities[company].totalInspections += enforcement.inspections || 0;
+
+    // Phase 2: Aggregate tree destination
+    const tree = project.treeDestination || {};
+    entities[company].totalHarvested += tree.harvested || 0;
+    entities[company].totalBurned += tree.burned || 0;
+    entities[company].totalUnknown += tree.unknown || 0;
+
+    // Phase 2: Count accountability flags
+    if (project.burningDocumented) {
+      entities[company].burnPitProjectCount += 1;
+    }
+    if (project.rapidClearingFlag) {
+      entities[company].rapidClearingCount += 1;
+    }
+    const cleared = project.acresCleared || 0;
+    const approved = project.acresApproved || 0;
+    if (cleared > approved && approved > 0) {
+      entities[company].overClearingCount += 1;
+    }
 
     if (project.state) {
       entities[company].states.add(project.state);
@@ -702,6 +729,28 @@ function displayEntityView(entities, sortBy = 'violations') {
         </div>
         <div class="entity-stat" style="font-size: 10px; color: #666; margin-top: 6px;">
           <span>Active in: ${Array.from(entity.states).sort().join(', ')}</span>
+        </div>
+        <div style="border-top: 1px solid #333; margin-top: 10px; padding-top: 10px; font-size: 10px;">
+          <div class="entity-stat">
+            <span>🌲 Harvested:</span>
+            <span class="entity-stat-value">${entity.totalHarvested.toLocaleString()} ac</span>
+          </div>
+          <div class="entity-stat">
+            <span>🔥 Burned:</span>
+            <span class="entity-stat-value" style="color: #ef4444;">${entity.totalBurned.toLocaleString()} ac</span>
+          </div>
+          ${entity.burnPitProjectCount > 0 ? `<div class="entity-stat">
+            <span>🚨 Burn Pits:</span>
+            <span class="entity-stat-value" style="color: #f97316;">${entity.burnPitProjectCount}</span>
+          </div>` : ''}
+          ${entity.rapidClearingCount > 0 ? `<div class="entity-stat">
+            <span>⚡ Rapid Clearing:</span>
+            <span class="entity-stat-value" style="color: #f97316;">${entity.rapidClearingCount}</span>
+          </div>` : ''}
+          ${entity.overClearingCount > 0 ? `<div class="entity-stat">
+            <span>⚠️ Over-clearing:</span>
+            <span class="entity-stat-value" style="color: #ef4444;">${entity.overClearingCount}</span>
+          </div>` : ''}
         </div>
       </div>
     `;
