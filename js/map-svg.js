@@ -4,18 +4,32 @@
 let currentProjects = [];
 let filteredProjects = [];
 
-// Load USFS project data from data/usfs-projects.json
+// Load USFS project data with EPA enforcement enrichment
 async function loadProjectData() {
   try {
+    // Try to load enriched data with enforcement info first
+    const enforcementResponse = await fetch('data/usfs-projects-with-enforcement.json');
+    if (enforcementResponse.ok) {
+      const data = await enforcementResponse.json();
+      console.log(`✓ Loaded ${data.length} projects with EPA enforcement data`);
+      return data;
+    }
+  } catch (error) {
+    // Fall through to try basic projects file
+  }
+
+  try {
+    // Fall back to basic projects file
     const response = await fetch('data/usfs-projects.json');
     if (!response.ok) throw new Error('Data file not found');
 
     const data = await response.json();
-    console.log(`✓ Loaded ${data.length} USFS projects from data/usfs-projects.json`);
+    console.log(`✓ Loaded ${data.length} USFS projects (no enforcement data)`);
     return data;
   } catch (error) {
-    console.warn('Could not load USFS data:', error.message);
+    console.warn('Could not load project data:', error.message);
     console.log('💡 Generate sample data: python scripts/generate-sample-data.py');
+    console.log('💡 Add EPA data: python scripts/fetch-epa-enforcement.py');
     return getDefaultSampleData();
   }
 }
@@ -296,6 +310,26 @@ function displayProjectsOnMap(svg, projects) {
     });
 
     svg.appendChild(circle);
+
+    // Add enforcement badge if violations exist
+    const enforcement = project.enforcement || {};
+    if (enforcement.violations > 0) {
+      const badge = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      badge.setAttribute('cx', 5 + project.x + project.size / 80);
+      badge.setAttribute('cy', 10 + project.y - project.size / 80);
+      badge.setAttribute('r', '0.4');
+      badge.setAttribute('fill', '#ef4444');
+      badge.setAttribute('stroke', '#fca5a5');
+      badge.setAttribute('stroke-width', '0.15');
+      badge.setAttribute('class', 'enforcement-badge');
+
+      badge.addEventListener('click', (e) => {
+        e.stopPropagation();
+        displayProjectDetails(project);
+      });
+
+      svg.appendChild(badge);
+    }
   });
 }
 
@@ -353,8 +387,36 @@ function displayProjectDetails(project) {
         <div class="project-label">Date Approved</div>
         <div class="project-value">${new Date(project.dateApproved).toLocaleDateString()}</div>
       </div>
+
+      ${getEnforcementSection(project)}
     </div>
   `;
+}
+
+// Get EPA enforcement section for project details
+function getEnforcementSection(project) {
+  const enforcement = project.enforcement || {};
+  const hasViolations = enforcement.violations > 0;
+
+  if (hasViolations) {
+    return `
+      <div class="project-field" style="background: rgba(239, 68, 68, 0.1); padding: 10px; border-left: 3px solid #ef4444; margin-top: 10px;">
+        <div class="project-label">⚠️ EPA Enforcement History</div>
+        <div class="project-value">
+          <strong>${enforcement.violations}</strong> violations<br>
+          <strong>$${(enforcement.penalties || 0).toLocaleString()}</strong> in penalties<br>
+          <strong>${enforcement.inspections || 0}</strong> inspections
+        </div>
+      </div>
+    `;
+  } else {
+    return `
+      <div class="project-field" style="background: rgba(34, 197, 94, 0.1); padding: 10px; border-left: 3px solid #22c55e; margin-top: 10px;">
+        <div class="project-label">✓ No EPA Violations Documented</div>
+        <div class="project-value" style="font-size: 12px; color: #888;">No EPA enforcement actions on record</div>
+      </div>
+    `;
+  }
 }
 
 // Filter projects
