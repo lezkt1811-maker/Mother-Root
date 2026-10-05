@@ -459,21 +459,171 @@
       background: #0a0e27 !important;
     }
 
+    /* Mobile: Map-first layout */
     @media (max-width: 768px) {
       #app {
         flex-direction: column;
       }
 
+      #map {
+        flex: 1;
+        order: 2;
+        min-height: 100vh;
+      }
+
       .sidebar {
         width: 100%;
-        max-height: 40vh;
+        height: auto;
+        max-height: 0;
+        overflow: hidden;
         border-right: none;
         border-bottom: 2px solid #00d9ff;
         z-index: 10;
+        order: 1;
+        transition: max-height 0.3s ease;
+        position: relative;
       }
 
-      #map {
-        flex: 1;
+      .sidebar.mobile-open {
+        max-height: 60vh;
+        overflow-y: auto;
+      }
+
+      #sidebarToggle {
+        display: flex;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: #00d9ff;
+        color: #0a0e27;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        z-index: 20;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(0, 217, 255, 0.3);
+        font-weight: bold;
+      }
+
+      #sidebarToggle:active {
+        transform: scale(0.95);
+      }
+
+      /* Larger touch targets on mobile */
+      .layer-toggle {
+        width: 18px;
+        height: 18px;
+        margin-right: 8px;
+      }
+
+      .view-toggle {
+        padding: 14px 12px;
+        font-size: 13px;
+        min-height: 44px;
+      }
+
+      select, input {
+        padding: 12px 12px;
+        min-height: 44px;
+        font-size: 16px;
+      }
+
+      .entity-card {
+        padding: 16px;
+        margin-bottom: 12px;
+      }
+
+      .project-card {
+        padding: 16px;
+      }
+
+      .project-card h3 {
+        font-size: 15px;
+        margin-bottom: 12px;
+      }
+
+      /* Simplified layer grid for mobile */
+      #layerToggles {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+      }
+
+      label {
+        padding: 10px 8px;
+      }
+
+      /* Close button for details */
+      .close-details {
+        display: block;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #ef4444;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .project-details {
+        position: relative;
+      }
+    }
+
+    /* Extra small phones */
+    @media (max-width: 480px) {
+      .sidebar {
+        padding: 16px;
+      }
+
+      #sidebarToggle {
+        bottom: 16px;
+        right: 16px;
+        width: 52px;
+        height: 52px;
+        font-size: 22px;
+      }
+
+      .control-label {
+        font-size: 10px;
+        margin-bottom: 8px;
+      }
+
+      .logo {
+        font-size: 22px;
+        margin-bottom: 6px;
+      }
+
+      .tagline {
+        font-size: 10px;
+        margin-bottom: 20px;
+      }
+
+      .view-section {
+        padding: 0;
+      }
+
+      /* Stack the view toggle buttons */
+      div[style*="display: flex; gap: 8px"] {
+        flex-direction: column !important;
+        gap: 8px !important;
+      }
+
+      .view-toggle {
+        width: 100%;
+        padding: 12px 12px;
+      }
+
+      /* Legend adjusts on small phones */
+      .legend {
+        display: none;
       }
     }
   </style>
@@ -602,6 +752,9 @@
         </div>
       </div>
     </div>
+
+    <!-- Mobile sidebar toggle button -->
+    <button id="sidebarToggle" title="Toggle controls"></button>
   </div>
 
   <script src="js/map-svg.js"></script>

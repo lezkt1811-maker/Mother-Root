@@ -932,6 +932,100 @@ function setupEventListeners() {
       applyFilters();
     });
   });
+
+  // Setup mobile interactions
+  setupMobileNavigation();
+}
+
+// Mobile-friendly navigation
+function setupMobileNavigation() {
+  const sidebar = document.querySelector('.sidebar');
+  const sidebarToggle = document.getElementById('sidebarToggle');
+  const isMobile = window.innerWidth <= 768;
+
+  if (!isMobile) return;
+
+  // Set initial button label
+  updateToggleButton();
+
+  // Toggle sidebar visibility on mobile
+  if (sidebarToggle) {
+    sidebarToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('mobile-open');
+      updateToggleButton();
+    });
+  }
+
+  // Close sidebar when clicking project on map (on mobile)
+  const mapDiv = document.getElementById('map');
+  if (mapDiv) {
+    mapDiv.addEventListener('click', () => {
+      if (window.innerWidth <= 768 && sidebar.classList.contains('mobile-open')) {
+        // Auto-close sidebar briefly to show map, then user can open details
+      }
+    });
+  }
+
+  // Add close button to project details on mobile
+  const projectDetails = document.getElementById('projectDetails');
+  if (projectDetails && !projectDetails.querySelector('.close-details')) {
+    const observer = new MutationObserver(() => {
+      if (!projectDetails.classList.contains('empty') && !projectDetails.querySelector('.close-details')) {
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'close-details';
+        closeBtn.textContent = '✕ Close';
+        closeBtn.addEventListener('click', () => {
+          projectDetails.classList.add('empty');
+          projectDetails.innerHTML = 'Click a project on the map to see details';
+          sidebar.classList.toggle('mobile-open');
+        });
+        projectDetails.insertBefore(closeBtn, projectDetails.firstChild);
+      }
+    });
+
+    observer.observe(projectDetails, { childList: true, subtree: true });
+  }
+
+  // Better touch handling for project circles
+  const svg = document.querySelector('svg');
+  if (svg) {
+    svg.style.touchAction = 'manipulation';
+  }
+
+  // Close sidebar when view changes on mobile
+  const viewToggles = document.querySelectorAll('.view-toggle');
+  viewToggles.forEach(toggle => {
+    toggle.addEventListener('click', () => {
+      if (window.innerWidth <= 768) {
+        sidebar.classList.remove('mobile-open');
+        updateToggleButton();
+      }
+    });
+  });
+
+  // Adjust sidebar on orientation change
+  window.addEventListener('orientationchange', () => {
+    setTimeout(() => {
+      sidebar.classList.remove('mobile-open');
+      updateToggleButton();
+    }, 100);
+  });
+}
+
+// Update sidebar toggle button appearance
+function updateToggleButton() {
+  const sidebarToggle = document.getElementById('sidebarToggle');
+  const sidebar = document.querySelector('.sidebar');
+
+  if (sidebarToggle) {
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile) {
+      sidebarToggle.style.display = 'flex';
+      sidebarToggle.textContent = sidebar.classList.contains('mobile-open') ? '✕' : '☰';
+    } else {
+      sidebarToggle.style.display = 'none';
+    }
+  }
 }
 
 // Initialize when DOM is ready
