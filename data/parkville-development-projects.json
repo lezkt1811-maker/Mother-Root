@@ -9,7 +9,7 @@
       "lng": -94.68
     },
     "parcel": "20-8-0-27-100-002-006.000",
-    "acres": 0,
+    "acres": 18,
     "lots": {
       "duplex": 27,
       "detached": 9,
@@ -17,8 +17,14 @@
     },
     "status": "Under Construction",
     "statusProgression": [
-      { "status": "Approved", "date": "2021" },
-      { "status": "Under Construction", "date": "2022-01-04" }
+      {
+        "status": "Approved",
+        "date": "2021"
+      },
+      {
+        "status": "Under Construction",
+        "date": "2022-01-04"
+      }
     ],
     "constructionDates": {
       "began": "2022-01-04",
@@ -26,7 +32,10 @@
     },
     "treesClearedAcres": 0,
     "burnDocumented": false,
-    "evidence": ["City development tracker", "Construction permits"],
+    "evidence": [
+      "City development tracker",
+      "Construction permits"
+    ],
     "beforeImagery": {
       "date": null,
       "url": null
@@ -46,7 +55,7 @@
       "lng": -94.69
     },
     "parcel": "20-7-0-26-400-006-001.000",
-    "acres": 0,
+    "acres": 8,
     "lots": {
       "duplex": 19,
       "openSpace": 4,
@@ -54,8 +63,14 @@
     },
     "status": "Under Construction",
     "statusProgression": [
-      { "status": "Approved", "date": "2021" },
-      { "status": "Under Construction", "date": "2022-01-18" }
+      {
+        "status": "Approved",
+        "date": "2021"
+      },
+      {
+        "status": "Under Construction",
+        "date": "2022-01-18"
+      }
     ],
     "constructionDates": {
       "began": "2022-01-18",
@@ -63,7 +78,10 @@
     },
     "treesClearedAcres": 0,
     "burnDocumented": false,
-    "evidence": ["City development tracker", "Construction permits"],
+    "evidence": [
+      "City development tracker",
+      "Construction permits"
+    ],
     "beforeImagery": {
       "date": null,
       "url": null
@@ -80,18 +98,24 @@
     "location": "West of Woods at Creekside 3rd Plat",
     "coordinates": {
       "lat": 39.18,
-      "lng": -94.70
+      "lng": -94.7
     },
     "parcel": "20-4-0-18-000-000-010.003",
-    "acres": 0,
+    "acres": 9.8,
     "lots": {
       "detached": 28,
       "total": 28
     },
     "status": "Construction/Completion Activity 2024",
     "statusProgression": [
-      { "status": "Approved", "date": "2023" },
-      { "status": "Construction", "date": "2024" }
+      {
+        "status": "Approved",
+        "date": "2023"
+      },
+      {
+        "status": "Construction",
+        "date": "2024"
+      }
     ],
     "constructionDates": {
       "began": "2024",
@@ -99,7 +123,10 @@
     },
     "treesClearedAcres": 0,
     "burnDocumented": false,
-    "evidence": ["City development tracker", "Plat records"],
+    "evidence": [
+      "City development tracker",
+      "Plat records"
+    ],
     "beforeImagery": {
       "date": null,
       "url": null
@@ -119,7 +146,7 @@
       "lng": -94.71
     },
     "parcel": "20-4-0-18-000-000-010.003",
-    "acres": 0,
+    "acres": 14.4,
     "lots": {
       "detached": 39,
       "openSpace": 2,
@@ -127,7 +154,10 @@
     },
     "status": "Approved",
     "statusProgression": [
-      { "status": "Approved", "date": "2023" }
+      {
+        "status": "Approved",
+        "date": "2023"
+      }
     ],
     "constructionDates": {
       "began": null,
@@ -135,7 +165,10 @@
     },
     "treesClearedAcres": 0,
     "burnDocumented": false,
-    "evidence": ["City development tracker", "Plat records"],
+    "evidence": [
+      "City development tracker",
+      "Plat records"
+    ],
     "beforeImagery": {
       "date": null,
       "url": null
@@ -155,7 +188,7 @@
       "lng": -94.65
     },
     "parcel": "20-9-0-29-000-000-010.001",
-    "acres": 0,
+    "acres": 26.6,
     "lots": {
       "detached": 73,
       "openSpace": 3,
@@ -163,7 +196,10 @@
     },
     "status": "Approved",
     "statusProgression": [
-      { "status": "Approved", "date": "2024" }
+      {
+        "status": "Approved",
+        "date": "2024"
+      }
     ],
     "constructionDates": {
       "began": null,
@@ -171,7 +207,9 @@
     },
     "treesClearedAcres": 0,
     "burnDocumented": false,
-    "evidence": ["City development tracker"],
+    "evidence": [
+      "City development tracker"
+    ],
     "beforeImagery": {
       "date": null,
       "url": null
@@ -191,7 +229,7 @@
       "lng": -94.66
     },
     "parcel": "20-9-0-30-000-000-012.000",
-    "acres": 0,
+    "acres": 18.9,
     "lots": {
       "detached": 51,
       "openSpace": 3,
@@ -199,7 +237,10 @@
     },
     "status": "Preliminary Plat Approved",
     "statusProgression": [
-      { "status": "Preliminary Plat Approved", "date": "2024" }
+      {
+        "status": "Preliminary Plat Approved",
+        "date": "2024"
+      }
     ],
     "constructionDates": {
       "began": null,
@@ -207,7 +248,10 @@
     },
     "treesClearedAcres": 0,
     "burnDocumented": false,
-    "evidence": ["City development tracker", "Preliminary plat"],
+    "evidence": [
+      "City development tracker",
+      "Preliminary plat"
+    ],
     "beforeImagery": {
       "date": null,
       "url": null
@@ -223,11 +267,11 @@
     "type": "Residential Subdivision",
     "location": "Thousand Oaks expansion",
     "coordinates": {
-      "lat": 39.20,
+      "lat": 39.2,
       "lng": -94.64
     },
     "parcel": "20-9-0-29-000-000-010.001",
-    "acres": 0,
+    "acres": 85.4,
     "lots": {
       "plat1": 66,
       "plat2": 44,
@@ -236,7 +280,10 @@
     },
     "status": "Preliminary Plats Approved",
     "statusProgression": [
-      { "status": "Preliminary Plat Approved", "date": "2024" }
+      {
+        "status": "Preliminary Plat Approved",
+        "date": "2024"
+      }
     ],
     "constructionDates": {
       "began": null,
@@ -244,7 +291,9 @@
     },
     "treesClearedAcres": 0,
     "burnDocumented": false,
-    "evidence": ["City development tracker"],
+    "evidence": [
+      "City development tracker"
+    ],
     "beforeImagery": {
       "date": null,
       "url": null
@@ -264,7 +313,7 @@
       "lng": -94.72
     },
     "parcel": "20-7-0-26-300-001-047.002",
-    "acres": 0,
+    "acres": 8,
     "lots": {
       "detached": 10,
       "openSpace": 2,
@@ -272,7 +321,10 @@
     },
     "status": "Preliminary Plat Approved",
     "statusProgression": [
-      { "status": "Preliminary Plat Approved", "date": "2024" }
+      {
+        "status": "Preliminary Plat Approved",
+        "date": "2024"
+      }
     ],
     "constructionDates": {
       "began": null,
@@ -280,7 +332,9 @@
     },
     "treesClearedAcres": 0,
     "burnDocumented": false,
-    "evidence": ["City development tracker"],
+    "evidence": [
+      "City development tracker"
+    ],
     "beforeImagery": {
       "date": null,
       "url": null
@@ -300,7 +354,7 @@
       "lng": -94.67
     },
     "parcel": "20-7-0-26-200-002-003.001",
-    "acres": 0,
+    "acres": 10.5,
     "lots": {
       "clusterTownhomes": 23,
       "additionalTownhomes": 7,
@@ -308,7 +362,10 @@
     },
     "status": "Approved",
     "statusProgression": [
-      { "status": "Approved", "date": "2023" }
+      {
+        "status": "Approved",
+        "date": "2023"
+      }
     ],
     "constructionDates": {
       "began": null,
@@ -316,7 +373,9 @@
     },
     "treesClearedAcres": 0,
     "burnDocumented": false,
-    "evidence": ["City development tracker"],
+    "evidence": [
+      "City development tracker"
+    ],
     "beforeImagery": {
       "date": null,
       "url": null
@@ -336,7 +395,7 @@
       "lng": -94.68
     },
     "parcel": "20-8-0-27-100-002-002.002",
-    "acres": 0,
+    "acres": 10.5,
     "lots": {
       "clusterTownhomes": 23,
       "additionalTownhomes": 7,
@@ -344,7 +403,10 @@
     },
     "status": "Approved",
     "statusProgression": [
-      { "status": "Approved", "date": "2023" }
+      {
+        "status": "Approved",
+        "date": "2023"
+      }
     ],
     "constructionDates": {
       "began": null,
@@ -352,7 +414,9 @@
     },
     "treesClearedAcres": 0,
     "burnDocumented": false,
-    "evidence": ["City development tracker"],
+    "evidence": [
+      "City development tracker"
+    ],
     "beforeImagery": {
       "date": null,
       "url": null
@@ -369,16 +433,22 @@
     "location": "NW corner of Hwy 45 & Homer Pkwy",
     "coordinates": {
       "lat": 39.17,
-      "lng": -94.70
+      "lng": -94.7
     },
     "parcel": "20-4-0-18-000-000-010.001",
-    "acres": 0,
+    "acres": 50,
     "units": 200,
     "buildings": 4,
     "status": "Under Construction",
     "statusProgression": [
-      { "status": "Approved", "date": "2024" },
-      { "status": "Under Construction", "date": "2025-04" }
+      {
+        "status": "Approved",
+        "date": "2024"
+      },
+      {
+        "status": "Under Construction",
+        "date": "2025-04"
+      }
     ],
     "constructionDates": {
       "began": "2025-04",
@@ -386,7 +456,10 @@
     },
     "treesClearedAcres": 0,
     "burnDocumented": false,
-    "evidence": ["City development tracker", "Construction permits"],
+    "evidence": [
+      "City development tracker",
+      "Construction permits"
+    ],
     "beforeImagery": {
       "date": null,
       "url": null
@@ -406,7 +479,7 @@
       "lng": -94.69
     },
     "parcel": "20-5-0-22-300-001-015.000",
-    "acres": 0,
+    "acres": 22.4,
     "lots": {
       "detached": 52,
       "openSpace": 12,
@@ -414,7 +487,10 @@
     },
     "status": "Under Review",
     "statusProgression": [
-      { "status": "Under Review", "date": "2025" }
+      {
+        "status": "Under Review",
+        "date": "2025"
+      }
     ],
     "constructionDates": {
       "began": null,
@@ -422,7 +498,9 @@
     },
     "treesClearedAcres": 0,
     "burnDocumented": false,
-    "evidence": ["City development tracker"],
+    "evidence": [
+      "City development tracker"
+    ],
     "beforeImagery": {
       "date": null,
       "url": null
@@ -452,7 +530,10 @@
     },
     "status": "Proposed",
     "statusProgression": [
-      { "status": "Proposed", "date": "2026" }
+      {
+        "status": "Proposed",
+        "date": "2026"
+      }
     ],
     "constructionDates": {
       "began": null,
@@ -460,7 +541,10 @@
     },
     "treesClearedAcres": 0,
     "burnDocumented": false,
-    "evidence": ["City development tracker", "Development proposal"],
+    "evidence": [
+      "City development tracker",
+      "Development proposal"
+    ],
     "beforeImagery": {
       "date": null,
       "url": null
