@@ -1,102 +1,129 @@
-// MotherRoot Deforestation Accountability Map - SVG Implementation
-// Lightweight fallback that works without external CDN dependencies
+// MotherRoot Deforestation Accountability Map - SVG Implementation with USFS Data
+// Loads real deforestation projects from data/usfs-projects.json
 
 let currentProjects = [];
 let filteredProjects = [];
 
-// Sample project data with simplified coordinates for SVG display
-const sampleProjects = [
-  {
-    id: 1,
-    name: "Cascade Timber Sale",
-    location: "Cascade Range, OR",
-    state: "OR",
-    county: "Lane",
-    agency: "USFS - Willamette National Forest",
-    company: "Weyerhaeuser Corporation",
-    acresProposed: 2150,
-    acresApproved: 2100,
-    acresCleared: 1240,
-    dateApproved: "2022-06-15",
-    status: "Active",
-    clearingType: "Timber harvest",
-    x: 30,
-    y: 35,
-    size: 45
-  },
-  {
-    id: 2,
-    name: "Sierra Nevada Restoration Project",
-    location: "Sierra Nevada, CA",
-    state: "CA",
-    county: "El Dorado",
-    agency: "USFS - Eldorado National Forest",
-    company: "Sierra Pacific Industries",
-    acresProposed: 3500,
-    acresApproved: 3200,
-    acresCleared: 0,
-    dateApproved: "2023-03-20",
-    status: "Proposed",
-    clearingType: "Timber harvest",
-    x: 25,
-    y: 55,
-    size: 55
-  },
-  {
-    id: 3,
-    name: "Blue Mountains Timber Harvest",
-    location: "Blue Mountains, OR",
-    state: "OR",
-    county: "Baker",
-    agency: "USFS - Wallowa-Whitman National Forest",
-    company: "Hampton Lumber Mills",
-    acresProposed: 1800,
-    acresApproved: 1800,
-    acresCleared: 1650,
-    dateApproved: "2021-09-10",
-    status: "Completed",
-    clearingType: "Timber harvest",
-    x: 35,
-    y: 30,
-    size: 40
-  },
-  {
-    id: 4,
-    name: "Washington Forest Initiative",
-    location: "Snoqualmie National Forest, WA",
-    state: "WA",
-    county: "King",
-    agency: "USFS - Snoqualmie National Forest",
-    company: "Rayonier Inc.",
-    acresProposed: 2200,
-    acresApproved: 2000,
-    acresCleared: 850,
-    dateApproved: "2023-01-05",
-    status: "Active",
-    clearingType: "Timber harvest",
-    x: 32,
-    y: 25,
-    size: 50
-  },
-  {
-    id: 5,
-    name: "Colorado Front Range Project",
-    location: "Front Range, CO",
-    state: "CO",
-    county: "Clear Creek",
-    agency: "USFS - Arapaho National Forest",
-    company: "Collins Company",
-    acresProposed: 950,
-    acresApproved: 900,
-    acresCleared: 0,
-    dateApproved: "2024-02-14",
-    status: "Approved",
-    clearingType: "Timber harvest",
-    x: 50,
-    y: 45,
-    size: 35
+// Load USFS project data from data/usfs-projects.json
+async function loadProjectData() {
+  try {
+    const response = await fetch('data/usfs-projects.json');
+    if (!response.ok) throw new Error('Data file not found');
+
+    const data = await response.json();
+    console.log(`✓ Loaded ${data.length} USFS projects from data/usfs-projects.json`);
+    return data;
+  } catch (error) {
+    console.warn('Could not load USFS data:', error.message);
+    console.log('💡 Generate sample data: python scripts/generate-sample-data.py');
+    return getDefaultSampleData();
   }
-];
+}
+
+// Default sample data for when USFS file is not available
+function getDefaultSampleData() {
+  return [
+    {
+      id: 1,
+      name: "Cascade Timber Sale",
+      location: "Cascade Range, OR",
+      state: "OR",
+      county: "Lane",
+      agency: "USFS - Willamette National Forest",
+      company: "Weyerhaeuser Corporation",
+      acresProposed: 2150,
+      acresApproved: 2100,
+      acresCleared: 1240,
+      dateApproved: "2022-06-15",
+      status: "Active",
+      clearingType: "Timber harvest",
+      geometry: { type: "Point", coordinates: [-121.8, 44.1] }
+    },
+    {
+      id: 2,
+      name: "Sierra Nevada Restoration Project",
+      location: "Sierra Nevada, CA",
+      state: "CA",
+      county: "El Dorado",
+      agency: "USFS - Eldorado National Forest",
+      company: "Sierra Pacific Industries",
+      acresProposed: 3500,
+      acresApproved: 3200,
+      acresCleared: 0,
+      dateApproved: "2023-03-20",
+      status: "Proposed",
+      clearingType: "Timber harvest",
+      geometry: { type: "Point", coordinates: [-120.8, 38.5] }
+    },
+    {
+      id: 3,
+      name: "Blue Mountains Timber Harvest",
+      location: "Blue Mountains, OR",
+      state: "OR",
+      county: "Baker",
+      agency: "USFS - Wallowa-Whitman National Forest",
+      company: "Hampton Lumber Mills",
+      acresProposed: 1800,
+      acresApproved: 1800,
+      acresCleared: 1650,
+      dateApproved: "2021-09-10",
+      status: "Completed",
+      clearingType: "Timber harvest",
+      geometry: { type: "Point", coordinates: [-118.5, 45.3] }
+    },
+    {
+      id: 4,
+      name: "Washington Forest Initiative",
+      location: "Snoqualmie National Forest, WA",
+      state: "WA",
+      county: "King",
+      agency: "USFS - Snoqualmie National Forest",
+      company: "Rayonier Inc.",
+      acresProposed: 2200,
+      acresApproved: 2000,
+      acresCleared: 850,
+      dateApproved: "2023-01-05",
+      status: "Active",
+      clearingType: "Timber harvest",
+      geometry: { type: "Point", coordinates: [-121.4, 47.6] }
+    },
+    {
+      id: 5,
+      name: "Colorado Front Range Project",
+      location: "Front Range, CO",
+      state: "CO",
+      county: "Clear Creek",
+      agency: "USFS - Arapaho National Forest",
+      company: "Collins Company",
+      acresProposed: 950,
+      acresApproved: 900,
+      acresCleared: 0,
+      dateApproved: "2024-02-14",
+      status: "Approved",
+      clearingType: "Timber harvest",
+      geometry: { type: "Point", coordinates: [-105.5, 39.8] }
+    }
+  ];
+}
+
+// Convert geographic coordinates to SVG display coordinates
+function coordinatesToSVGPosition(lon, lat) {
+  // US bounds: approximately -125 to -66 longitude, 25 to 50 latitude
+  const minLon = -125;
+  const maxLon = -66;
+  const minLat = 25;
+  const maxLat = 50;
+
+  const x = ((lon - minLon) / (maxLon - minLon)) * 90;
+  const y = ((maxLat - lat) / (maxLat - minLat)) * 60;
+
+  return { x, y };
+}
+
+// Calculate size based on acreage
+function getProjectSize(acresApproved) {
+  return Math.max(20, Math.min(80, 20 + (acresApproved / 100)));
+}
 
 // Get status color
 function getStatusColor(status) {
@@ -109,9 +136,36 @@ function getStatusColor(status) {
   return colors[status] || "#888888";
 }
 
-// Create SVG map
-function initMap() {
+// Create SVG map with real USFS data
+async function initMap() {
   const mapDiv = document.getElementById('map');
+
+  // Load project data
+  const projects = await loadProjectData();
+
+  // Enhance projects with SVG coordinates
+  currentProjects = projects.map(project => {
+    let pos;
+
+    if (project.geometry && project.geometry.coordinates) {
+      // Use coordinates from geometry
+      const [lon, lat] = project.geometry.coordinates;
+      pos = coordinatesToSVGPosition(lon, lat);
+    } else if (project.x !== undefined && project.y !== undefined) {
+      // Use existing x,y from sample data
+      pos = { x: project.x, y: project.y };
+    } else {
+      // Default to US center
+      pos = { x: 45, y: 40 };
+    }
+
+    return {
+      ...project,
+      x: pos.x,
+      y: pos.y,
+      size: project.size || getProjectSize(project.acresApproved || 1000)
+    };
+  });
 
   // Create SVG
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -132,6 +186,16 @@ function initMap() {
   title.setAttribute('letter-spacing', '1');
   title.textContent = 'United States Deforestation Projects';
   svg.appendChild(title);
+
+  // Add data source info
+  const dataInfo = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  dataInfo.setAttribute('x', '50');
+  dataInfo.setAttribute('y', '8');
+  dataInfo.setAttribute('text-anchor', 'middle');
+  dataInfo.setAttribute('font-size', '1');
+  dataInfo.setAttribute('fill', '#888');
+  dataInfo.textContent = `USFS Data • ${currentProjects.length} Projects Tracked`;
+  svg.appendChild(dataInfo);
 
   // Add map background
   const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
@@ -188,7 +252,6 @@ function initMap() {
     svg.appendChild(text);
   });
 
-  currentProjects = sampleProjects;
   displayProjectsOnMap(svg, currentProjects);
 
   mapDiv.innerHTML = '';
@@ -322,5 +385,5 @@ function setupEventListeners() {
   document.getElementById('minAcreage').addEventListener('change', applyFilters);
 }
 
-// Initialize
+// Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', initMap);
