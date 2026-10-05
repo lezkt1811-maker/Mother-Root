@@ -179,6 +179,87 @@
       color: #ef4444;
     }
 
+    .layer-toggle {
+      cursor: pointer;
+      width: 14px;
+      height: 14px;
+      accent-color: #00d9ff;
+    }
+
+    .evidence-score {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 3px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: rgba(0, 217, 255, 0.2);
+      color: #00d9ff;
+      border: 1px solid #00d9ff;
+      margin-top: 5px;
+    }
+
+    .tree-destination {
+      background: rgba(34, 139, 34, 0.1);
+      border-left: 3px solid #22c55e;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 3px;
+    }
+
+    .destination-bar {
+      display: flex;
+      height: 20px;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 5px;
+      gap: 1px;
+    }
+
+    .destination-segment {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 9px;
+      font-weight: 600;
+    }
+
+    .segment-harvested {
+      background: #8b5a2b;
+    }
+
+    .segment-burned {
+      background: #ef4444;
+    }
+
+    .segment-unknown {
+      background: #888;
+    }
+
+    .satellite-links {
+      background: rgba(0, 150, 200, 0.1);
+      border-left: 3px solid #0096c8;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 3px;
+    }
+
+    .satellite-links a {
+      display: inline-block;
+      color: #00d9ff;
+      text-decoration: none;
+      font-size: 11px;
+      margin-right: 12px;
+      border-bottom: 1px dotted #00d9ff;
+    }
+
+    .satellite-links a:hover {
+      color: #00ffff;
+      border-bottom-color: #00ffff;
+    }
+
     .project-details {
       flex: 1;
       margin-bottom: 20px;
@@ -341,6 +422,36 @@
 
       <div id="projectView" class="view-section active">
         <div class="controls">
+          <div class="control-group">
+            <div class="control-label">Map Layers</div>
+            <div id="layerToggles" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 11px;">
+              <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                <input type="checkbox" class="layer-toggle" data-layer="Forest Loss" checked>
+                <span>🌲 Forest Loss</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                <input type="checkbox" class="layer-toggle" data-layer="Documented Burns" checked>
+                <span>🔥 Burns</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                <input type="checkbox" class="layer-toggle" data-layer="Timber Harvest">
+                <span>🪓 Timber</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                <input type="checkbox" class="layer-toggle" data-layer="Development Clearing">
+                <span>🏗️ Dev</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                <input type="checkbox" class="layer-toggle" data-layer="Permits">
+                <span>📋 Permits</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                <input type="checkbox" class="layer-toggle" data-layer="Enforcement">
+                <span>⚠️ Enforce</span>
+              </label>
+            </div>
+          </div>
+
           <div class="control-group">
             <div class="control-label">State</div>
             <select id="stateSelect">

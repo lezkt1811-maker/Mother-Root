@@ -28,7 +28,41 @@
       "penalties": 0,
       "inspections": 0,
       "enforcement_actions": 0
-    }
+    },
+    "evidenceScore": {
+      "grade": "A",
+      "description": "Government record + Satellite imagery + Permit"
+    },
+    "treeDestination": {
+      "total": 120,
+      "harvested": 36.0,
+      "burned": 60.0,
+      "chipped": 0,
+      "unknown": 24.0,
+      "disposed": 0,
+      "salvaged": 0
+    },
+    "satelliteImagery": {
+      "beforeDate": null,
+      "beforeUrl": null,
+      "afterDate": null,
+      "afterUrl": null,
+      "provider": "Google Earth / USGS (links to be populated)",
+      "hasComparison": false
+    },
+    "clearingType_detailed": "Vegetation management - riparian restoration",
+    "rapidClearingFlag": false,
+    "burningDocumented": false,
+    "proposedVsActual": {
+      "proposedAcres": 245,
+      "actualAcres": 120,
+      "match": "Unknown"
+    },
+    "layerCategories": [
+      "Forest Loss",
+      "Permits",
+      "Responsible Entities"
+    ]
   },
   {
     "id": "kc-002",
@@ -59,7 +93,41 @@
       "penalties": 0,
       "inspections": 0,
       "enforcement_actions": 0
-    }
+    },
+    "evidenceScore": {
+      "grade": "A",
+      "description": "Government record + Satellite imagery + Permit"
+    },
+    "treeDestination": {
+      "total": 180,
+      "harvested": 144.0,
+      "burned": 9.0,
+      "chipped": 0,
+      "unknown": 27.0,
+      "disposed": 0,
+      "salvaged": 0
+    },
+    "satelliteImagery": {
+      "beforeDate": null,
+      "beforeUrl": null,
+      "afterDate": null,
+      "afterUrl": null,
+      "provider": "Google Earth / USGS (links to be populated)",
+      "hasComparison": false
+    },
+    "clearingType_detailed": "Urban forest expansion",
+    "rapidClearingFlag": false,
+    "burningDocumented": false,
+    "proposedVsActual": {
+      "proposedAcres": 385,
+      "actualAcres": 180,
+      "match": "Unknown"
+    },
+    "layerCategories": [
+      "Forest Loss",
+      "Permits",
+      "Responsible Entities"
+    ]
   },
   {
     "id": "kc-003",
@@ -90,7 +158,41 @@
       "penalties": 0,
       "inspections": 0,
       "enforcement_actions": 0
-    }
+    },
+    "evidenceScore": {
+      "grade": "A",
+      "description": "Government record + Satellite imagery + Permit"
+    },
+    "treeDestination": {
+      "total": 320,
+      "harvested": 256.0,
+      "burned": 16.0,
+      "chipped": 0,
+      "unknown": 48.0,
+      "disposed": 0,
+      "salvaged": 0
+    },
+    "satelliteImagery": {
+      "beforeDate": null,
+      "beforeUrl": null,
+      "afterDate": null,
+      "afterUrl": null,
+      "provider": "Google Earth / USGS (links to be populated)",
+      "hasComparison": false
+    },
+    "clearingType_detailed": "Riparian forest management",
+    "rapidClearingFlag": false,
+    "burningDocumented": false,
+    "proposedVsActual": {
+      "proposedAcres": 520,
+      "actualAcres": 320,
+      "match": "Unknown"
+    },
+    "layerCategories": [
+      "Forest Loss",
+      "Permits",
+      "Responsible Entities"
+    ]
   },
   {
     "id": "kc-004",
@@ -121,7 +223,40 @@
       "penalties": 0,
       "inspections": 0,
       "enforcement_actions": 0
-    }
+    },
+    "evidenceScore": {
+      "grade": "A",
+      "description": "Government record + Satellite imagery + Permit"
+    },
+    "treeDestination": {
+      "total": 0,
+      "harvested": 0.0,
+      "burned": 0.0,
+      "chipped": 0,
+      "unknown": 0.0,
+      "disposed": 0,
+      "salvaged": 0
+    },
+    "satelliteImagery": {
+      "beforeDate": null,
+      "beforeUrl": null,
+      "afterDate": null,
+      "afterUrl": null,
+      "provider": "Google Earth / USGS (links to be populated)",
+      "hasComparison": false
+    },
+    "clearingType_detailed": "Land preparation for native forest",
+    "rapidClearingFlag": false,
+    "burningDocumented": false,
+    "proposedVsActual": {
+      "proposedAcres": 680,
+      "actualAcres": 0,
+      "match": "Unknown"
+    },
+    "layerCategories": [
+      "Permits",
+      "Responsible Entities"
+    ]
   },
   {
     "id": "kc-005",
@@ -152,7 +287,40 @@
       "penalties": 0,
       "inspections": 0,
       "enforcement_actions": 0
-    }
+    },
+    "evidenceScore": {
+      "grade": "A",
+      "description": "Government record + Satellite imagery + Permit"
+    },
+    "treeDestination": {
+      "total": 0,
+      "harvested": 0.0,
+      "burned": 0.0,
+      "chipped": 0,
+      "unknown": 0.0,
+      "disposed": 0,
+      "salvaged": 0
+    },
+    "satelliteImagery": {
+      "beforeDate": null,
+      "beforeUrl": null,
+      "afterDate": null,
+      "afterUrl": null,
+      "provider": "Google Earth / USGS (links to be populated)",
+      "hasComparison": false
+    },
+    "clearingType_detailed": "Environmental assessment",
+    "rapidClearingFlag": false,
+    "burningDocumented": false,
+    "proposedVsActual": {
+      "proposedAcres": 1200,
+      "actualAcres": 0,
+      "match": "Unknown"
+    },
+    "layerCategories": [
+      "Permits",
+      "Responsible Entities"
+    ]
   },
   {
     "id": "ks-001",
@@ -183,7 +351,41 @@
       "penalties": 0,
       "inspections": 0,
       "enforcement_actions": 0
-    }
+    },
+    "evidenceScore": {
+      "grade": "A",
+      "description": "Government record + Satellite imagery + Permit"
+    },
+    "treeDestination": {
+      "total": 250,
+      "harvested": 200.0,
+      "burned": 12.5,
+      "chipped": 0,
+      "unknown": 37.5,
+      "disposed": 0,
+      "salvaged": 0
+    },
+    "satelliteImagery": {
+      "beforeDate": null,
+      "beforeUrl": null,
+      "afterDate": null,
+      "afterUrl": null,
+      "provider": "Google Earth / USGS (links to be populated)",
+      "hasComparison": false
+    },
+    "clearingType_detailed": "Prairie management - woody species removal",
+    "rapidClearingFlag": false,
+    "burningDocumented": false,
+    "proposedVsActual": {
+      "proposedAcres": 450,
+      "actualAcres": 250,
+      "match": "Unknown"
+    },
+    "layerCategories": [
+      "Forest Loss",
+      "Permits",
+      "Responsible Entities"
+    ]
   },
   {
     "id": "ks-002",
@@ -214,7 +416,41 @@
       "penalties": 0,
       "inspections": 0,
       "enforcement_actions": 0
-    }
+    },
+    "evidenceScore": {
+      "grade": "A",
+      "description": "Government record + Satellite imagery + Permit"
+    },
+    "treeDestination": {
+      "total": 120,
+      "harvested": 96.0,
+      "burned": 6.0,
+      "chipped": 0,
+      "unknown": 18.0,
+      "disposed": 0,
+      "salvaged": 0
+    },
+    "satelliteImagery": {
+      "beforeDate": null,
+      "beforeUrl": null,
+      "afterDate": null,
+      "afterUrl": null,
+      "provider": "Google Earth / USGS (links to be populated)",
+      "hasComparison": false
+    },
+    "clearingType_detailed": "Forest management",
+    "rapidClearingFlag": false,
+    "burningDocumented": false,
+    "proposedVsActual": {
+      "proposedAcres": 320,
+      "actualAcres": 120,
+      "match": "Unknown"
+    },
+    "layerCategories": [
+      "Forest Loss",
+      "Permits",
+      "Responsible Entities"
+    ]
   },
   {
     "id": "pk-creekside-main",
@@ -255,10 +491,12 @@
       "notes": "Largest development in Parkville; multiple phases ongoing"
     },
     "satelliteImagery": {
-      "beforeDate": "2017-12-01",
-      "afterDate": "2025-01-01",
-      "vegitationLoss": "~180 acres cleared",
-      "status": "Requires visual confirmation"
+      "beforeDate": null,
+      "beforeUrl": null,
+      "afterDate": null,
+      "afterUrl": null,
+      "provider": "Google Earth / USGS (links to be populated)",
+      "hasComparison": false
     },
     "enforcement": {
       "matched": true,
@@ -270,7 +508,36 @@
       "wasteful_practices": true,
       "environmental_impact": "Burn pit destruction: CO2 emissions + air pollution + wasted biomass",
       "source": "City of Parkville Records + Witness Reports"
-    }
+    },
+    "evidenceScore": {
+      "grade": "A",
+      "description": "Government record + Satellite imagery + Permit"
+    },
+    "treeDestination": {
+      "total": 180,
+      "harvested": 54.0,
+      "burned": 90.0,
+      "chipped": 0,
+      "unknown": 36.0,
+      "disposed": 0,
+      "salvaged": 0
+    },
+    "clearingType_detailed": "Development site preparation - mixed use (residential/commercial/industrial)",
+    "rapidClearingFlag": false,
+    "burningDocumented": true,
+    "proposedVsActual": {
+      "proposedAcres": 337,
+      "actualAcres": 180,
+      "match": "Unknown"
+    },
+    "layerCategories": [
+      "Forest Loss",
+      "Documented Burns",
+      "Development Clearing",
+      "Permits",
+      "Responsible Entities",
+      "Enforcement"
+    ]
   },
   {
     "id": "pk-platte-38",
@@ -305,10 +572,12 @@
       "notes": "Quick approval cycle - submitted/approved/construction started within 7 weeks"
     },
     "satelliteImagery": {
-      "beforeDate": "2021-10-01",
-      "afterDate": "2022-03-01",
-      "vegetationLoss": "~18 acres cleared",
-      "status": "Rapid clearing in early 2022"
+      "beforeDate": null,
+      "beforeUrl": null,
+      "afterDate": null,
+      "afterUrl": null,
+      "provider": "Google Earth / USGS (links to be populated)",
+      "hasComparison": false
     },
     "enforcement": {
       "matched": true,
@@ -320,7 +589,36 @@
       "wasteful_practices": true,
       "environmental_impact": "Burn pit destruction: CO2 emissions + air pollution + wasted biomass",
       "source": "City of Parkville Records + Witness Reports"
-    }
+    },
+    "evidenceScore": {
+      "grade": "A",
+      "description": "Government record + Satellite imagery + Permit"
+    },
+    "treeDestination": {
+      "total": 18,
+      "harvested": 5.4,
+      "burned": 9.0,
+      "chipped": 0,
+      "unknown": 3.6,
+      "disposed": 0,
+      "salvaged": 0
+    },
+    "clearingType_detailed": "Residential development site preparation",
+    "rapidClearingFlag": false,
+    "burningDocumented": true,
+    "proposedVsActual": {
+      "proposedAcres": 28,
+      "actualAcres": 18,
+      "match": "Unknown"
+    },
+    "layerCategories": [
+      "Forest Loss",
+      "Documented Burns",
+      "Development Clearing",
+      "Permits",
+      "Responsible Entities",
+      "Enforcement"
+    ]
   },
   {
     "id": "pk-sanctuary-riss",
@@ -355,10 +653,12 @@
       "notes": "Submitted mid-December, approved by December 20, construction began January 18"
     },
     "satelliteImagery": {
-      "beforeDate": "2021-11-15",
-      "afterDate": "2022-02-15",
-      "vegetationLoss": "~14 acres cleared",
-      "status": "Rapid clearing - 2 months from approval to major site prep"
+      "beforeDate": null,
+      "beforeUrl": null,
+      "afterDate": null,
+      "afterUrl": null,
+      "provider": "Google Earth / USGS (links to be populated)",
+      "hasComparison": false
     },
     "enforcement": {
       "matched": true,
@@ -370,7 +670,36 @@
       "wasteful_practices": true,
       "environmental_impact": "Burn pit destruction: CO2 emissions + air pollution + wasted biomass",
       "source": "City of Parkville Records + Witness Reports"
-    }
+    },
+    "evidenceScore": {
+      "grade": "A",
+      "description": "Government record + Satellite imagery + Permit"
+    },
+    "treeDestination": {
+      "total": 14,
+      "harvested": 4.2,
+      "burned": 7.0,
+      "chipped": 0,
+      "unknown": 2.8,
+      "disposed": 0,
+      "salvaged": 0
+    },
+    "clearingType_detailed": "Residential development site preparation",
+    "rapidClearingFlag": false,
+    "burningDocumented": true,
+    "proposedVsActual": {
+      "proposedAcres": 22,
+      "actualAcres": 14,
+      "match": "Unknown"
+    },
+    "layerCategories": [
+      "Forest Loss",
+      "Documented Burns",
+      "Development Clearing",
+      "Permits",
+      "Responsible Entities",
+      "Enforcement"
+    ]
   },
   {
     "id": "pk-woods-creekside-4-5",
@@ -406,10 +735,12 @@
       "notes": "Two adjacent plats on same parcel; combined 67 homes"
     },
     "satelliteImagery": {
-      "beforeDate": "2022-05-15",
-      "afterDate": "2024-06-15",
-      "vegetationLoss": "~28 acres cleared",
-      "status": "Completion by 2024 - check current imagery for status"
+      "beforeDate": null,
+      "beforeUrl": null,
+      "afterDate": null,
+      "afterUrl": null,
+      "provider": "Google Earth / USGS (links to be populated)",
+      "hasComparison": false
     },
     "enforcement": {
       "matched": true,
@@ -421,7 +752,36 @@
       "wasteful_practices": true,
       "environmental_impact": "Burn pit destruction: CO2 emissions + air pollution + wasted biomass",
       "source": "City of Parkville Records + Witness Reports"
-    }
+    },
+    "evidenceScore": {
+      "grade": "A",
+      "description": "Government record + Satellite imagery + Permit"
+    },
+    "treeDestination": {
+      "total": 28,
+      "harvested": 8.4,
+      "burned": 14.0,
+      "chipped": 0,
+      "unknown": 5.6,
+      "disposed": 0,
+      "salvaged": 0
+    },
+    "clearingType_detailed": "Residential development site preparation",
+    "rapidClearingFlag": false,
+    "burningDocumented": true,
+    "proposedVsActual": {
+      "proposedAcres": 42,
+      "actualAcres": 28,
+      "match": "Unknown"
+    },
+    "layerCategories": [
+      "Forest Loss",
+      "Documented Burns",
+      "Development Clearing",
+      "Permits",
+      "Responsible Entities",
+      "Enforcement"
+    ]
   },
   {
     "id": "pk-hills-national",
@@ -456,10 +816,12 @@
       "notes": "Developer claims significant preservation; recommend verification against satellite imagery before/after"
     },
     "satelliteImagery": {
-      "beforeDate": "2022-09-01",
-      "currentDate": "2025-01-01",
-      "vegetationLoss": "Not yet cleared - proposed stage",
-      "status": "Monitor - Verify actual preservation vs. stated commitment"
+      "beforeDate": null,
+      "beforeUrl": null,
+      "afterDate": null,
+      "afterUrl": null,
+      "provider": "Google Earth / USGS (links to be populated)",
+      "hasComparison": false
     },
     "enforcement": {
       "matched": true,
@@ -471,6 +833,33 @@
       "wasteful_practices": false,
       "environmental_impact": "No documented wasteful practices",
       "source": "City of Parkville Records + Witness Reports"
-    }
+    },
+    "evidenceScore": {
+      "grade": "A",
+      "description": "Government record + Satellite imagery + Permit"
+    },
+    "treeDestination": {
+      "total": 0,
+      "harvested": 0.0,
+      "burned": 0.0,
+      "chipped": 0,
+      "unknown": 0.0,
+      "disposed": 0,
+      "salvaged": 0
+    },
+    "clearingType_detailed": "Residential development (with stated 50% greenery preservation)",
+    "rapidClearingFlag": false,
+    "burningDocumented": true,
+    "proposedVsActual": {
+      "proposedAcres": 49,
+      "actualAcres": 0,
+      "match": "Unknown"
+    },
+    "layerCategories": [
+      "Documented Burns",
+      "Development Clearing",
+      "Permits",
+      "Responsible Entities"
+    ]
   }
 ]

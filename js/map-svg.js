@@ -5,6 +5,7 @@ let currentProjects = [];
 let filteredProjects = [];
 let currentView = 'projects'; // 'projects' or 'entities'
 let currentEntities = {};
+let activeLayers = ['Forest Loss', 'Documented Burns', 'Permits', 'Responsible Entities'];
 
 // Load USFS project data with EPA enforcement enrichment
 async function loadProjectData() {
@@ -345,10 +346,18 @@ function displayProjectDetails(project) {
     ? ((acreageCleared / acreageApproved) * 100).toFixed(1)
     : 0;
 
+  // Get evidence score
+  const evidenceScore = project.evidenceScore || { grade: 'D', description: 'Unknown' };
+
+  // Get tree destination
+  const treeDestination = project.treeDestination || { harvested: 0, burned: 0, unknown: 0, total: 0 };
+
   detailsDiv.classList.remove('empty');
   detailsDiv.innerHTML = `
     <div class="project-card">
       <h3>${project.name}</h3>
+
+      <div class="evidence-score">EVIDENCE: ${evidenceScore.grade} - ${evidenceScore.description}</div>
 
       <div class="project-field">
         <div class="project-label">Location</div>
@@ -370,6 +379,8 @@ function displayProjectDetails(project) {
         </div>
       </div>
 
+      ${getTreeDestinationSection(treeDestination)}
+
       <div class="project-field">
         <div class="project-label">Agency</div>
         <div class="project-value">${project.agency}</div>
@@ -390,7 +401,53 @@ function displayProjectDetails(project) {
         <div class="project-value">${new Date(project.dateApproved).toLocaleDateString()}</div>
       </div>
 
+      ${getSatelliteImagerySection(project)}
+
       ${getEnforcementSection(project)}
+    </div>
+  `;
+}
+
+// Get tree destination section
+function getTreeDestinationSection(destination) {
+  const total = destination.total || 1;
+  const harvested = destination.harvested || 0;
+  const burned = destination.burned || 0;
+  const unknown = destination.unknown || 0;
+
+  const harvestedPct = ((harvested / total) * 100).toFixed(0);
+  const burnedPct = ((burned / total) * 100).toFixed(0);
+  const unknownPct = ((unknown / total) * 100).toFixed(0);
+
+  return `
+    <div class="tree-destination">
+      <div class="project-label">🌲 Tree Destination (${total} acres cleared)</div>
+      <div class="destination-bar">
+        ${harvested > 0 ? `<div class="destination-segment segment-harvested" style="width: ${harvestedPct}%;" title="Harvested: ${harvested} acres">${harvestedPct}%</div>` : ''}
+        ${burned > 0 ? `<div class="destination-segment segment-burned" style="width: ${burnedPct}%;" title="Burned: ${burned} acres">${burnedPct}%</div>` : ''}
+        ${unknown > 0 ? `<div class="destination-segment segment-unknown" style="width: ${unknownPct}%;" title="Unknown: ${unknown} acres">${unknownPct}%</div>` : ''}
+      </div>
+      <div style="font-size: 11px; margin-top: 8px; color: #e0e0e0;">
+        <div>✓ Harvested: ${harvested} acres</div>
+        <div>🔥 Burned: ${burned} acres</div>
+        <div>❓ Unknown: ${unknown} acres</div>
+      </div>
+    </div>
+  `;
+}
+
+// Get satellite imagery section
+function getSatelliteImagerySection(project) {
+  const satellite = project.satelliteImagery || {};
+
+  return `
+    <div class="satellite-links">
+      <div class="project-label">🛰️ Satellite Imagery Comparison</div>
+      <div style="font-size: 11px; color: #e0e0e0; margin-top: 6px;">
+        Before/after satellite images available via:
+        <a href="https://earth.google.com" target="_blank">Google Earth</a>
+        <a href="https://earthexplorer.usgs.gov" target="_blank">USGS Explorer</a>
+      </div>
     </div>
   `;
 }
@@ -632,7 +689,11 @@ function applyFilters() {
     const matchesStatus = !status || project.status === status;
     const matchesAcreage = project.acresApproved >= minAcreage;
 
-    return matchesState && matchesStatus && matchesAcreage;
+    // Check if project belongs to any active layer
+    const layers = project.layerCategories || [];
+    const matchesLayer = activeLayers.length === 0 || layers.some(layer => activeLayers.includes(layer));
+
+    return matchesState && matchesStatus && matchesAcreage && matchesLayer;
   });
 
   // Update map
@@ -672,6 +733,23 @@ function setupEventListeners() {
     if (currentView === 'entities') {
       displayEntityView(currentEntities, e.target.value);
     }
+  });
+
+  // Layer toggle event listeners
+  document.querySelectorAll('.layer-toggle').forEach(toggle => {
+    toggle.addEventListener('change', (e) => {
+      const layer = e.target.getAttribute('data-layer');
+
+      if (e.target.checked) {
+        if (!activeLayers.includes(layer)) {
+          activeLayers.push(layer);
+        }
+      } else {
+        activeLayers = activeLayers.filter(l => l !== layer);
+      }
+
+      applyFilters();
+    });
   });
 }
 
