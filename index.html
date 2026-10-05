@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MotherRoot - Deforestation Accountability Map</title>
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 
   <style>
     * {
@@ -625,6 +626,66 @@
       .legend {
         display: none;
       }
+    }
+
+    /* Leaflet customization for dark theme */
+    .leaflet-container {
+      background: #0a0e27 !important;
+    }
+
+    .leaflet-tile-pane {
+      filter: invert(0.93) hue-rotate(200deg);
+    }
+
+    .leaflet-control {
+      background: rgba(26, 31, 58, 0.9) !important;
+      border: 1px solid #00d9ff !important;
+      border-radius: 4px !important;
+      box-shadow: 0 0 10px rgba(0, 217, 255, 0.2) !important;
+    }
+
+    .leaflet-control-layers {
+      max-height: 70vh;
+    }
+
+    .leaflet-control button {
+      background: #00d9ff !important;
+      color: #0a0e27 !important;
+      border: none !important;
+      font-weight: bold !important;
+    }
+
+    .leaflet-control button:hover {
+      background: #00ffff !important;
+      box-shadow: 0 0 10px rgba(0, 217, 255, 0.5) !important;
+    }
+
+    .leaflet-control-zoom-in, .leaflet-control-zoom-out {
+      width: 36px !important;
+      height: 36px !important;
+      font-size: 18px !important;
+    }
+
+    .leaflet-popup-content-wrapper {
+      background: #1a1f3a !important;
+      border: 1px solid #00d9ff !important;
+      border-radius: 4px !important;
+      box-shadow: 0 0 20px rgba(0, 217, 255, 0.3) !important;
+    }
+
+    .leaflet-popup-content {
+      color: #e0e0e0 !important;
+      font-size: 12px !important;
+    }
+
+    .leaflet-popup-tip {
+      background: #1a1f3a !important;
+      border-color: #00d9ff !important;
+    }
+
+    .leaflet-control-layers-toggle {
+      width: 36px !important;
+      height: 36px !important;
     }
   </style>
 </head>
