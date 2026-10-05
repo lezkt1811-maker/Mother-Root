@@ -1,16 +1,19 @@
-// MotherRoot Deforestation Accountability Map - SVG Implementation with USFS Data
-// Loads real deforestation projects from data/usfs-projects.json
+// MotherRoot Deforestation Accountability Map - Leaflet Implementation
+// Real geographic map with USFS data and EPA enforcement
 
 let currentProjects = [];
 let filteredProjects = [];
-let currentView = 'projects'; // 'projects' or 'entities'
+let currentView = 'projects';
 let currentEntities = {};
 let activeLayers = ['Forest Loss', 'Documented Burns', 'Burn Pits', 'Permits', 'Responsible Entities'];
+let mapInstance = null;
+let projectsLayerGroup = null;
+let burnPitLayerGroup = null;
+let layerGroups = {};
 
 // Load USFS project data with EPA enforcement enrichment
 async function loadProjectData() {
   try {
-    // Try to load enriched data with enforcement info first
     const enforcementResponse = await fetch('data/usfs-projects-with-enforcement.json');
     if (enforcementResponse.ok) {
       const data = await enforcementResponse.json();
@@ -18,128 +21,185 @@ async function loadProjectData() {
       return data;
     }
   } catch (error) {
-    // Fall through to try basic projects file
+    console.log('Trying fallback data file...');
   }
 
   try {
-    // Fall back to basic projects file
     const response = await fetch('data/usfs-projects.json');
     if (!response.ok) throw new Error('Data file not found');
-
     const data = await response.json();
     console.log(`✓ Loaded ${data.length} USFS projects (no enforcement data)`);
     return data;
   } catch (error) {
     console.warn('Could not load project data:', error.message);
-    console.log('💡 Generate sample data: python scripts/generate-sample-data.py');
-    console.log('💡 Add EPA data: python scripts/fetch-epa-enforcement.py');
     return getDefaultSampleData();
   }
 }
 
-// Default sample data for when USFS file is not available
+// Default sample data
 function getDefaultSampleData() {
   return [
     {
-      id: 1,
-      name: "Cascade Timber Sale",
-      location: "Cascade Range, OR",
-      state: "OR",
-      county: "Lane",
-      agency: "USFS - Willamette National Forest",
-      company: "Weyerhaeuser Corporation",
-      acresProposed: 2150,
-      acresApproved: 2100,
-      acresCleared: 1240,
-      dateApproved: "2022-06-15",
-      status: "Active",
-      clearingType: "Timber harvest",
+      id: 1, name: "Cascade Timber Sale", state: "OR", county: "Lane",
+      acresApproved: 2100, acresCleared: 1240, status: "Active",
       geometry: { type: "Point", coordinates: [-121.8, 44.1] }
     },
     {
-      id: 2,
-      name: "Sierra Nevada Restoration Project",
-      location: "Sierra Nevada, CA",
-      state: "CA",
-      county: "El Dorado",
-      agency: "USFS - Eldorado National Forest",
-      company: "Sierra Pacific Industries",
-      acresProposed: 3500,
-      acresApproved: 3200,
-      acresCleared: 0,
-      dateApproved: "2023-03-20",
-      status: "Proposed",
-      clearingType: "Timber harvest",
+      id: 2, name: "Sierra Nevada Restoration", state: "CA", county: "El Dorado",
+      acresApproved: 3200, acresCleared: 0, status: "Proposed",
       geometry: { type: "Point", coordinates: [-120.8, 38.5] }
-    },
-    {
-      id: 3,
-      name: "Blue Mountains Timber Harvest",
-      location: "Blue Mountains, OR",
-      state: "OR",
-      county: "Baker",
-      agency: "USFS - Wallowa-Whitman National Forest",
-      company: "Hampton Lumber Mills",
-      acresProposed: 1800,
-      acresApproved: 1800,
-      acresCleared: 1650,
-      dateApproved: "2021-09-10",
-      status: "Completed",
-      clearingType: "Timber harvest",
-      geometry: { type: "Point", coordinates: [-118.5, 45.3] }
-    },
-    {
-      id: 4,
-      name: "Washington Forest Initiative",
-      location: "Snoqualmie National Forest, WA",
-      state: "WA",
-      county: "King",
-      agency: "USFS - Snoqualmie National Forest",
-      company: "Rayonier Inc.",
-      acresProposed: 2200,
-      acresApproved: 2000,
-      acresCleared: 850,
-      dateApproved: "2023-01-05",
-      status: "Active",
-      clearingType: "Timber harvest",
-      geometry: { type: "Point", coordinates: [-121.4, 47.6] }
-    },
-    {
-      id: 5,
-      name: "Colorado Front Range Project",
-      location: "Front Range, CO",
-      state: "CO",
-      county: "Clear Creek",
-      agency: "USFS - Arapaho National Forest",
-      company: "Collins Company",
-      acresProposed: 950,
-      acresApproved: 900,
-      acresCleared: 0,
-      dateApproved: "2024-02-14",
-      status: "Approved",
-      clearingType: "Timber harvest",
-      geometry: { type: "Point", coordinates: [-105.5, 39.8] }
     }
   ];
 }
 
-// Convert geographic coordinates to SVG display coordinates
-function coordinatesToSVGPosition(lon, lat) {
-  // US bounds: approximately -125 to -66 longitude, 25 to 50 latitude
-  const minLon = -125;
-  const maxLon = -66;
-  const minLat = 25;
-  const maxLat = 50;
+// Initialize Leaflet map
+async function initMap() {
+  // Create map instance
+  mapInstance = L.map('map', {
+    center: [39.8283, -98.5795], // Center of USA
+    zoom: 4,
+    minZoom: 3,
+    maxZoom: 16,
+    attributionControl: true,
+    fadeAnimation: true,
+    markerZoomAnimation: true
+  });
 
-  const x = ((lon - minLon) / (maxLon - minLon)) * 90;
-  const y = ((maxLat - lat) / (maxLat - minLat)) * 60;
+  // Add OpenStreetMap tiles
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors',
+    maxZoom: 19,
+    className: 'map-tiles'
+  }).addTo(mapInstance);
 
-  return { x, y };
+  // Load project data
+  currentProjects = await loadProjectData();
+  console.log(`Loaded ${currentProjects.length} projects`);
+
+  // Initialize layer groups
+  projectsLayerGroup = L.layerGroup().addTo(mapInstance);
+  burnPitLayerGroup = L.layerGroup().addTo(mapInstance);
+
+  layerGroups = {
+    'Forest Loss': L.layerGroup().addTo(mapInstance),
+    'Documented Burns': L.layerGroup().addTo(mapInstance),
+    'Burn Pits': burnPitLayerGroup,
+    'Permits': L.layerGroup().addTo(mapInstance),
+    'Responsible Entities': L.layerGroup().addTo(mapInstance)
+  };
+
+  // Aggregate entities for profile view
+  currentEntities = aggregateByEntity(currentProjects);
+
+  // Display projects on map
+  displayProjectsOnMap(currentProjects);
+
+  // Setup event listeners
+  setupEventListeners();
+
+  // Setup mobile navigation
+  setupMobileNavigation();
+
+  console.log('✓ Map initialized with Leaflet');
 }
 
-// Calculate size based on acreage
-function getProjectSize(acresApproved) {
-  return Math.max(20, Math.min(80, 20 + (acresApproved / 100)));
+// Display projects as markers on the map
+function displayProjectsOnMap(projects) {
+  // Clear existing markers
+  projectsLayerGroup.clearLayers();
+  burnPitLayerGroup.clearLayers();
+
+  Object.values(layerGroups).forEach(group => group.clearLayers());
+
+  projects.forEach(project => {
+    if (!project.geometry || !project.geometry.coordinates) return;
+
+    const [lon, lat] = project.geometry.coordinates;
+    const statusColor = getStatusColor(project.status);
+    const acreage = project.acresApproved || 100;
+
+    // Calculate radius based on acreage (0.5 to 2 km radius)
+    const radius = Math.max(5000, Math.min(50000, acreage * 100));
+
+    // Create main project circle marker
+    const circle = L.circle([lat, lon], {
+      radius: radius,
+      color: statusColor,
+      fillColor: statusColor,
+      fillOpacity: 0.6,
+      weight: 2,
+      dashArray: '5, 5'
+    });
+
+    // Create popup content
+    const popupContent = getProjectPopup(project);
+    circle.bindPopup(popupContent, {
+      maxWidth: 350,
+      className: 'project-popup'
+    });
+
+    // Click to show details in sidebar
+    circle.on('click', () => {
+      currentView = 'projects';
+      displayProjectDetails(project);
+      updateViewToggle();
+
+      // On mobile, keep map visible
+      const sidebar = document.querySelector('.sidebar');
+      if (window.innerWidth <= 768) {
+        sidebar.classList.remove('mobile-closed');
+      }
+    });
+
+    circle.addTo(projectsLayerGroup);
+
+    // Add to layer groups based on categories
+    const categories = project.layerCategories || [];
+    activeLayers.forEach(layer => {
+      if (categories.includes(layer)) {
+        if (layerGroups[layer]) {
+          circle.addTo(layerGroups[layer]);
+        }
+      }
+    });
+
+    // Add burn pit marker if applicable
+    if (project.burningDocumented || (project.treeDestination?.burned > 0)) {
+      const burnIcon = L.divIcon({
+        html: `<div style="background: ${project.burningDocumented ? '#22c55e' : '#eab308'};
+                           width: 16px; height: 16px; border-radius: 50%;
+                           border: 2px solid #fff; box-shadow: 0 0 5px ${project.burningDocumented ? '#22c55e' : '#eab308'};"></div>`,
+        iconSize: [20, 20],
+        className: 'burn-pit-icon'
+      });
+
+      const burnMarker = L.marker([lat, lon], { icon: burnIcon });
+      const burnPopup = `<strong>${project.burningDocumented ? '✓ Verified' : '⚠ Suspected'} Burn Pit</strong><br>${project.name}`;
+      burnMarker.bindPopup(burnPopup);
+      burnMarker.addTo(burnPitLayerGroup);
+    }
+  });
+}
+
+// Get project popup content
+function getProjectPopup(project) {
+  const status = project.status || 'Unknown';
+  const acreage = project.acresApproved || 0;
+  const burned = project.treeDestination?.burned || 0;
+
+  let popup = `<strong>${project.name}</strong><br>`;
+  popup += `<small>Status: ${status} • ${acreage} acres</small>`;
+
+  if (burned > 0) {
+    popup += `<br><strong style="color: #ef4444;">🔥 ${burned} acres burned</strong>`;
+  }
+
+  if (project.rapidClearingFlag) {
+    popup += `<br><strong style="color: #f97316;">⚡ Rapid clearing detected</strong>`;
+  }
+
+  popup += '<br><em>Click for full details</em>';
+  return popup;
 }
 
 // Get status color
@@ -153,791 +213,257 @@ function getStatusColor(status) {
   return colors[status] || "#888888";
 }
 
-// Create SVG map with real USFS data
-async function initMap() {
-  const mapDiv = document.getElementById('map');
-
-  // Load project data
-  const projects = await loadProjectData();
-
-  // Enhance projects with SVG coordinates
-  currentProjects = projects.map(project => {
-    let pos;
-
-    if (project.geometry && project.geometry.coordinates) {
-      // Use coordinates from geometry
-      const [lon, lat] = project.geometry.coordinates;
-      pos = coordinatesToSVGPosition(lon, lat);
-    } else if (project.x !== undefined && project.y !== undefined) {
-      // Use existing x,y from sample data
-      pos = { x: project.x, y: project.y };
-    } else {
-      // Default to US center
-      pos = { x: 45, y: 40 };
-    }
-
-    return {
-      ...project,
-      x: pos.x,
-      y: pos.y,
-      size: project.size || getProjectSize(project.acresApproved || 1000)
-    };
-  });
-
-  // Create SVG
-  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  svg.setAttribute('width', '100%');
-  svg.setAttribute('height', '100%');
-  svg.setAttribute('viewBox', '0 0 100 80');
-  svg.setAttribute('preserveAspectRatio', 'xMidYMid slice');
-  svg.style.background = 'linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%)';
-
-  // Add title text
-  const title = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-  title.setAttribute('x', '50');
-  title.setAttribute('y', '5');
-  title.setAttribute('text-anchor', 'middle');
-  title.setAttribute('font-size', '3');
-  title.setAttribute('fill', '#00d9ff');
-  title.setAttribute('font-weight', 'bold');
-  title.setAttribute('letter-spacing', '1');
-  title.textContent = 'United States Deforestation Projects';
-  svg.appendChild(title);
-
-  // Add data source info
-  const dataInfo = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-  dataInfo.setAttribute('x', '50');
-  dataInfo.setAttribute('y', '8');
-  dataInfo.setAttribute('text-anchor', 'middle');
-  dataInfo.setAttribute('font-size', '1');
-  dataInfo.setAttribute('fill', '#888');
-  dataInfo.textContent = `USFS Data • ${currentProjects.length} Projects Tracked`;
-  svg.appendChild(dataInfo);
-
-  // Add map background
-  const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-  bg.setAttribute('x', '5');
-  bg.setAttribute('y', '10');
-  bg.setAttribute('width', '90');
-  bg.setAttribute('height', '60');
-  bg.setAttribute('fill', '#1a1f3a');
-  bg.setAttribute('stroke', '#00d9ff');
-  bg.setAttribute('stroke-width', '0.3');
-  svg.appendChild(bg);
-
-  // Add grid
-  for (let i = 0; i <= 90; i += 15) {
-    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    line.setAttribute('x1', 5 + i);
-    line.setAttribute('y1', '10');
-    line.setAttribute('x2', 5 + i);
-    line.setAttribute('y2', '70');
-    line.setAttribute('stroke', '#333');
-    line.setAttribute('stroke-width', '0.1');
-    svg.appendChild(line);
-  }
-
-  for (let i = 0; i <= 60; i += 15) {
-    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    line.setAttribute('x1', '5');
-    line.setAttribute('y1', 10 + i);
-    line.setAttribute('x2', '95');
-    line.setAttribute('y2', 10 + i);
-    line.setAttribute('stroke', '#333');
-    line.setAttribute('stroke-width', '0.1');
-    svg.appendChild(line);
-  }
-
-  // Add region labels
-  const labels = [
-    { text: 'WA', x: 32, y: 15 },
-    { text: 'OR', x: 30, y: 35 },
-    { text: 'CA', x: 28, y: 60 },
-    { text: 'CO', x: 52, y: 40 },
-    { text: 'ID', x: 40, y: 25 }
-  ];
-
-  labels.forEach(label => {
-    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    text.setAttribute('x', label.x);
-    text.setAttribute('y', label.y);
-    text.setAttribute('font-size', '1.5');
-    text.setAttribute('fill', '#555');
-    text.setAttribute('font-weight', 'bold');
-    text.setAttribute('opacity', '0.6');
-    text.textContent = label.text;
-    svg.appendChild(text);
-  });
-
-  displayProjectsOnMap(svg, currentProjects);
-
-  mapDiv.innerHTML = '';
-  mapDiv.appendChild(svg);
-
-  setupEventListeners();
-}
-
-// Display projects on SVG map
-function displayProjectsOnMap(svg, projects) {
-  // Remove existing project circles
-  const existingCircles = svg.querySelectorAll('.project-circle');
-  existingCircles.forEach(el => el.remove());
-
-  projects.forEach(project => {
-    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    const color = getStatusColor(project.status);
-
-    circle.setAttribute('cx', 5 + project.x);
-    circle.setAttribute('cy', 10 + project.y);
-    circle.setAttribute('r', project.size / 100);
-    circle.setAttribute('fill', color);
-    circle.setAttribute('fill-opacity', '0.5');
-    circle.setAttribute('stroke', color);
-    circle.setAttribute('stroke-width', '0.4');
-    circle.setAttribute('class', 'project-circle');
-    circle.style.cursor = 'pointer';
-    circle.style.transition = 'all 0.2s ease';
-
-    circle.addEventListener('click', () => {
-      displayProjectDetails(project);
-    });
-
-    circle.addEventListener('mouseover', () => {
-      circle.setAttribute('fill-opacity', '0.8');
-      circle.setAttribute('stroke-width', '0.6');
-    });
-
-    circle.addEventListener('mouseout', () => {
-      circle.setAttribute('fill-opacity', '0.5');
-      circle.setAttribute('stroke-width', '0.4');
-    });
-
-    svg.appendChild(circle);
-
-    // Add enforcement badge if violations exist
-    const enforcement = project.enforcement || {};
-    if (enforcement.violations > 0) {
-      const badge = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      badge.setAttribute('cx', 5 + project.x + project.size / 80);
-      badge.setAttribute('cy', 10 + project.y - project.size / 80);
-      badge.setAttribute('r', '0.4');
-      badge.setAttribute('fill', '#ef4444');
-      badge.setAttribute('stroke', '#fca5a5');
-      badge.setAttribute('stroke-width', '0.15');
-      badge.setAttribute('class', 'enforcement-badge');
-
-      badge.addEventListener('click', (e) => {
-        e.stopPropagation();
-        displayProjectDetails(project);
-      });
-
-      svg.appendChild(badge);
-    }
-
-    // Add burn pit indicator if documented
-    if (project.burningDocumented || project.treeDestination?.burned > 0) {
-      const burnPitMarker = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-      const verified = project.burningDocumented;
-      const burnColor = verified ? '#22c55e' : '#eab308';
-
-      burnPitMarker.setAttribute('points', `${5 + project.x},${9 + project.y - 0.4} ${5 + project.x + 0.25},${9 + project.y + 0.25} ${5 + project.x - 0.25},${9 + project.y + 0.25}`);
-      burnPitMarker.setAttribute('fill', burnColor);
-      burnPitMarker.setAttribute('stroke', burnColor);
-      burnPitMarker.setAttribute('stroke-width', '0.1');
-      burnPitMarker.setAttribute('class', 'burn-pit-marker');
-      burnPitMarker.style.cursor = 'pointer';
-
-      burnPitMarker.addEventListener('click', (e) => {
-        e.stopPropagation();
-        displayProjectDetails(project);
-      });
-
-      svg.appendChild(burnPitMarker);
-    }
-  });
-}
-
-// Display project details
+// Display project details in sidebar
 function displayProjectDetails(project) {
-  const detailsDiv = document.getElementById('projectDetails');
+  const projectDetails = document.getElementById('projectDetails');
+  if (!projectDetails) return;
 
-  const acreageCleared = project.acresCleared || 0;
-  const acreageApproved = project.acresApproved || 0;
-  const percentCleared = acreageApproved > 0
-    ? ((acreageCleared / acreageApproved) * 100).toFixed(1)
-    : 0;
+  let html = `<strong>${project.name}</strong><br>`;
+  html += `<small>Location: ${project.location || `${project.county || ''} ${project.state || ''}`}</small><br>`;
+  html += `Status: ${project.status}<br>`;
+  html += `Approved: ${project.acresApproved || 0} acres<br>`;
+  html += `Cleared: ${project.acresCleared || 0} acres<br>`;
 
-  // Get evidence score
-  const evidenceScore = project.evidenceScore || { grade: 'D', description: 'Unknown' };
-
-  // Get tree destination
-  const treeDestination = project.treeDestination || { harvested: 0, burned: 0, unknown: 0, total: 0 };
-
-  detailsDiv.classList.remove('empty');
-  detailsDiv.innerHTML = `
-    <div class="project-card">
-      <h3>${project.name}</h3>
-
-      <div class="evidence-score">EVIDENCE: ${evidenceScore.grade} - ${evidenceScore.description}</div>
-
-      <div class="project-field">
-        <div class="project-label">Location</div>
-        <div class="project-value">${project.location}</div>
-        <div class="project-value" style="font-size: 11px; color: #888;">${project.county} County, ${project.state}</div>
-      </div>
-
-      <div class="project-field">
-        <div class="project-label">Status</div>
-        <div class="status-badge status-${project.status.toLowerCase()}">${project.status}</div>
-      </div>
-
-      <div class="project-field">
-        <div class="project-label">Acreage</div>
-        <div class="project-value">
-          Proposed: ${project.acresProposed.toLocaleString()}<br>
-          Approved: ${project.acresApproved.toLocaleString()}<br>
-          <span style="color: #00d9ff;">Cleared: ${acreageCleared.toLocaleString()} (${percentCleared}%)</span>
-        </div>
-      </div>
-
-      ${getTreeDestinationSection(treeDestination)}
-
-      ${getBurnPitSection(project)}
-
-      ${getRapidChangeSection(project)}
-
-      ${getProposedVsActualSection(project)}
-
-      <div class="project-field">
-        <div class="project-label">Agency</div>
-        <div class="project-value">${project.agency}</div>
-      </div>
-
-      <div class="project-field">
-        <div class="project-label">Contractor/Company</div>
-        <div class="project-value">${project.company}</div>
-      </div>
-
-      <div class="project-field">
-        <div class="project-label">Clearing Type</div>
-        <div class="project-value">${project.clearingType}</div>
-      </div>
-
-      <div class="project-field">
-        <div class="project-label">Date Approved</div>
-        <div class="project-value">${new Date(project.dateApproved).toLocaleDateString()}</div>
-      </div>
-
-      ${getSatelliteImagerySection(project)}
-
-      ${getEnforcementSection(project)}
-    </div>
-  `;
-}
-
-// Get tree destination section
-function getTreeDestinationSection(destination) {
-  const total = destination.total || 1;
-  const harvested = destination.harvested || 0;
-  const burned = destination.burned || 0;
-  const unknown = destination.unknown || 0;
-
-  const harvestedPct = ((harvested / total) * 100).toFixed(0);
-  const burnedPct = ((burned / total) * 100).toFixed(0);
-  const unknownPct = ((unknown / total) * 100).toFixed(0);
-
-  return `
-    <div class="tree-destination">
-      <div class="project-label">🌲 Tree Destination (${total} acres cleared)</div>
-      <div class="destination-bar">
-        ${harvested > 0 ? `<div class="destination-segment segment-harvested" style="width: ${harvestedPct}%;" title="Harvested: ${harvested} acres">${harvestedPct}%</div>` : ''}
-        ${burned > 0 ? `<div class="destination-segment segment-burned" style="width: ${burnedPct}%;" title="Burned: ${burned} acres">${burnedPct}%</div>` : ''}
-        ${unknown > 0 ? `<div class="destination-segment segment-unknown" style="width: ${unknownPct}%;" title="Unknown: ${unknown} acres">${unknownPct}%</div>` : ''}
-      </div>
-      <div style="font-size: 11px; margin-top: 8px; color: #e0e0e0;">
-        <div>✓ Harvested: ${harvested} acres</div>
-        <div>🔥 Burned: ${burned} acres</div>
-        <div>❓ Unknown: ${unknown} acres</div>
-      </div>
-    </div>
-  `;
-}
-
-// Get burn pit section
-function getBurnPitSection(project) {
-  if (!project.burningDocumented && (!project.treeDestination || project.treeDestination.burned === 0)) {
-    return '';
+  // Evidence score
+  if (project.evidenceScore) {
+    html += `<br><span class="evidence-score">Evidence: ${project.evidenceScore.grade}</span>`;
+    html += `<br><small>${project.evidenceScore.description}</small>`;
   }
 
-  const treeDestination = project.treeDestination || {};
-  const burned = treeDestination.burned || 0;
-  const verified = project.burningDocumented;
-
-  return `
-    <div class="burn-pit-info">
-      <div class="project-label">🚨 Burn Pit Activity</div>
-      <div style="font-size: 12px; margin-top: 6px; color: #e0e0e0;">
-        <div style="margin-bottom: 4px;">
-          <span class="${verified ? 'burn-pit-verified' : 'burn-pit-suspected'}">
-            ${verified ? '✓ VERIFIED' : '⚠️ SUSPECTED'} BURN PIT DESTRUCTION
-          </span>
-        </div>
-        <div style="color: #888; font-size: 11px;">
-          ${burned} acres documented as burned instead of harvested
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-// Get rapid change detection section
-function getRapidChangeSection(project) {
-  if (!project.rapidClearingFlag) {
-    return '';
+  // Tree destination
+  if (project.treeDestination) {
+    const dest = project.treeDestination;
+    html += `<br><br><strong>Tree Destination:</strong><br>`;
+    html += `🌲 Harvested: ${dest.harvested || 0} acres<br>`;
+    html += `🔥 Burned: ${dest.burned || 0} acres<br>`;
+    html += `❓ Unknown: ${dest.unknown || 0} acres`;
   }
 
-  const dateApproved = new Date(project.dateApproved);
-  const satellite = project.satelliteImagery || {};
-  const afterDate = satellite.afterDate ? new Date(satellite.afterDate) : null;
-
-  let observationWindow = '< 30 days from approval';
-  if (afterDate) {
-    const daysDiff = Math.floor((afterDate - dateApproved) / (1000 * 60 * 60 * 24));
-    observationWindow = `${daysDiff} days (${dateApproved.toLocaleDateString()} → ${afterDate.toLocaleDateString()})`;
+  // Burn pit info
+  if (project.burningDocumented || (project.treeDestination?.burned > 0)) {
+    html += `<br><br><span style="background: rgba(239, 68, 68, 0.2); padding: 8px; border-radius: 4px; display: block;">`;
+    html += `<strong>🚨 Burn Pit Activity</strong><br>`;
+    html += project.burningDocumented ?
+      `<span style="color: #22c55e;">✓ Verified burn pit destruction</span>` :
+      `<span style="color: #eab308;">⚠ Suspected burn pit (${project.treeDestination?.burned || 0} acres burned)</span>`;
+    html += `</span>`;
   }
 
-  return `
-    <div class="rapid-change-alert">
-      <div class="rapid-change-flag">⚡ RAPID CLEARING DETECTED</div>
-      <div style="font-size: 11px; color: #e0e0e0; margin-top: 6px;">
-        Major clearing occurred within observation window:
-        <div style="color: #f97316; font-weight: 600; margin-top: 4px;">${observationWindow}</div>
-        <div style="color: #888; margin-top: 4px;">
-          Pattern indicates possible overnight/rushed destruction
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-// Get proposed vs actual section
-function getProposedVsActualSection(project) {
-  const proposed = project.acresApproved || project.acresProposed || 1;
-  const actual = project.acresCleared || 0;
-  const total = Math.max(proposed, actual, 1);
-
-  const proposedPct = (proposed / total) * 100;
-  const actualPct = (actual / total) * 100;
-
-  let status = 'Within bounds';
-  let statusColor = '#22c55e';
-
-  if (actual > proposed) {
-    status = 'OVER-CLEARING: More cleared than approved';
-    statusColor = '#ef4444';
-  } else if (actual < proposed * 0.5) {
-    status = 'Under-cleared: Less than 50% cleared';
-    statusColor = '#eab308';
+  // Rapid change detection
+  if (project.rapidClearingFlag) {
+    html += `<br><br><span style="background: rgba(249, 115, 22, 0.2); padding: 8px; border-radius: 4px; display: block;">`;
+    html += `<strong>⚡ Rapid Clearing Detected</strong><br>`;
+    const dateApproved = project.dateApproved ? new Date(project.dateApproved) : null;
+    const afterDate = project.satelliteImagery?.afterDate ? new Date(project.satelliteImagery.afterDate) : null;
+    if (dateApproved && afterDate) {
+      const days = Math.floor((afterDate - dateApproved) / (1000 * 60 * 60 * 24));
+      html += `<small>Cleared within ${days} days of approval</small>`;
+    }
+    html += `</span>`;
   }
 
-  return `
-    <div class="proposed-actual-comparison">
-      <div class="project-label">📊 Approved vs Actual Clearing</div>
-      <div class="comparison-bar">
-        <div class="comparison-approved" style="width: ${proposedPct}%; background: #3b82f6;">${proposedPct.toFixed(0)}%</div>
-        <div style="width: ${100 - proposedPct}%; background: transparent;"></div>
-      </div>
-      <div style="font-size: 11px; color: #888; margin-bottom: 8px;">
-        Approved: <span style="color: #3b82f6; font-weight: 600;">${proposed.toLocaleString()} acres</span>
-      </div>
+  // Proposed vs actual
+  if (project.proposedVsActual) {
+    const proposed = project.proposedVsActual.proposedAcres || 0;
+    const actual = project.proposedVsActual.actualAcres || 0;
+    const percentProposed = proposed > 0 ? (actual / proposed * 100) : 0;
 
-      <div class="comparison-bar">
-        <div class="comparison-cleared" style="width: ${actualPct}%; background: #ef4444;">${actualPct.toFixed(0)}%</div>
-        <div style="width: ${100 - actualPct}%; background: transparent;"></div>
-      </div>
-      <div style="font-size: 11px; color: #888; margin-bottom: 8px;">
-        Cleared: <span style="color: #ef4444; font-weight: 600;">${actual.toLocaleString()} acres</span>
-      </div>
-
-      <div style="padding-top: 6px; border-top: 1px solid #333; margin-top: 8px; padding-top: 8px;">
-        <div style="font-size: 11px; color: ${statusColor}; font-weight: 600;">
-          ${status}
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-// Get satellite imagery section
-function getSatelliteImagerySection(project) {
-  const satellite = project.satelliteImagery || {};
-
-  return `
-    <div class="satellite-links">
-      <div class="project-label">🛰️ Satellite Imagery Comparison</div>
-      <div style="font-size: 11px; color: #e0e0e0; margin-top: 6px;">
-        Before/after satellite images available via:
-        <a href="https://earth.google.com" target="_blank">Google Earth</a>
-        <a href="https://earthexplorer.usgs.gov" target="_blank">USGS Explorer</a>
-      </div>
-    </div>
-  `;
-}
-
-// Get EPA enforcement section for project details
-function getEnforcementSection(project) {
-  const enforcement = project.enforcement || {};
-  const hasViolations = enforcement.violations > 0;
-
-  if (hasViolations) {
-    return `
-      <div class="project-field" style="background: rgba(239, 68, 68, 0.1); padding: 10px; border-left: 3px solid #ef4444; margin-top: 10px;">
-        <div class="project-label">⚠️ EPA Enforcement History</div>
-        <div class="project-value">
-          <strong>${enforcement.violations}</strong> violations<br>
-          <strong>$${(enforcement.penalties || 0).toLocaleString()}</strong> in penalties<br>
-          <strong>${enforcement.inspections || 0}</strong> inspections
-        </div>
-      </div>
-    `;
-  } else {
-    return `
-      <div class="project-field" style="background: rgba(34, 197, 94, 0.1); padding: 10px; border-left: 3px solid #22c55e; margin-top: 10px;">
-        <div class="project-label">✓ No EPA Violations Documented</div>
-        <div class="project-value" style="font-size: 12px; color: #888;">No EPA enforcement actions on record</div>
-      </div>
-    `;
+    html += `<br><br><span style="background: rgba(59, 130, 246, 0.2); padding: 8px; border-radius: 4px; display: block;">`;
+    html += `<strong>📊 Proposed vs Actual</strong><br>`;
+    html += `Proposed: ${proposed} acres<br>`;
+    html += `Actual: ${actual} acres (${percentProposed.toFixed(0)}%)<br>`;
+    if (actual > proposed) {
+      html += `<span style="color: #ef4444;">⚠️ Over-clearing detected</span>`;
+    }
+    html += `</span>`;
   }
+
+  // EPA enforcement data
+  if (project.epaViolations && project.epaViolations.length > 0) {
+    html += `<br><br><strong style="color: #ef4444;">EPA Violations: ${project.epaViolations.length}</strong>`;
+    project.epaViolations.slice(0, 3).forEach(v => {
+      html += `<br><small>${v}</small>`;
+    });
+  }
+
+  projectDetails.innerHTML = html;
+  projectDetails.classList.remove('empty');
 }
 
-// Aggregate projects by entity (company/contractor)
+// Aggregate data by entity (contractor)
 function aggregateByEntity(projects) {
   const entities = {};
 
   projects.forEach(project => {
-    const company = project.company || "Not disclosed";
-
+    const company = project.company || project.responsible_entity || 'Unknown';
     if (!entities[company]) {
       entities[company] = {
         name: company,
         projects: [],
-        totalAcresProposed: 0,
-        totalAcresApproved: 0,
-        totalAcresCleared: 0,
-        totalViolations: 0,
-        totalPenalties: 0,
-        totalInspections: 0,
-        states: new Set(),
-        statuses: {},
-        // Phase 2: Tree destination tracking
         totalHarvested: 0,
         totalBurned: 0,
         totalUnknown: 0,
-        // Phase 2: Accountability flags
-        burnPitProjectCount: 0,
+        burnPitCount: 0,
         rapidClearingCount: 0,
-        overClearingCount: 0
+        overClearingCount: 0,
+        totalViolations: 0,
+        totalPenalties: 0
       };
     }
 
     entities[company].projects.push(project);
-    entities[company].totalAcresProposed += project.acresProposed || 0;
-    entities[company].totalAcresApproved += project.acresApproved || 0;
-    entities[company].totalAcresCleared += project.acresCleared || 0;
 
-    const enforcement = project.enforcement || {};
-    entities[company].totalViolations += enforcement.violations || 0;
-    entities[company].totalPenalties += enforcement.penalties || 0;
-    entities[company].totalInspections += enforcement.inspections || 0;
-
-    // Phase 2: Aggregate tree destination
-    const tree = project.treeDestination || {};
-    entities[company].totalHarvested += tree.harvested || 0;
-    entities[company].totalBurned += tree.burned || 0;
-    entities[company].totalUnknown += tree.unknown || 0;
-
-    // Phase 2: Count accountability flags
-    if (project.burningDocumented) {
-      entities[company].burnPitProjectCount += 1;
+    if (project.treeDestination) {
+      entities[company].totalHarvested += project.treeDestination.harvested || 0;
+      entities[company].totalBurned += project.treeDestination.burned || 0;
+      entities[company].totalUnknown += project.treeDestination.unknown || 0;
     }
+
+    if (project.burningDocumented || (project.treeDestination?.burned > 0)) {
+      entities[company].burnPitCount++;
+    }
+
     if (project.rapidClearingFlag) {
-      entities[company].rapidClearingCount += 1;
-    }
-    const cleared = project.acresCleared || 0;
-    const approved = project.acresApproved || 0;
-    if (cleared > approved && approved > 0) {
-      entities[company].overClearingCount += 1;
+      entities[company].rapidClearingCount++;
     }
 
-    if (project.state) {
-      entities[company].states.add(project.state);
+    if (project.acresCleared > project.acresApproved) {
+      entities[company].overClearingCount++;
     }
 
-    const status = project.status || "Unknown";
-    entities[company].statuses[status] = (entities[company].statuses[status] || 0) + 1;
+    if (project.epaViolations) {
+      entities[company].totalViolations += project.epaViolations.length;
+    }
   });
 
   return entities;
 }
 
-// Display entity accountability view
-function displayEntityView(entities, sortBy = 'violations') {
-  const entityList = document.getElementById('entityList');
+// Setup event listeners for controls
+function setupEventListeners() {
+  // Layer toggle checkboxes
+  document.querySelectorAll('.layer-toggle').forEach(checkbox => {
+    checkbox.addEventListener('change', (e) => {
+      const layer = e.target.dataset.layer;
+      if (e.target.checked) {
+        if (!activeLayers.includes(layer)) activeLayers.push(layer);
+        if (layerGroups[layer]) mapInstance.addLayer(layerGroups[layer]);
+      } else {
+        activeLayers = activeLayers.filter(l => l !== layer);
+        if (layerGroups[layer]) mapInstance.removeLayer(layerGroups[layer]);
+      }
+    });
+  });
 
-  // Convert to array and sort
-  let entityArray = Object.values(entities);
+  // View toggle buttons
+  const projectToggle = document.getElementById('viewToggleProject');
+  const entityToggle = document.getElementById('viewToggleEntity');
 
-  switch(sortBy) {
-    case 'violations':
-      entityArray.sort((a, b) => b.totalViolations - a.totalViolations);
-      break;
-    case 'acreage':
-      entityArray.sort((a, b) => b.totalAcresCleared - a.totalAcresCleared);
-      break;
-    case 'projects':
-      entityArray.sort((a, b) => b.projects.length - a.projects.length);
-      break;
-    case 'name':
-      entityArray.sort((a, b) => a.name.localeCompare(b.name));
-      break;
+  if (projectToggle) {
+    projectToggle.addEventListener('click', () => {
+      currentView = 'projects';
+      projectToggle.classList.add('active');
+      entityToggle?.classList.remove('active');
+      document.getElementById('projectView').classList.add('active');
+      document.getElementById('entityView').classList.remove('active');
+    });
   }
 
+  if (entityToggle) {
+    entityToggle.addEventListener('click', () => {
+      currentView = 'entities';
+      entityToggle.classList.add('active');
+      projectToggle?.classList.remove('active');
+      document.getElementById('projectView').classList.remove('active');
+      document.getElementById('entityView').classList.add('active');
+      displayEntitiesView();
+    });
+  }
+
+  // Filter controls
+  document.getElementById('stateSelect')?.addEventListener('change', applyFilters);
+  document.getElementById('statusSelect')?.addEventListener('change', applyFilters);
+  document.getElementById('minAcreage')?.addEventListener('change', applyFilters);
+}
+
+// Apply filters and redraw map
+function applyFilters() {
+  const state = document.getElementById('stateSelect')?.value || '';
+  const status = document.getElementById('statusSelect')?.value || '';
+  const acreage = parseInt(document.getElementById('minAcreage')?.value || '0');
+
+  filteredProjects = currentProjects.filter(project => {
+    const matchesState = !state || project.state === state;
+    const matchesStatus = !status || project.status === status;
+    const matchesAcreage = project.acresApproved >= acreage;
+    return matchesState && matchesStatus && matchesAcreage;
+  });
+
+  displayProjectsOnMap(filteredProjects.length > 0 ? filteredProjects : currentProjects);
+}
+
+// Display entities (contractors) in sidebar
+function displayEntitiesView() {
+  const entitiesList = document.getElementById('entityList');
+  if (!entitiesList) return;
+
   let html = '<div class="entity-list">';
-
-  entityArray.forEach(entity => {
-    const hasViolations = entity.totalViolations > 0;
-    const violationClass = hasViolations ? 'entity-stat-violations' : '';
-
+  Object.values(currentEntities).forEach(entity => {
     html += `
-      <div class="entity-card" data-company="${entity.name}">
+      <div class="entity-card">
         <div class="entity-name">${entity.name}</div>
         <div class="entity-stat">
           <span>Projects:</span>
           <span class="entity-stat-value">${entity.projects.length}</span>
         </div>
         <div class="entity-stat">
-          <span>Total Acres Cleared:</span>
-          <span class="entity-stat-value">${entity.totalAcresCleared.toLocaleString()}</span>
+          <span>Acreage:</span>
+          <span class="entity-stat-value">${(entity.totalHarvested + entity.totalBurned + entity.totalUnknown).toFixed(0)}</span>
         </div>
+        ${entity.totalBurned > 0 ? `
         <div class="entity-stat">
-          <span>EPA Violations:</span>
-          <span class="entity-stat-value ${violationClass}">${entity.totalViolations}</span>
-        </div>
+          <span>🔥 Burned:</span>
+          <span class="entity-stat-value" style="color: #ef4444;">${entity.totalBurned.toFixed(0)}</span>
+        </div>` : ''}
+        ${entity.burnPitCount > 0 ? `
         <div class="entity-stat">
-          <span>Total Penalties:</span>
-          <span class="entity-stat-value">$${entity.totalPenalties.toLocaleString()}</span>
-        </div>
-        <div class="entity-stat" style="font-size: 10px; color: #666; margin-top: 6px;">
-          <span>Active in: ${Array.from(entity.states).sort().join(', ')}</span>
-        </div>
-        <div style="border-top: 1px solid #333; margin-top: 10px; padding-top: 10px; font-size: 10px;">
-          <div class="entity-stat">
-            <span>🌲 Harvested:</span>
-            <span class="entity-stat-value">${entity.totalHarvested.toLocaleString()} ac</span>
-          </div>
-          <div class="entity-stat">
-            <span>🔥 Burned:</span>
-            <span class="entity-stat-value" style="color: #ef4444;">${entity.totalBurned.toLocaleString()} ac</span>
-          </div>
-          ${entity.burnPitProjectCount > 0 ? `<div class="entity-stat">
-            <span>🚨 Burn Pits:</span>
-            <span class="entity-stat-value" style="color: #f97316;">${entity.burnPitProjectCount}</span>
-          </div>` : ''}
-          ${entity.rapidClearingCount > 0 ? `<div class="entity-stat">
-            <span>⚡ Rapid Clearing:</span>
-            <span class="entity-stat-value" style="color: #f97316;">${entity.rapidClearingCount}</span>
-          </div>` : ''}
-          ${entity.overClearingCount > 0 ? `<div class="entity-stat">
-            <span>⚠️ Over-clearing:</span>
-            <span class="entity-stat-value" style="color: #ef4444;">${entity.overClearingCount}</span>
-          </div>` : ''}
-        </div>
+          <span>🚨 Burn Pits:</span>
+          <span class="entity-stat-value">${entity.burnPitCount}</span>
+        </div>` : ''}
+        ${entity.rapidClearingCount > 0 ? `
+        <div class="entity-stat">
+          <span>⚡ Rapid Clearing:</span>
+          <span class="entity-stat-value">${entity.rapidClearingCount}</span>
+        </div>` : ''}
+        ${entity.totalViolations > 0 ? `
+        <div class="entity-stat">
+          <span>⚠️ Violations:</span>
+          <span class="entity-stat-violations">${entity.totalViolations}</span>
+        </div>` : ''}
       </div>
     `;
   });
-
   html += '</div>';
-  entityList.innerHTML = html;
-  entityList.classList.remove('empty');
-
-  // Add click handlers to entity cards
-  document.querySelectorAll('.entity-card').forEach(card => {
-    card.addEventListener('click', () => {
-      const company = card.getAttribute('data-company');
-      displayEntityDetails(entities[company]);
-      highlightEntityProjects(company);
-    });
-  });
+  entitiesList.innerHTML = html;
 }
 
-// Display detailed entity information
-function displayEntityDetails(entity) {
-  const detailsDiv = document.getElementById('entityList');
-  const clearancePercent = entity.totalAcresApproved > 0
-    ? ((entity.totalAcresCleared / entity.totalAcresApproved) * 100).toFixed(1)
-    : 0;
+// Update view toggle button state
+function updateViewToggle() {
+  const projectToggle = document.getElementById('viewToggleProject');
+  const entityToggle = document.getElementById('viewToggleEntity');
 
-  let statusHtml = '';
-  Object.entries(entity.statuses).forEach(([status, count]) => {
-    statusHtml += `<div class="entity-stat"><span>${status}:</span><span class="entity-stat-value">${count}</span></div>`;
-  });
-
-  const violationIndicator = entity.totalViolations > 0
-    ? `<div style="background: rgba(239, 68, 68, 0.1); padding: 10px; border-left: 3px solid #ef4444; margin-top: 10px;">
-         <div class="project-label">⚠️ EPA Enforcement Summary</div>
-         <div class="entity-stat">
-           <span>Total Violations:</span>
-           <span class="entity-stat-value entity-stat-violations">${entity.totalViolations}</span>
-         </div>
-         <div class="entity-stat">
-           <span>Total Penalties:</span>
-           <span class="entity-stat-value">$${entity.totalPenalties.toLocaleString()}</span>
-         </div>
-         <div class="entity-stat">
-           <span>Total Inspections:</span>
-           <span class="entity-stat-value">${entity.totalInspections}</span>
-         </div>
-       </div>`
-    : `<div style="background: rgba(34, 197, 94, 0.1); padding: 10px; border-left: 3px solid #22c55e; margin-top: 10px;">
-         <div class="project-label">✓ No EPA Violations Documented</div>
-       </div>`;
-
-  const html = `
-    <div class="project-card">
-      <h3>${entity.name}</h3>
-
-      <div class="project-field">
-        <div class="project-label">Projects</div>
-        <div class="project-value">${entity.projects.length} total projects</div>
-      </div>
-
-      <div class="project-field">
-        <div class="project-label">Project Status</div>
-        <div class="project-value">${statusHtml}</div>
-      </div>
-
-      <div class="project-field">
-        <div class="project-label">Acreage Summary</div>
-        <div class="project-value">
-          Proposed: ${entity.totalAcresProposed.toLocaleString()}<br>
-          Approved: ${entity.totalAcresApproved.toLocaleString()}<br>
-          <span style="color: #00d9ff;">Cleared: ${entity.totalAcresCleared.toLocaleString()} (${clearancePercent}%)</span>
-        </div>
-      </div>
-
-      <div class="project-field">
-        <div class="project-label">States Active In</div>
-        <div class="project-value">${Array.from(entity.states).sort().join(', ')}</div>
-      </div>
-
-      ${violationIndicator}
-    </div>
-  `;
-
-  detailsDiv.innerHTML = html;
-}
-
-// Highlight projects from a specific entity on the map
-function highlightEntityProjects(company) {
-  const svg = document.querySelector('#map svg');
-  if (!svg) return;
-
-  const circles = svg.querySelectorAll('.project-circle');
-  circles.forEach(circle => {
-    const project = currentProjects.find(p =>
-      p.x === parseFloat(circle.getAttribute('cx')) - 5 &&
-      p.y === parseFloat(circle.getAttribute('cy')) - 10
-    );
-
-    if (project && project.company === company) {
-      circle.setAttribute('stroke-width', '1');
-      circle.setAttribute('fill-opacity', '0.7');
+  if (projectToggle && entityToggle) {
+    if (currentView === 'projects') {
+      projectToggle.classList.add('active');
+      entityToggle.classList.remove('active');
     } else {
-      circle.setAttribute('stroke-width', '0.2');
-      circle.setAttribute('fill-opacity', '0.2');
+      projectToggle.classList.remove('active');
+      entityToggle.classList.add('active');
     }
-  });
-}
-
-// Filter projects
-function applyFilters() {
-  const state = document.getElementById('stateSelect').value;
-  const status = document.getElementById('statusSelect').value;
-  const minAcreage = parseInt(document.getElementById('minAcreage').value) || 0;
-
-  filteredProjects = currentProjects.filter(project => {
-    const matchesState = !state || project.state === state;
-    const matchesStatus = !status || project.status === status;
-    const matchesAcreage = project.acresApproved >= minAcreage;
-
-    // Check if project belongs to any active layer
-    const layers = project.layerCategories || [];
-    const matchesLayer = activeLayers.length === 0 || layers.some(layer => activeLayers.includes(layer));
-
-    return matchesState && matchesStatus && matchesAcreage && matchesLayer;
-  });
-
-  // Update map
-  const svg = document.querySelector('#map svg');
-  if (svg) {
-    displayProjectsOnMap(svg, filteredProjects);
   }
 }
 
-// Toggle between project and entity view
-function toggleView(view) {
-  currentView = view;
-
-  document.getElementById('projectView').classList.toggle('active', view === 'projects');
-  document.getElementById('entityView').classList.toggle('active', view === 'entities');
-  document.getElementById('viewToggleProject').classList.toggle('active', view === 'projects');
-  document.getElementById('viewToggleEntity').classList.toggle('active', view === 'entities');
-
-  if (view === 'entities') {
-    currentEntities = aggregateByEntity(currentProjects);
-    displayEntityView(currentEntities, 'violations');
-  } else {
-    applyFilters();
-  }
-}
-
-// Setup event listeners
-function setupEventListeners() {
-  document.getElementById('stateSelect').addEventListener('change', applyFilters);
-  document.getElementById('statusSelect').addEventListener('change', applyFilters);
-  document.getElementById('minAcreage').addEventListener('change', applyFilters);
-
-  document.getElementById('viewToggleProject').addEventListener('click', () => toggleView('projects'));
-  document.getElementById('viewToggleEntity').addEventListener('click', () => toggleView('entities'));
-
-  document.getElementById('entitySort').addEventListener('change', (e) => {
-    if (currentView === 'entities') {
-      displayEntityView(currentEntities, e.target.value);
-    }
-  });
-
-  // Layer toggle event listeners
-  document.querySelectorAll('.layer-toggle').forEach(toggle => {
-    toggle.addEventListener('change', (e) => {
-      const layer = e.target.getAttribute('data-layer');
-
-      if (e.target.checked) {
-        if (!activeLayers.includes(layer)) {
-          activeLayers.push(layer);
-        }
-      } else {
-        activeLayers = activeLayers.filter(l => l !== layer);
-      }
-
-      applyFilters();
-    });
-  });
-
-  // Setup mobile interactions
-  setupMobileNavigation();
-}
-
-// Mobile-friendly navigation
+// Mobile navigation
 function setupMobileNavigation() {
   const sidebar = document.querySelector('.sidebar');
   const sidebarToggle = document.getElementById('sidebarToggle');
@@ -945,10 +471,8 @@ function setupMobileNavigation() {
 
   if (!isMobile) return;
 
-  // Set initial button label
   updateToggleButton();
 
-  // Toggle sidebar visibility on mobile
   if (sidebarToggle) {
     sidebarToggle.addEventListener('click', () => {
       sidebar.classList.toggle('mobile-closed');
@@ -956,54 +480,20 @@ function setupMobileNavigation() {
     });
   }
 
-  // Close sidebar when clicking project on map (on mobile)
-  const mapDiv = document.getElementById('map');
-  if (mapDiv) {
-    mapDiv.addEventListener('click', () => {
-      if (window.innerWidth <= 768 && sidebar.classList.contains('mobile-open')) {
-        // Auto-close sidebar briefly to show map, then user can open details
-      }
-    });
-  }
+  const projectToggle = document.getElementById('viewToggleProject');
+  const entityToggle = document.getElementById('viewToggleEntity');
 
-  // Add close button to project details on mobile
-  const projectDetails = document.getElementById('projectDetails');
-  if (projectDetails && !projectDetails.querySelector('.close-details')) {
-    const observer = new MutationObserver(() => {
-      if (!projectDetails.classList.contains('empty') && !projectDetails.querySelector('.close-details')) {
-        const closeBtn = document.createElement('button');
-        closeBtn.className = 'close-details';
-        closeBtn.textContent = '✕ Close';
-        closeBtn.addEventListener('click', () => {
-          projectDetails.classList.add('empty');
-          projectDetails.innerHTML = 'Click a project on the map to see details';
-          sidebar.classList.toggle('mobile-open');
-        });
-        projectDetails.insertBefore(closeBtn, projectDetails.firstChild);
-      }
-    });
-
-    observer.observe(projectDetails, { childList: true, subtree: true });
-  }
-
-  // Better touch handling for project circles
-  const svg = document.querySelector('svg');
-  if (svg) {
-    svg.style.touchAction = 'manipulation';
-  }
-
-  // Close sidebar when view changes on mobile
-  const viewToggles = document.querySelectorAll('.view-toggle');
-  viewToggles.forEach(toggle => {
-    toggle.addEventListener('click', () => {
-      if (window.innerWidth <= 768) {
-        sidebar.classList.add('mobile-closed');
-        updateToggleButton();
-      }
-    });
+  [projectToggle, entityToggle].forEach(toggle => {
+    if (toggle) {
+      toggle.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+          sidebar.classList.add('mobile-closed');
+          updateToggleButton();
+        }
+      });
+    }
   });
 
-  // Adjust sidebar on orientation change
   window.addEventListener('orientationchange', () => {
     setTimeout(() => {
       sidebar.classList.add('mobile-closed');
@@ -1012,7 +502,7 @@ function setupMobileNavigation() {
   });
 }
 
-// Update sidebar toggle button appearance
+// Update toggle button appearance
 function updateToggleButton() {
   const sidebarToggle = document.getElementById('sidebarToggle');
   const sidebar = document.querySelector('.sidebar');
@@ -1028,5 +518,5 @@ function updateToggleButton() {
   }
 }
 
-// Initialize when DOM is ready
+// Initialize on page load
 document.addEventListener('DOMContentLoaded', initMap);
