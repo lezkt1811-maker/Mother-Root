@@ -5,7 +5,7 @@ let currentProjects = [];
 let filteredProjects = [];
 let currentView = 'projects'; // 'projects' or 'entities'
 let currentEntities = {};
-let activeLayers = ['Forest Loss', 'Documented Burns', 'Permits', 'Responsible Entities'];
+let activeLayers = ['Forest Loss', 'Documented Burns', 'Burn Pits', 'Permits', 'Responsible Entities'];
 
 // Load USFS project data with EPA enforcement enrichment
 async function loadProjectData() {
@@ -333,6 +333,27 @@ function displayProjectsOnMap(svg, projects) {
 
       svg.appendChild(badge);
     }
+
+    // Add burn pit indicator if documented
+    if (project.burningDocumented || project.treeDestination?.burned > 0) {
+      const burnPitMarker = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+      const verified = project.burningDocumented;
+      const burnColor = verified ? '#22c55e' : '#eab308';
+
+      burnPitMarker.setAttribute('points', `${5 + project.x},${9 + project.y - 0.4} ${5 + project.x + 0.25},${9 + project.y + 0.25} ${5 + project.x - 0.25},${9 + project.y + 0.25}`);
+      burnPitMarker.setAttribute('fill', burnColor);
+      burnPitMarker.setAttribute('stroke', burnColor);
+      burnPitMarker.setAttribute('stroke-width', '0.1');
+      burnPitMarker.setAttribute('class', 'burn-pit-marker');
+      burnPitMarker.style.cursor = 'pointer';
+
+      burnPitMarker.addEventListener('click', (e) => {
+        e.stopPropagation();
+        displayProjectDetails(project);
+      });
+
+      svg.appendChild(burnPitMarker);
+    }
   });
 }
 
@@ -380,6 +401,8 @@ function displayProjectDetails(project) {
       </div>
 
       ${getTreeDestinationSection(treeDestination)}
+
+      ${getBurnPitSection(project)}
 
       <div class="project-field">
         <div class="project-label">Agency</div>
@@ -431,6 +454,33 @@ function getTreeDestinationSection(destination) {
         <div>✓ Harvested: ${harvested} acres</div>
         <div>🔥 Burned: ${burned} acres</div>
         <div>❓ Unknown: ${unknown} acres</div>
+      </div>
+    </div>
+  `;
+}
+
+// Get burn pit section
+function getBurnPitSection(project) {
+  if (!project.burningDocumented && (!project.treeDestination || project.treeDestination.burned === 0)) {
+    return '';
+  }
+
+  const treeDestination = project.treeDestination || {};
+  const burned = treeDestination.burned || 0;
+  const verified = project.burningDocumented;
+
+  return `
+    <div class="burn-pit-info">
+      <div class="project-label">🚨 Burn Pit Activity</div>
+      <div style="font-size: 12px; margin-top: 6px; color: #e0e0e0;">
+        <div style="margin-bottom: 4px;">
+          <span class="${verified ? 'burn-pit-verified' : 'burn-pit-suspected'}">
+            ${verified ? '✓ VERIFIED' : '⚠️ SUSPECTED'} BURN PIT DESTRUCTION
+          </span>
+        </div>
+        <div style="color: #888; font-size: 11px;">
+          ${burned} acres documented as burned instead of harvested
+        </div>
       </div>
     </div>
   `;

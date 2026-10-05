@@ -238,6 +238,24 @@
       background: #888;
     }
 
+    .burn-pit-info {
+      background: rgba(239, 68, 68, 0.1);
+      border-left: 3px solid #ef4444;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 3px;
+    }
+
+    .burn-pit-verified {
+      color: #22c55e;
+      font-weight: 600;
+    }
+
+    .burn-pit-suspected {
+      color: #eab308;
+      font-weight: 600;
+    }
+
     .satellite-links {
       background: rgba(0, 150, 200, 0.1);
       border-left: 3px solid #0096c8;
@@ -432,6 +450,10 @@
               <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
                 <input type="checkbox" class="layer-toggle" data-layer="Documented Burns" checked>
                 <span>🔥 Burns</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                <input type="checkbox" class="layer-toggle" data-layer="Burn Pits" checked>
+                <span>🚨 Burn Pits</span>
               </label>
               <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
                 <input type="checkbox" class="layer-toggle" data-layer="Timber Harvest">
