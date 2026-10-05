@@ -1,0 +1,474 @@
+[
+  {
+    "id": 1,
+    "name": "Platte 38",
+    "type": "Mixed Residential",
+    "location": "West of The National 7th Plat",
+    "coordinates": {
+      "lat": 39.2,
+      "lng": -94.68
+    },
+    "parcel": "20-8-0-27-100-002-006.000",
+    "acres": 0,
+    "lots": {
+      "duplex": 27,
+      "detached": 9,
+      "total": 36
+    },
+    "status": "Under Construction",
+    "statusProgression": [
+      { "status": "Approved", "date": "2021" },
+      { "status": "Under Construction", "date": "2022-01-04" }
+    ],
+    "constructionDates": {
+      "began": "2022-01-04",
+      "targetCompletion": "2025"
+    },
+    "treesClearedAcres": 0,
+    "burnDocumented": false,
+    "evidence": ["City development tracker", "Construction permits"],
+    "beforeImagery": {
+      "date": null,
+      "url": null
+    },
+    "afterImagery": {
+      "date": null,
+      "url": null
+    }
+  },
+  {
+    "id": 2,
+    "name": "Sanctuary at Riss Lake",
+    "type": "Mixed Residential",
+    "location": "MO-9 Hwy & Lakeview Dr",
+    "coordinates": {
+      "lat": 39.21,
+      "lng": -94.69
+    },
+    "parcel": "20-7-0-26-400-006-001.000",
+    "acres": 0,
+    "lots": {
+      "duplex": 19,
+      "openSpace": 4,
+      "total": 23
+    },
+    "status": "Under Construction",
+    "statusProgression": [
+      { "status": "Approved", "date": "2021" },
+      { "status": "Under Construction", "date": "2022-01-18" }
+    ],
+    "constructionDates": {
+      "began": "2022-01-18",
+      "targetCompletion": "2025"
+    },
+    "treesClearedAcres": 0,
+    "burnDocumented": false,
+    "evidence": ["City development tracker", "Construction permits"],
+    "beforeImagery": {
+      "date": null,
+      "url": null
+    },
+    "afterImagery": {
+      "date": null,
+      "url": null
+    }
+  },
+  {
+    "id": 3,
+    "name": "The Woods at Creekside, 4th Plat",
+    "type": "Residential Subdivision",
+    "location": "West of Woods at Creekside 3rd Plat",
+    "coordinates": {
+      "lat": 39.18,
+      "lng": -94.70
+    },
+    "parcel": "20-4-0-18-000-000-010.003",
+    "acres": 0,
+    "lots": {
+      "detached": 28,
+      "total": 28
+    },
+    "status": "Construction/Completion Activity 2024",
+    "statusProgression": [
+      { "status": "Approved", "date": "2023" },
+      { "status": "Construction", "date": "2024" }
+    ],
+    "constructionDates": {
+      "began": "2024",
+      "targetCompletion": "2024"
+    },
+    "treesClearedAcres": 0,
+    "burnDocumented": false,
+    "evidence": ["City development tracker", "Plat records"],
+    "beforeImagery": {
+      "date": null,
+      "url": null
+    },
+    "afterImagery": {
+      "date": null,
+      "url": null
+    }
+  },
+  {
+    "id": 4,
+    "name": "The Woods at Creekside, 5th Plat",
+    "type": "Residential Subdivision",
+    "location": "West of Woods at Creekside 4th Plat",
+    "coordinates": {
+      "lat": 39.17,
+      "lng": -94.71
+    },
+    "parcel": "20-4-0-18-000-000-010.003",
+    "acres": 0,
+    "lots": {
+      "detached": 39,
+      "openSpace": 2,
+      "total": 41
+    },
+    "status": "Approved",
+    "statusProgression": [
+      { "status": "Approved", "date": "2023" }
+    ],
+    "constructionDates": {
+      "began": null,
+      "targetCompletion": "2024"
+    },
+    "treesClearedAcres": 0,
+    "burnDocumented": false,
+    "evidence": ["City development tracker", "Plat records"],
+    "beforeImagery": {
+      "date": null,
+      "url": null
+    },
+    "afterImagery": {
+      "date": null,
+      "url": null
+    }
+  },
+  {
+    "id": 5,
+    "name": "Thousand Oaks 25th Plat",
+    "type": "Residential Subdivision",
+    "location": "South of Thousand Oaks Phase 13B",
+    "coordinates": {
+      "lat": 39.19,
+      "lng": -94.65
+    },
+    "parcel": "20-9-0-29-000-000-010.001",
+    "acres": 0,
+    "lots": {
+      "detached": 73,
+      "openSpace": 3,
+      "total": 76
+    },
+    "status": "Approved",
+    "statusProgression": [
+      { "status": "Approved", "date": "2024" }
+    ],
+    "constructionDates": {
+      "began": null,
+      "targetCompletion": "2026"
+    },
+    "treesClearedAcres": 0,
+    "burnDocumented": false,
+    "evidence": ["City development tracker"],
+    "beforeImagery": {
+      "date": null,
+      "url": null
+    },
+    "afterImagery": {
+      "date": null,
+      "url": null
+    }
+  },
+  {
+    "id": 6,
+    "name": "Thousand Oaks 26th Plat",
+    "type": "Residential Subdivision",
+    "location": "West of Thousand Oaks 25th Plat",
+    "coordinates": {
+      "lat": 39.19,
+      "lng": -94.66
+    },
+    "parcel": "20-9-0-30-000-000-012.000",
+    "acres": 0,
+    "lots": {
+      "detached": 51,
+      "openSpace": 3,
+      "total": 54
+    },
+    "status": "Preliminary Plat Approved",
+    "statusProgression": [
+      { "status": "Preliminary Plat Approved", "date": "2024" }
+    ],
+    "constructionDates": {
+      "began": null,
+      "targetCompletion": "2027"
+    },
+    "treesClearedAcres": 0,
+    "burnDocumented": false,
+    "evidence": ["City development tracker", "Preliminary plat"],
+    "beforeImagery": {
+      "date": null,
+      "url": null
+    },
+    "afterImagery": {
+      "date": null,
+      "url": null
+    }
+  },
+  {
+    "id": 7,
+    "name": "The Estates at Thousand Oaks (1st-7th Plats)",
+    "type": "Residential Subdivision",
+    "location": "Thousand Oaks expansion",
+    "coordinates": {
+      "lat": 39.20,
+      "lng": -94.64
+    },
+    "parcel": "20-9-0-29-000-000-010.001",
+    "acres": 0,
+    "lots": {
+      "plat1": 66,
+      "plat2": 44,
+      "plats3to7": 134,
+      "total": 244
+    },
+    "status": "Preliminary Plats Approved",
+    "statusProgression": [
+      { "status": "Preliminary Plat Approved", "date": "2024" }
+    ],
+    "constructionDates": {
+      "began": null,
+      "targetCompletion": "2028"
+    },
+    "treesClearedAcres": 0,
+    "burnDocumented": false,
+    "evidence": ["City development tracker"],
+    "beforeImagery": {
+      "date": null,
+      "url": null
+    },
+    "afterImagery": {
+      "date": null,
+      "url": null
+    }
+  },
+  {
+    "id": 8,
+    "name": "Talesin",
+    "type": "Residential",
+    "location": "Bell Rd & NW 57th St",
+    "coordinates": {
+      "lat": 39.22,
+      "lng": -94.72
+    },
+    "parcel": "20-7-0-26-300-001-047.002",
+    "acres": 0,
+    "lots": {
+      "detached": 10,
+      "openSpace": 2,
+      "total": 12
+    },
+    "status": "Preliminary Plat Approved",
+    "statusProgression": [
+      { "status": "Preliminary Plat Approved", "date": "2024" }
+    ],
+    "constructionDates": {
+      "began": null,
+      "targetCompletion": "2025"
+    },
+    "treesClearedAcres": 0,
+    "burnDocumented": false,
+    "evidence": ["City development tracker"],
+    "beforeImagery": {
+      "date": null,
+      "url": null
+    },
+    "afterImagery": {
+      "date": null,
+      "url": null
+    }
+  },
+  {
+    "id": 9,
+    "name": "Village on the Green East",
+    "type": "Townhomes",
+    "location": "MO-45 Hwy & Lake Crest Ln",
+    "coordinates": {
+      "lat": 39.23,
+      "lng": -94.67
+    },
+    "parcel": "20-7-0-26-200-002-003.001",
+    "acres": 0,
+    "lots": {
+      "clusterTownhomes": 23,
+      "additionalTownhomes": 7,
+      "total": 30
+    },
+    "status": "Approved",
+    "statusProgression": [
+      { "status": "Approved", "date": "2023" }
+    ],
+    "constructionDates": {
+      "began": null,
+      "targetCompletion": "2026"
+    },
+    "treesClearedAcres": 0,
+    "burnDocumented": false,
+    "evidence": ["City development tracker"],
+    "beforeImagery": {
+      "date": null,
+      "url": null
+    },
+    "afterImagery": {
+      "date": null,
+      "url": null
+    }
+  },
+  {
+    "id": 10,
+    "name": "Village on the Green West",
+    "type": "Townhomes",
+    "location": "MO-45 Hwy & Lake Crest Ln",
+    "coordinates": {
+      "lat": 39.23,
+      "lng": -94.68
+    },
+    "parcel": "20-8-0-27-100-002-002.002",
+    "acres": 0,
+    "lots": {
+      "clusterTownhomes": 23,
+      "additionalTownhomes": 7,
+      "total": 30
+    },
+    "status": "Approved",
+    "statusProgression": [
+      { "status": "Approved", "date": "2023" }
+    ],
+    "constructionDates": {
+      "began": null,
+      "targetCompletion": "2026"
+    },
+    "treesClearedAcres": 0,
+    "burnDocumented": false,
+    "evidence": ["City development tracker"],
+    "beforeImagery": {
+      "date": null,
+      "url": null
+    },
+    "afterImagery": {
+      "date": null,
+      "url": null
+    }
+  },
+  {
+    "id": 11,
+    "name": "Creekside West Apartments",
+    "type": "Apartment Complex",
+    "location": "NW corner of Hwy 45 & Homer Pkwy",
+    "coordinates": {
+      "lat": 39.17,
+      "lng": -94.70
+    },
+    "parcel": "20-4-0-18-000-000-010.001",
+    "acres": 0,
+    "units": 200,
+    "buildings": 4,
+    "status": "Under Construction",
+    "statusProgression": [
+      { "status": "Approved", "date": "2024" },
+      { "status": "Under Construction", "date": "2025-04" }
+    ],
+    "constructionDates": {
+      "began": "2025-04",
+      "targetCompletion": "2026"
+    },
+    "treesClearedAcres": 0,
+    "burnDocumented": false,
+    "evidence": ["City development tracker", "Construction permits"],
+    "beforeImagery": {
+      "date": null,
+      "url": null
+    },
+    "afterImagery": {
+      "date": null,
+      "url": null
+    }
+  },
+  {
+    "id": 12,
+    "name": "The Hills at The National",
+    "type": "Residential Subdivision",
+    "location": "NW Crooked Rd & N National Dr",
+    "coordinates": {
+      "lat": 39.21,
+      "lng": -94.69
+    },
+    "parcel": "20-5-0-22-300-001-015.000",
+    "acres": 0,
+    "lots": {
+      "detached": 52,
+      "openSpace": 12,
+      "total": 64
+    },
+    "status": "Under Review",
+    "statusProgression": [
+      { "status": "Under Review", "date": "2025" }
+    ],
+    "constructionDates": {
+      "began": null,
+      "targetCompletion": null
+    },
+    "treesClearedAcres": 0,
+    "burnDocumented": false,
+    "evidence": ["City development tracker"],
+    "beforeImagery": {
+      "date": null,
+      "url": null
+    },
+    "afterImagery": {
+      "date": null,
+      "url": null
+    }
+  },
+  {
+    "id": 13,
+    "name": "Creekside West",
+    "type": "Mixed Residential",
+    "location": "Highway 45 / west of Creekside Village",
+    "coordinates": {
+      "lat": 39.16,
+      "lng": -94.71
+    },
+    "parcel": "20-4-0-18-000-000-010.002",
+    "acres": 58.87,
+    "units": 246,
+    "lots": 157,
+    "types": {
+      "singleFamily": "multiple",
+      "duplexes": "multiple",
+      "triplexes": "multiple"
+    },
+    "status": "Proposed",
+    "statusProgression": [
+      { "status": "Proposed", "date": "2026" }
+    ],
+    "constructionDates": {
+      "began": null,
+      "targetCompletion": null
+    },
+    "treesClearedAcres": 0,
+    "burnDocumented": false,
+    "evidence": ["City development tracker", "Development proposal"],
+    "beforeImagery": {
+      "date": null,
+      "url": null
+    },
+    "afterImagery": {
+      "date": null,
+      "url": null
+    },
+    "notes": "Critical: 58.87 acres of forest at risk. Track before clearing begins."
+  }
+]

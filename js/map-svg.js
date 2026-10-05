@@ -11,29 +11,46 @@ let projectsLayerGroup = null;
 let burnPitLayerGroup = null;
 let layerGroups = {};
 
-// Load USFS project data with EPA enforcement enrichment
+// Load all project data (USFS timber + Parkville development)
 async function loadProjectData() {
+  const allProjects = [];
+
+  // Load Parkville development projects
+  try {
+    const parkvilleResponse = await fetch('data/parkville-development-projects.json');
+    if (parkvilleResponse.ok) {
+      const parkvilleData = await parkvilleResponse.json();
+      parkvilleData.forEach(p => {
+        p.sourceType = 'Parkville Development';
+        p.geometry = { type: "Point", coordinates: [p.coordinates.lng, p.coordinates.lat] };
+      });
+      allProjects.push(...parkvilleData);
+      console.log(`✓ Loaded ${parkvilleData.length} Parkville development projects`);
+    }
+  } catch (error) {
+    console.log('Parkville data not available');
+  }
+
+  // Load USFS timber projects
   try {
     const enforcementResponse = await fetch('data/usfs-projects-with-enforcement.json');
     if (enforcementResponse.ok) {
-      const data = await enforcementResponse.json();
-      console.log(`✓ Loaded ${data.length} projects with EPA enforcement data`);
-      return data;
+      const usfsData = await enforcementResponse.json();
+      usfsData.forEach(p => p.sourceType = 'USFS Timber Sale');
+      allProjects.push(...usfsData);
+      console.log(`✓ Loaded ${usfsData.length} USFS timber projects`);
+      return allProjects;
     }
   } catch (error) {
-    console.log('Trying fallback data file...');
+    console.log('USFS data fallback...');
   }
 
-  try {
-    const response = await fetch('data/usfs-projects.json');
-    if (!response.ok) throw new Error('Data file not found');
-    const data = await response.json();
-    console.log(`✓ Loaded ${data.length} USFS projects (no enforcement data)`);
-    return data;
-  } catch (error) {
-    console.warn('Could not load project data:', error.message);
+  // Fallback
+  if (allProjects.length === 0) {
     return getDefaultSampleData();
   }
+
+  return allProjects;
 }
 
 // Default sample data
@@ -304,13 +321,19 @@ function getProjectPopup(project) {
   return popup;
 }
 
-// Get status color
+// Get status color (handles both USFS and Parkville statuses)
 function getStatusColor(status) {
   const colors = {
+    // USFS statuses
     "Proposed": "#22c55e",
     "Approved": "#eab308",
     "Active": "#f97316",
-    "Completed": "#ef4444"
+    "Completed": "#ef4444",
+    // Parkville development statuses
+    "Under Review": "#3b82f6",
+    "Preliminary Plat Approved": "#06b6d4",
+    "Under Construction": "#f97316",
+    "Construction/Completion Activity 2024": "#f97316"
   };
   return colors[status] || "#888888";
 }
@@ -321,10 +344,45 @@ function displayProjectDetails(project) {
   if (!projectDetails) return;
 
   let html = `<strong>${project.name}</strong><br>`;
+  html += `<small><em>${project.sourceType || 'Project'}</em></small><br>`;
   html += `<small>Location: ${project.location || `${project.county || ''} ${project.state || ''}`}</small><br>`;
-  html += `Status: ${project.status}<br>`;
-  html += `Approved: ${project.acresApproved || 0} acres<br>`;
-  html += `Cleared: ${project.acresCleared || 0} acres<br>`;
+  html += `<strong>Status: ${project.status}</strong><br>`;
+
+  // Parkville development-specific info
+  if (project.parcel) {
+    html += `<br><strong>Parcel:</strong> ${project.parcel}<br>`;
+  }
+
+  if (project.acres) {
+    html += `<strong>Acres:</strong> ${project.acres}<br>`;
+  }
+
+  if (project.lots || project.units) {
+    html += `<strong>Development:</strong><br>`;
+    if (project.lots) {
+      if (typeof project.lots === 'object') {
+        Object.entries(project.lots).forEach(([type, count]) => {
+          if (type !== 'total' && count > 0) {
+            html += `• ${type}: ${count}<br>`;
+          }
+        });
+        html += `<strong>Total Lots: ${project.lots.total}</strong><br>`;
+      } else {
+        html += `${project.lots} lots<br>`;
+      }
+    }
+    if (project.units) {
+      html += `${project.units} units<br>`;
+    }
+  }
+
+  // USFS timber-specific info
+  if (project.acresApproved) {
+    html += `<strong>Approved:</strong> ${project.acresApproved} acres<br>`;
+  }
+  if (project.acresCleared) {
+    html += `<strong>Cleared:</strong> ${project.acresCleared} acres<br>`;
+  }
 
   // Evidence score
   if (project.evidenceScore) {
