@@ -4,8 +4,8 @@
   "description": "A comprehensive project for managing and optimizing root-level operations and configurations",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js",
-    "dev": "NODE_ENV=development node src/index.js",
+    "start": "http-server . -p 8080 -c-1",
+    "dev": "http-server . -p 8080 -c-1",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
@@ -20,6 +20,9 @@
   ],
   "author": "lezkt1811-maker",
   "license": "MIT",
+  "dependencies": {
+    "http-server": "^14.1.0"
+  },
   "devDependencies": {
     "eslint": "^8.0.0",
     "jest": "^29.0.0",

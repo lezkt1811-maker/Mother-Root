@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MotherRoot - Deforestation Accountability Map</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: #0a0e27;
+      color: #e0e0e0;
+      overflow: hidden;
+    }
+
+    #app {
+      display: flex;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    #map {
+      flex: 1;
+      position: relative;
+      z-index: 1;
+    }
+
+    .sidebar {
+      width: 350px;
+      background: #1a1f3a;
+      border-right: 2px solid #00d9ff;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: -4px 0 20px rgba(0, 217, 255, 0.1);
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #00d9ff;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .tagline {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 30px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .controls {
+      margin-bottom: 30px;
+      border-bottom: 1px solid #333;
+      padding-bottom: 20px;
+    }
+
+    .control-group {
+      margin-bottom: 15px;
+    }
+
+    .control-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 5px;
+      letter-spacing: 1px;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 8px 12px;
+      background: #0a0e27;
+      color: #e0e0e0;
+      border: 1px solid #00d9ff;
+      border-radius: 4px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    select:hover, input:hover {
+      border-color: #00ffff;
+      box-shadow: 0 0 10px rgba(0, 217, 255, 0.3);
+    }
+
+    .project-details {
+      flex: 1;
+      margin-bottom: 20px;
+    }
+
+    .project-details.empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .project-card {
+      background: #0a0e27;
+      border: 1px solid #00d9ff;
+      border-radius: 6px;
+      padding: 16px;
+      margin-bottom: 15px;
+    }
+
+    .project-card h3 {
+      color: #00d9ff;
+      font-size: 14px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .project-field {
+      margin-bottom: 10px;
+      font-size: 12px;
+    }
+
+    .project-label {
+      color: #888;
+      text-transform: uppercase;
+      font-size: 10px;
+      letter-spacing: 0.5px;
+    }
+
+    .project-value {
+      color: #e0e0e0;
+      margin-top: 2px;
+      word-break: break-word;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 3px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 5px;
+    }
+
+    .status-proposed {
+      background: rgba(34, 197, 94, 0.2);
+      color: #22c55e;
+      border: 1px solid #22c55e;
+    }
+
+    .status-approved {
+      background: rgba(234, 179, 8, 0.2);
+      color: #eab308;
+      border: 1px solid #eab308;
+    }
+
+    .status-active {
+      background: rgba(249, 115, 22, 0.2);
+      color: #f97316;
+      border: 1px solid #f97316;
+    }
+
+    .status-completed {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+      border: 1px solid #ef4444;
+    }
+
+    .legend {
+      background: #0a0e27;
+      border: 1px solid #00d9ff;
+      border-radius: 6px;
+      padding: 12px;
+      font-size: 12px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .legend-color {
+      width: 16px;
+      height: 16px;
+      border-radius: 2px;
+      margin-right: 8px;
+    }
+
+    .legend-item:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Leaflet overrides */
+    .leaflet-control-attribution {
+      background: rgba(10, 14, 39, 0.8) !important;
+      color: #888 !important;
+    }
+
+    .leaflet-control-zoom {
+      border: 1px solid #00d9ff !important;
+      border-radius: 4px !important;
+      background: #1a1f3a !important;
+    }
+
+    .leaflet-control-zoom a {
+      color: #00d9ff !important;
+      border-bottom: 1px solid #00d9ff !important;
+    }
+
+    .leaflet-control-zoom a:hover {
+      background: #0a0e27 !important;
+    }
+
+    @media (max-width: 768px) {
+      #app {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        max-height: 40vh;
+        border-right: none;
+        border-bottom: 2px solid #00d9ff;
+        z-index: 10;
+      }
+
+      #map {
+        flex: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div id="map"></div>
+    <div class="sidebar">
+      <div class="logo">MotherRoot</div>
+      <div class="tagline">Know who is cutting the forest</div>
+
+      <div class="controls">
+        <div class="control-group">
+          <div class="control-label">State</div>
+          <select id="stateSelect">
+            <option value="">Select a state...</option>
+            <option value="OR">Oregon</option>
+            <option value="CA">California</option>
+            <option value="WA">Washington</option>
+            <option value="CO">Colorado</option>
+            <option value="ID">Idaho</option>
+            <option value="MT">Montana</option>
+            <option value="NM">New Mexico</option>
+            <option value="UT">Utah</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">Status</div>
+          <select id="statusSelect">
+            <option value="">All statuses</option>
+            <option value="Proposed">Proposed 🟢</option>
+            <option value="Approved">Approved 🟡</option>
+            <option value="Active">Active 🟠</option>
+            <option value="Completed">Completed 🔴</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">Min Acreage</div>
+          <input type="number" id="minAcreage" placeholder="0" min="0">
+        </div>
+      </div>
+
+      <div class="project-details empty" id="projectDetails">
+        Click a project on the map to see details
+      </div>
+
+      <div class="legend">
+        <div style="margin-bottom: 10px; font-weight: 600; color: #00d9ff;">Status Legend</div>
+        <div class="legend-item">
+          <div class="legend-color" style="background: #22c55e;"></div>
+          <span>Proposed</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background: #eab308;"></div>
+          <span>Approved</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background: #f97316;"></div>
+          <span>Active</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color" style="background: #ef4444;"></div>
+          <span>Completed</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="js/map.js"></script>
+</body>
+</html>
