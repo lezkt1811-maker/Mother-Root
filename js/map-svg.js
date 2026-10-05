@@ -404,6 +404,8 @@ function displayProjectDetails(project) {
 
       ${getBurnPitSection(project)}
 
+      ${getRapidChangeSection(project)}
+
       <div class="project-field">
         <div class="project-label">Agency</div>
         <div class="project-value">${project.agency}</div>
@@ -480,6 +482,36 @@ function getBurnPitSection(project) {
         </div>
         <div style="color: #888; font-size: 11px;">
           ${burned} acres documented as burned instead of harvested
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// Get rapid change detection section
+function getRapidChangeSection(project) {
+  if (!project.rapidClearingFlag) {
+    return '';
+  }
+
+  const dateApproved = new Date(project.dateApproved);
+  const satellite = project.satelliteImagery || {};
+  const afterDate = satellite.afterDate ? new Date(satellite.afterDate) : null;
+
+  let observationWindow = '< 30 days from approval';
+  if (afterDate) {
+    const daysDiff = Math.floor((afterDate - dateApproved) / (1000 * 60 * 60 * 24));
+    observationWindow = `${daysDiff} days (${dateApproved.toLocaleDateString()} → ${afterDate.toLocaleDateString()})`;
+  }
+
+  return `
+    <div class="rapid-change-alert">
+      <div class="rapid-change-flag">⚡ RAPID CLEARING DETECTED</div>
+      <div style="font-size: 11px; color: #e0e0e0; margin-top: 6px;">
+        Major clearing occurred within observation window:
+        <div style="color: #f97316; font-weight: 600; margin-top: 4px;">${observationWindow}</div>
+        <div style="color: #888; margin-top: 4px;">
+          Pattern indicates possible overnight/rushed destruction
         </div>
       </div>
     </div>
