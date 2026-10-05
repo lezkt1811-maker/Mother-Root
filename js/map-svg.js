@@ -11,29 +11,46 @@ let projectsLayerGroup = null;
 let burnPitLayerGroup = null;
 let layerGroups = {};
 
-// Load USFS project data with EPA enforcement enrichment
+// Load all project data (USFS timber + Parkville development)
 async function loadProjectData() {
+  const allProjects = [];
+
+  // Load Parkville development projects
+  try {
+    const parkvilleResponse = await fetch('data/parkville-development-projects.json');
+    if (parkvilleResponse.ok) {
+      const parkvilleData = await parkvilleResponse.json();
+      parkvilleData.forEach(p => {
+        p.sourceType = 'Parkville Development';
+        p.geometry = { type: "Point", coordinates: [p.coordinates.lng, p.coordinates.lat] };
+      });
+      allProjects.push(...parkvilleData);
+      console.log(`✓ Loaded ${parkvilleData.length} Parkville development projects`);
+    }
+  } catch (error) {
+    console.log('Parkville data not available');
+  }
+
+  // Load USFS timber projects
   try {
     const enforcementResponse = await fetch('data/usfs-projects-with-enforcement.json');
     if (enforcementResponse.ok) {
-      const data = await enforcementResponse.json();
-      console.log(`✓ Loaded ${data.length} projects with EPA enforcement data`);
-      return data;
+      const usfsData = await enforcementResponse.json();
+      usfsData.forEach(p => p.sourceType = 'USFS Timber Sale');
+      allProjects.push(...usfsData);
+      console.log(`✓ Loaded ${usfsData.length} USFS timber projects`);
+      return allProjects;
     }
   } catch (error) {
-    console.log('Trying fallback data file...');
+    console.log('USFS data fallback...');
   }
 
-  try {
-    const response = await fetch('data/usfs-projects.json');
-    if (!response.ok) throw new Error('Data file not found');
-    const data = await response.json();
-    console.log(`✓ Loaded ${data.length} USFS projects (no enforcement data)`);
-    return data;
-  } catch (error) {
-    console.warn('Could not load project data:', error.message);
+  // Fallback
+  if (allProjects.length === 0) {
     return getDefaultSampleData();
   }
+
+  return allProjects;
 }
 
 // Default sample data
@@ -52,14 +69,91 @@ function getDefaultSampleData() {
   ];
 }
 
+// Generate polygon boundary for cleared land parcel based on acreage
+function generateParcelPolygon(centerLat, centerLng, acresCleared) {
+  // Convert acres to approximate square meters (1 acre ≈ 4047 m²)
+  const areaSqMeters = Math.max(1, acresCleared) * 4047;
+
+  // Approximate side length in meters (assuming roughly square parcel)
+  const sideLengthMeters = Math.sqrt(areaSqMeters);
+
+  // Convert meters to degrees (rough approximation: 1 degree ≈ 111 km)
+  const degreesPerMeter = 1 / 111000;
+  // Scale up by 5x for visibility at zoom level 4 - creates dramatic size differentiation
+  const halfSideDegrees = ((sideLengthMeters / 2) * degreesPerMeter) * 5;
+
+  // Create irregular polygon shape (8 points around rectangle with slight variations)
+  const polygon = [
+    // NW corner
+    [centerLat + halfSideDegrees * 1.1, centerLng - halfSideDegrees * 0.95],
+    // N side
+    [centerLat + halfSideDegrees * 1.05, centerLng - halfSideDegrees * 0.5],
+    // NE corner
+    [centerLat + halfSideDegrees * 0.9, centerLng + halfSideDegrees * 0.95],
+    // E side
+    [centerLat + halfSideDegrees * 0.5, centerLng + halfSideDegrees * 1.1],
+    // SE corner
+    [centerLat - halfSideDegrees * 0.95, centerLng + halfSideDegrees * 0.9],
+    // S side
+    [centerLat - halfSideDegrees * 1.05, centerLng + halfSideDegrees * 0.45],
+    // SW corner
+    [centerLat - halfSideDegrees * 0.85, centerLng - halfSideDegrees * 0.95],
+    // W side
+    [centerLat - halfSideDegrees * 0.5, centerLng - halfSideDegrees * 1.05],
+    // Back to start
+    [centerLat + halfSideDegrees * 1.1, centerLng - halfSideDegrees * 0.95]
+  ];
+
+  return polygon;
+}
+
+// Get Indigenous burial and sacred sites
+function getBurialSites() {
+  return [
+    // Ancestral Puebloans
+    { name: "Cahokia Mounds", lat: 38.6549, lng: -90.0619, tribe: "Ancestral Mississippian", state: "IL" },
+    { name: "Mesa Verde", lat: 37.1840, lng: -108.4618, tribe: "Ancestral Puebloan", state: "CO" },
+    { name: "Chaco Canyon", lat: 36.0191, lng: -107.9551, tribe: "Ancestral Puebloan", state: "NM" },
+
+    // Mississippian
+    { name: "Poverty Point", lat: 32.6277, lng: -91.4088, tribe: "Mississippian", state: "LA" },
+
+    // Eastern Woodlands
+    { name: "Serpent Mound", lat: 39.2608, lng: -83.4142, tribe: "Fort Ancient/Adena", state: "OH" },
+    { name: "Grave Creek Mound", lat: 40.7661, lng: -80.7328, tribe: "Adena", state: "WV" },
+    { name: "Hopewell Culture", lat: 39.7372, lng: -82.9880, tribe: "Hopewell", state: "OH" },
+
+    // Great Plains
+    { name: "Spoon River Mississippian", lat: 40.3761, lng: -89.9544, tribe: "Mississippian", state: "IL" },
+    { name: "Running Buttes", lat: 47.8298, lng: -103.1951, tribe: "Mandan", state: "ND" },
+
+    // Southwest
+    { name: "Canyon de Chelly", lat: 36.1280, lng: -109.4138, tribe: "Navajo/Ancestral Puebloan", state: "AZ" },
+    { name: "Gila Cliff Dwellings", lat: 32.8678, lng: -108.2296, tribe: "Mogollon", state: "NM" },
+
+    // Pacific Northwest
+    { name: "Ozette Village", lat: 48.3736, lng: -124.6547, tribe: "Makah", state: "WA" },
+    { name: "Nez Perce Historic Sites", lat: 46.4089, lng: -116.2023, tribe: "Nez Perce", state: "ID" },
+
+    // California
+    { name: "Anza-Borrego Sacred Sites", lat: 32.8945, lng: -116.4441, tribe: "Kumeyaay", state: "CA" },
+
+    // Great Lakes
+    { name: "Aztalan State Park", lat: 43.2858, lng: -88.3100, tribe: "Mississippian", state: "WI" }
+  ];
+}
+
 // Initialize Leaflet map
 async function initMap() {
-  // Create map instance
+  // Create map instance with USA bounds
+  const usaBounds = [[24.5, -125], [49.4, -66]]; // Continental USA bounds
   mapInstance = L.map('map', {
     center: [39.8283, -98.5795], // Center of USA
     zoom: 4,
     minZoom: 3,
     maxZoom: 16,
+    maxBounds: usaBounds,
+    maxBoundsViscosity: 0.8,
     attributionControl: true,
     fadeAnimation: true,
     markerZoomAnimation: true
@@ -79,14 +173,31 @@ async function initMap() {
   // Initialize layer groups
   projectsLayerGroup = L.layerGroup().addTo(mapInstance);
   burnPitLayerGroup = L.layerGroup().addTo(mapInstance);
+  const burialSitesLayerGroup = L.layerGroup().addTo(mapInstance);
 
   layerGroups = {
     'Forest Loss': L.layerGroup().addTo(mapInstance),
     'Documented Burns': L.layerGroup().addTo(mapInstance),
     'Burn Pits': burnPitLayerGroup,
     'Permits': L.layerGroup().addTo(mapInstance),
-    'Responsible Entities': L.layerGroup().addTo(mapInstance)
+    'Responsible Entities': L.layerGroup().addTo(mapInstance),
+    'Indigenous Sacred Sites': burialSitesLayerGroup
   };
+
+  // Add burial/sacred sites to map
+  const burialSites = getBurialSites();
+  burialSites.forEach(site => {
+    const burialIcon = L.divIcon({
+      html: `<div style="background: #8b4789; width: 14px; height: 14px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 6px #8b4789;"></div>`,
+      iconSize: [18, 18],
+      className: 'burial-icon'
+    });
+
+    const burialMarker = L.marker([site.lat, site.lng], { icon: burialIcon });
+    const burialPopup = `<strong>⚱️ ${site.name}</strong><br><small>${site.tribe}</small><br><small>${site.state}</small>`;
+    burialMarker.bindPopup(burialPopup);
+    burialMarker.addTo(burialSitesLayerGroup);
+  });
 
   // Aggregate entities for profile view
   currentEntities = aggregateByEntity(currentProjects);
@@ -116,30 +227,58 @@ function displayProjectsOnMap(projects) {
 
     const [lon, lat] = project.geometry.coordinates;
     const statusColor = getStatusColor(project.status);
-    const acreage = project.acresApproved || 100;
 
-    // Calculate radius based on acreage (0.5 to 2 km radius)
-    const radius = Math.max(5000, Math.min(50000, acreage * 100));
+    // Determine acreage for sizing polygon
+    let polygonAcreage = 100; // default
 
-    // Create main project circle marker
-    const circle = L.circle([lat, lon], {
-      radius: radius,
+    if (project.sourceType === 'Parkville Development') {
+      // For Parkville projects, use actual acres or estimate from lots
+      if (project.acres) {
+        polygonAcreage = project.acres;
+      } else if (project.lots) {
+        // Rough estimate: 1 lot ≈ 0.25-0.5 acres depending on type
+        const totalLots = typeof project.lots === 'object' ? project.lots.total : project.lots;
+        polygonAcreage = Math.max(totalLots * 0.3, 5);
+      } else if (project.units) {
+        // Apartment: roughly 0.2 acres per unit
+        polygonAcreage = Math.max(project.units * 0.2, 10);
+      }
+    } else {
+      // For USFS timber projects
+      polygonAcreage = project.acresCleared || project.acresApproved || 100;
+    }
+
+    // Generate polygon boundary for parcel
+    const polygonBounds = generateParcelPolygon(lat, lon, polygonAcreage);
+    console.log(`${project.name}: ${polygonAcreage} acres (source: ${project.sourceType})`);
+
+    // Create land parcel polygon
+    const polygon = L.polygon(polygonBounds, {
       color: statusColor,
       fillColor: statusColor,
-      fillOpacity: 0.6,
+      fillOpacity: 0.5,
       weight: 2,
-      dashArray: '5, 5'
+      opacity: 0.8
     });
 
     // Create popup content
     const popupContent = getProjectPopup(project);
-    circle.bindPopup(popupContent, {
+    polygon.bindPopup(popupContent, {
       maxWidth: 350,
       className: 'project-popup'
     });
 
+    // Add project name label at center
+    const label = L.marker([lat, lon], {
+      icon: L.divIcon({
+        html: `<div style="background: transparent; color: #fff; font-size: 11px; font-weight: bold; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); text-align: center; white-space: nowrap; max-width: 100px; padding: 4px;">${project.name}</div>`,
+        iconSize: [110, 50],
+        className: 'parcel-label'
+      })
+    });
+
     // Click to show details in sidebar
-    circle.on('click', () => {
+    polygon.on('click', () => {
       currentView = 'projects';
       displayProjectDetails(project);
       updateViewToggle();
@@ -151,14 +290,15 @@ function displayProjectsOnMap(projects) {
       }
     });
 
-    circle.addTo(projectsLayerGroup);
+    polygon.addTo(projectsLayerGroup);
+    label.addTo(projectsLayerGroup);
 
     // Add to layer groups based on categories
     const categories = project.layerCategories || [];
     activeLayers.forEach(layer => {
       if (categories.includes(layer)) {
         if (layerGroups[layer]) {
-          circle.addTo(layerGroups[layer]);
+          polygon.addTo(layerGroups[layer]);
         }
       }
     });
@@ -202,13 +342,19 @@ function getProjectPopup(project) {
   return popup;
 }
 
-// Get status color
+// Get status color (handles both USFS and Parkville statuses)
 function getStatusColor(status) {
   const colors = {
+    // USFS statuses
     "Proposed": "#22c55e",
     "Approved": "#eab308",
     "Active": "#f97316",
-    "Completed": "#ef4444"
+    "Completed": "#ef4444",
+    // Parkville development statuses
+    "Under Review": "#3b82f6",
+    "Preliminary Plat Approved": "#06b6d4",
+    "Under Construction": "#f97316",
+    "Construction/Completion Activity 2024": "#f97316"
   };
   return colors[status] || "#888888";
 }
@@ -219,10 +365,45 @@ function displayProjectDetails(project) {
   if (!projectDetails) return;
 
   let html = `<strong>${project.name}</strong><br>`;
+  html += `<small><em>${project.sourceType || 'Project'}</em></small><br>`;
   html += `<small>Location: ${project.location || `${project.county || ''} ${project.state || ''}`}</small><br>`;
-  html += `Status: ${project.status}<br>`;
-  html += `Approved: ${project.acresApproved || 0} acres<br>`;
-  html += `Cleared: ${project.acresCleared || 0} acres<br>`;
+  html += `<strong>Status: ${project.status}</strong><br>`;
+
+  // Parkville development-specific info
+  if (project.parcel) {
+    html += `<br><strong>Parcel:</strong> ${project.parcel}<br>`;
+  }
+
+  if (project.acres) {
+    html += `<strong>Acres:</strong> ${project.acres}<br>`;
+  }
+
+  if (project.lots || project.units) {
+    html += `<strong>Development:</strong><br>`;
+    if (project.lots) {
+      if (typeof project.lots === 'object') {
+        Object.entries(project.lots).forEach(([type, count]) => {
+          if (type !== 'total' && count > 0) {
+            html += `• ${type}: ${count}<br>`;
+          }
+        });
+        html += `<strong>Total Lots: ${project.lots.total}</strong><br>`;
+      } else {
+        html += `${project.lots} lots<br>`;
+      }
+    }
+    if (project.units) {
+      html += `${project.units} units<br>`;
+    }
+  }
+
+  // USFS timber-specific info
+  if (project.acresApproved) {
+    html += `<strong>Approved:</strong> ${project.acresApproved} acres<br>`;
+  }
+  if (project.acresCleared) {
+    html += `<strong>Cleared:</strong> ${project.acresCleared} acres<br>`;
+  }
 
   // Evidence score
   if (project.evidenceScore) {
