@@ -693,7 +693,28 @@
       height: 36px !important;
     }
 
-    /* Project marker and label styles */
+    /* Hide ALL tooltips and labels by default */
+    .leaflet-tooltip-pane,
+    .leaflet-popup-pane,
+    .zoom-label,
+    .parcel-label,
+    .project-label-zoom {
+      display: none !important;
+    }
+
+    /* Only show tooltips/labels when zoomed in very close (zoom 15+) */
+    .leaflet-zoom-15 .leaflet-tooltip-pane,
+    .leaflet-zoom-16 .leaflet-tooltip-pane,
+    .leaflet-zoom-17 .leaflet-tooltip-pane,
+    .leaflet-zoom-18 .leaflet-tooltip-pane,
+    .leaflet-zoom-15 .zoom-label,
+    .leaflet-zoom-16 .zoom-label,
+    .leaflet-zoom-17 .zoom-label,
+    .leaflet-zoom-18 .zoom-label {
+      display: block !important;
+    }
+
+    /* Project marker styles */
     .project-marker {
       cursor: pointer !important;
       transition: transform 0.2s ease !important;
@@ -701,23 +722,6 @@
 
     .project-marker:hover {
       transform: scale(1.2) !important;
-    }
-
-    .project-label-zoom {
-      cursor: pointer !important;
-    }
-
-    .zoom-label {
-      display: none;
-      pointer-events: auto !important;
-      background: rgba(0, 0, 0, 0.7) !important;
-      padding: 4px 6px !important;
-      border-radius: 3px !important;
-    }
-
-    /* Hide parcel label marker text by default */
-    .parcel-label {
-      display: none !important;
     }
   </style>
 </head>

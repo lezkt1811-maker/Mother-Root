@@ -301,11 +301,11 @@ function displayProjectsOnMap(projects) {
     const polygonBounds = generateParcelPolygon(lat, lon, polygonAcreage);
     console.log(`${project.name}: ${polygonAcreage} acres (source: ${project.sourceType})`);
 
-    // Create land parcel polygon with reduced opacity to show base map
+    // Create land parcel polygon with minimal opacity to keep map readable
     const polygon = L.polygon(polygonBounds, {
       color: statusColor,
       fillColor: statusColor,
-      fillOpacity: 0.15,
+      fillOpacity: 0.08,
       weight: 1.5,
       opacity: 0.9
     });
