@@ -79,7 +79,8 @@ function generateParcelPolygon(centerLat, centerLng, acresCleared) {
 
   // Convert meters to degrees (rough approximation: 1 degree ≈ 111 km)
   const degreesPerMeter = 1 / 111000;
-  const halfSideDegrees = (sideLengthMeters / 2) * degreesPerMeter;
+  // Scale up by 5x for visibility at zoom level 4 - creates dramatic size differentiation
+  const halfSideDegrees = ((sideLengthMeters / 2) * degreesPerMeter) * 5;
 
   // Create irregular polygon shape (8 points around rectangle with slight variations)
   const polygon = [
