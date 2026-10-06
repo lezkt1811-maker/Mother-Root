@@ -239,13 +239,19 @@ async function initMap() {
   displayProjectsOnMap(currentProjects);
 
   // Setup zoom-based label visibility
-  mapInstance.on('zoomend', () => {
+  const updateLabelVisibility = () => {
     const zoom = mapInstance.getZoom();
     const labels = document.querySelectorAll('.zoom-label');
     labels.forEach(label => {
       label.style.display = zoom >= 10 ? 'block' : 'none';
     });
-  });
+  };
+
+  // Call on initial load
+  setTimeout(updateLabelVisibility, 500);
+
+  // Call on every zoom
+  mapInstance.on('zoomend', updateLabelVisibility);
 
   // Setup event listeners
   setupEventListeners();
@@ -321,10 +327,10 @@ function displayProjectsOnMap(projects) {
       })
     });
 
-    // Add zoom-based label layer
+    // Add zoom-based label layer (visibility controlled by CSS and zoom handler)
     const label = L.marker([lat, lon], {
       icon: L.divIcon({
-        html: `<div style="background: rgba(0,0,0,0.7); color: #fff; font-size: 10px; font-weight: bold; padding: 4px 6px; border-radius: 3px; white-space: nowrap; max-width: 120px; text-align: center; display: none;" class="zoom-label">${truncateProjectName(project.name)}</div>`,
+        html: `<div class="zoom-label" style="background: rgba(0,0,0,0.7); color: #fff; font-size: 10px; font-weight: bold; padding: 4px 6px; border-radius: 3px; white-space: nowrap; max-width: 120px; text-align: center;">${truncateProjectName(project.name)}</div>`,
         iconSize: [130, 30],
         className: 'project-label-zoom'
       })
