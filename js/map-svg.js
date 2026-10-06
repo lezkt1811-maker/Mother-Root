@@ -69,6 +69,24 @@ function getDefaultSampleData() {
   ];
 }
 
+// Truncate project names for map display
+function truncateProjectName(name) {
+  const shorterNames = {
+    "The Woods at Creekside, 4th Plat": "Creekside 4th",
+    "The Woods at Creekside, 5th Plat": "Creekside 5th",
+    "The Estates at Thousand Oaks (1st-7th Plats)": "Thousand Oaks Est.",
+    "Thousand Oaks 25th Plat": "T.Oaks 25th",
+    "Thousand Oaks 26th Plat": "T.Oaks 26th",
+    "Sanctuary at Riss Lake": "Riss Lake",
+    "Creekside West Apartments": "Creekside Apts",
+    "The Hills at The National": "The Hills",
+    "Village on the Green East": "Village E",
+    "Village on the Green West": "Village W",
+    "Platte 38": "Platte 38"
+  };
+  return shorterNames[name] || name.substring(0, 20);
+}
+
 // Generate polygon boundary for cleared land parcel based on acreage
 function generateParcelPolygon(centerLat, centerLng, acresCleared) {
   // Convert acres to approximate square meters (1 acre ≈ 4047 m²)
@@ -205,6 +223,15 @@ async function initMap() {
   // Display projects on map
   displayProjectsOnMap(currentProjects);
 
+  // Setup zoom-based label visibility
+  mapInstance.on('zoomend', () => {
+    const zoom = mapInstance.getZoom();
+    const labels = document.querySelectorAll('.zoom-label');
+    labels.forEach(label => {
+      label.style.display = zoom >= 10 ? 'block' : 'none';
+    });
+  });
+
   // Setup event listeners
   setupEventListeners();
 
@@ -268,29 +295,42 @@ function displayProjectsOnMap(projects) {
       className: 'project-popup'
     });
 
-    // Add project name label at center
-    const label = L.marker([lat, lon], {
+    // Add small number marker at center (only visible when zoomed out)
+    const markerIndex = projects.indexOf(project) + 1;
+    const marker = L.marker([lat, lon], {
       icon: L.divIcon({
-        html: `<div style="background: transparent; color: #fff; font-size: 11px; font-weight: bold; text-shadow: 1px 1px 3px rgba(0,0,0,0.8); text-align: center; white-space: nowrap; max-width: 100px; padding: 4px;">${project.name}</div>`,
-        iconSize: [110, 50],
-        className: 'parcel-label'
+        html: `<div style="background: ${statusColor}; color: #fff; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; border: 2px solid #fff; box-shadow: 0 0 8px rgba(0,0,0,0.5); opacity: 0.8;">${markerIndex}</div>`,
+        iconSize: [32, 32],
+        className: 'project-marker'
       })
     });
 
-    // Click to show details in sidebar
-    polygon.on('click', () => {
+    // Add zoom-based label layer
+    const label = L.marker([lat, lon], {
+      icon: L.divIcon({
+        html: `<div style="background: rgba(0,0,0,0.7); color: #fff; font-size: 10px; font-weight: bold; padding: 4px 6px; border-radius: 3px; white-space: nowrap; max-width: 120px; text-align: center; display: none;" class="zoom-label">${truncateProjectName(project.name)}</div>`,
+        iconSize: [130, 30],
+        className: 'project-label-zoom'
+      })
+    });
+
+    // Click handlers for both polygon and marker
+    const handleClick = () => {
       currentView = 'projects';
       displayProjectDetails(project);
       updateViewToggle();
-
-      // On mobile, keep map visible
       const sidebar = document.querySelector('.sidebar');
       if (window.innerWidth <= 768) {
         sidebar.classList.remove('mobile-closed');
       }
-    });
+    };
+
+    polygon.on('click', handleClick);
+    marker.on('click', handleClick);
+    label.on('click', handleClick);
 
     polygon.addTo(projectsLayerGroup);
+    marker.addTo(projectsLayerGroup);
     label.addTo(projectsLayerGroup);
 
     // Add to layer groups based on categories

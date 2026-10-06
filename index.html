@@ -687,6 +687,33 @@
       width: 36px !important;
       height: 36px !important;
     }
+
+    /* Project marker and label styles */
+    .project-marker {
+      cursor: pointer !important;
+      transition: transform 0.2s ease !important;
+    }
+
+    .project-marker:hover {
+      transform: scale(1.2) !important;
+    }
+
+    .project-label-zoom {
+      cursor: pointer !important;
+    }
+
+    .zoom-label {
+      display: none;
+      pointer-events: auto !important;
+      background: rgba(0, 0, 0, 0.7) !important;
+      padding: 4px 6px !important;
+      border-radius: 3px !important;
+    }
+
+    /* Hide parcel label marker text by default */
+    .parcel-label {
+      display: none !important;
+    }
   </style>
 </head>
 <body>
