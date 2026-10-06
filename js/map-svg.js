@@ -9,6 +9,7 @@ let activeLayers = ['Forest Loss', 'Documented Burns', 'Burn Pits', 'Permits', '
 let mapInstance = null;
 let projectsLayerGroup = null;
 let burnPitLayerGroup = null;
+let markerClusterGroup = null;
 let layerGroups = {};
 
 // Load all project data (USFS timber + Parkville development)
@@ -193,6 +194,20 @@ async function initMap() {
   burnPitLayerGroup = L.layerGroup().addTo(mapInstance);
   const burialSitesLayerGroup = L.layerGroup().addTo(mapInstance);
 
+  // Initialize marker cluster group for numbered markers
+  markerClusterGroup = L.markerClusterGroup({
+    maxClusterRadius: 40,
+    disableClusteringAtZoom: 11,
+    iconCreateFunction: function(cluster) {
+      const count = cluster.getChildCount();
+      return L.divIcon({
+        html: `<div style="background: #00d9ff; color: #0a0e27; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid #fff; font-size: 14px;">${count}</div>`,
+        iconSize: [44, 44],
+        className: 'project-cluster'
+      });
+    }
+  }).addTo(mapInstance);
+
   layerGroups = {
     'Forest Loss': L.layerGroup().addTo(mapInstance),
     'Documented Burns': L.layerGroup().addTo(mapInstance),
@@ -246,6 +261,7 @@ function displayProjectsOnMap(projects) {
   // Clear existing markers
   projectsLayerGroup.clearLayers();
   burnPitLayerGroup.clearLayers();
+  markerClusterGroup.clearLayers();
 
   Object.values(layerGroups).forEach(group => group.clearLayers());
 
@@ -279,13 +295,13 @@ function displayProjectsOnMap(projects) {
     const polygonBounds = generateParcelPolygon(lat, lon, polygonAcreage);
     console.log(`${project.name}: ${polygonAcreage} acres (source: ${project.sourceType})`);
 
-    // Create land parcel polygon
+    // Create land parcel polygon with reduced opacity to show base map
     const polygon = L.polygon(polygonBounds, {
       color: statusColor,
       fillColor: statusColor,
-      fillOpacity: 0.5,
-      weight: 2,
-      opacity: 0.8
+      fillOpacity: 0.15,
+      weight: 1.5,
+      opacity: 0.9
     });
 
     // Create popup content
@@ -330,7 +346,7 @@ function displayProjectsOnMap(projects) {
     label.on('click', handleClick);
 
     polygon.addTo(projectsLayerGroup);
-    marker.addTo(projectsLayerGroup);
+    marker.addTo(markerClusterGroup);  // Add to cluster group for smart overlap handling
     label.addTo(projectsLayerGroup);
 
     // Add to layer groups based on categories
