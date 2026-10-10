@@ -342,13 +342,15 @@ function displayProjectsOnMap(projects) {
       console.log(`${project.name}: ${polygonAcreage} acres (source: ${project.sourceType})`);
     }
 
-    // Create land parcel polygon with minimal opacity to keep map readable
+    // Create land parcel polygon with minimal opacity
+    // For lots: even lighter fill to show grid, for projects: normal
+    const isLot = project.sourceType === 'Parkville Parcel';
     const polygon = L.polygon(polygonBounds, {
       color: statusColor,
       fillColor: statusColor,
-      fillOpacity: 0.08,
-      weight: 1.5,
-      opacity: 0.9
+      fillOpacity: isLot ? 0.05 : 0.08,  // Lots even more transparent
+      weight: isLot ? 0.8 : 1.5,  // Lots have thinner borders
+      opacity: 0.85
     });
 
     // Create popup content
@@ -358,15 +360,28 @@ function displayProjectsOnMap(projects) {
       className: 'project-popup'
     });
 
-    // Add small number marker at center (only visible when zoomed out)
-    const markerIndex = projects.indexOf(project) + 1;
-    const marker = L.marker([lat, lon], {
-      icon: L.divIcon({
-        html: `<div style="background: ${statusColor}; color: #fff; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; border: 2px solid #fff; box-shadow: 0 0 8px rgba(0,0,0,0.5); opacity: 0.8;">${markerIndex}</div>`,
-        iconSize: [32, 32],
-        className: 'project-marker'
-      })
-    });
+    // Add project-level numbered markers (not for individual lots)
+    let marker = null;
+    if (project.sourceType !== 'Parkville Parcel') {
+      // Only show markers for project-level data, not 995 individual lots
+      const markerIndex = projects.filter(p => p.sourceType !== 'Parkville Parcel').indexOf(project) + 1;
+      marker = L.marker([lat, lon], {
+        icon: L.divIcon({
+          html: `<div style="background: ${statusColor}; color: #fff; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; border: 2px solid #fff; box-shadow: 0 0 8px rgba(0,0,0,0.5); opacity: 0.8;">${markerIndex}</div>`,
+          iconSize: [32, 32],
+          className: 'project-marker'
+        })
+      });
+    } else {
+      // For individual lots: show small indicator only at high zoom
+      marker = L.marker([lat, lon], {
+        icon: L.divIcon({
+          html: `<div style="width: 4px; height: 4px; background: ${statusColor}; border-radius: 50%; opacity: 0.6;"></div>`,
+          iconSize: [6, 6],
+          className: 'lot-marker'
+        })
+      });
+    }
 
     // Add zoom-based label layer (visibility controlled by CSS and zoom handler)
     const label = L.marker([lat, lon], {
@@ -393,7 +408,14 @@ function displayProjectsOnMap(projects) {
     label.on('click', handleClick);
 
     polygon.addTo(projectsLayerGroup);
-    marker.addTo(markerClusterGroup);  // Add to cluster group for smart overlap handling
+    if (marker) {
+      // Add to cluster group only for project-level markers, not lots
+      if (project.sourceType !== 'Parkville Parcel') {
+        marker.addTo(markerClusterGroup);
+      } else {
+        marker.addTo(projectsLayerGroup);
+      }
+    }
     label.addTo(projectsLayerGroup);
 
     // Add to layer groups based on categories
