@@ -16,20 +16,44 @@ let layerGroups = {};
 async function loadProjectData() {
   const allProjects = [];
 
-  // Load Parkville development projects
+  // Load Parkville PARCEL BOUNDARIES (lot-level GeoJSON)
+  try {
+    const parcelResponse = await fetch('data/parkville-parcels.geojson');
+    if (parcelResponse.ok) {
+      const parcelData = await parcelResponse.json();
+      const parcels = parcelData.features.map(feature => {
+        return {
+          id: feature.properties.projectId * 1000 + feature.properties.lotNumber,
+          name: `${feature.properties.projectName} - Lot ${feature.properties.lotNumber}`,
+          sourceType: 'Parkville Parcel',
+          status: feature.properties.status,
+          acres: feature.properties.acresPerLot,
+          parcel: feature.properties.parcelId,
+          geometry: feature.geometry,
+          properties: feature.properties
+        };
+      });
+      allProjects.push(...parcels);
+      console.log(`✓ Loaded ${parcels.length} Parkville parcel boundaries (lot-level)`);
+    }
+  } catch (error) {
+    console.log('Parkville parcels not available:', error.message);
+  }
+
+  // Load Parkville development projects (for metadata)
   try {
     const parkvilleResponse = await fetch('data/parkville-development-projects.json');
     if (parkvilleResponse.ok) {
       const parkvilleData = await parkvilleResponse.json();
       parkvilleData.forEach(p => {
-        p.sourceType = 'Parkville Development';
+        p.sourceType = 'Parkville Project';
         p.geometry = { type: "Point", coordinates: [p.coordinates.lng, p.coordinates.lat] };
       });
-      allProjects.push(...parkvilleData);
-      console.log(`✓ Loaded ${parkvilleData.length} Parkville development projects`);
+      // Keep for reference but don't add to display (parcels take priority)
+      console.log(`✓ Loaded ${parkvilleData.length} Parkville project metadata`);
     }
   } catch (error) {
-    console.log('Parkville data not available');
+    console.log('Parkville project metadata not available');
   }
 
   // Load USFS timber projects
@@ -274,32 +298,49 @@ function displayProjectsOnMap(projects) {
   projects.forEach(project => {
     if (!project.geometry || !project.geometry.coordinates) return;
 
-    const [lon, lat] = project.geometry.coordinates;
     const statusColor = getStatusColor(project.status);
+    const isPolygon = project.geometry.type === 'Polygon';
+    const isPoint = project.geometry.type === 'Point';
 
-    // Determine acreage for sizing polygon
-    let polygonAcreage = 100; // default
+    if (!isPolygon && !isPoint) return;
 
-    if (project.sourceType === 'Parkville Development') {
-      // For Parkville projects, use actual acres or estimate from lots
-      if (project.acres) {
-        polygonAcreage = project.acres;
-      } else if (project.lots) {
-        // Rough estimate: 1 lot ≈ 0.25-0.5 acres depending on type
-        const totalLots = typeof project.lots === 'object' ? project.lots.total : project.lots;
-        polygonAcreage = Math.max(totalLots * 0.3, 5);
-      } else if (project.units) {
-        // Apartment: roughly 0.2 acres per unit
-        polygonAcreage = Math.max(project.units * 0.2, 10);
-      }
-    } else {
-      // For USFS timber projects
-      polygonAcreage = project.acresCleared || project.acresApproved || 100;
+    let lat, lon;
+    if (isPoint) {
+      [lon, lat] = project.geometry.coordinates;
+    } else if (isPolygon) {
+      // Calculate center of polygon for labels and markers
+      const coords = project.geometry.coordinates[0];
+      lat = coords.reduce((sum, c) => sum + c[0], 0) / coords.length;
+      lon = coords.reduce((sum, c) => sum + c[1], 0) / coords.length;
     }
 
-    // Generate polygon boundary for parcel
-    const polygonBounds = generateParcelPolygon(lat, lon, polygonAcreage);
-    console.log(`${project.name}: ${polygonAcreage} acres (source: ${project.sourceType})`);
+    // Use actual polygon for Parkville parcels, generated for others
+    let polygonBounds;
+
+    if (isPolygon && project.geometry.type === 'Polygon') {
+      // Use actual parcel boundary from GeoJSON
+      polygonBounds = project.geometry.coordinates[0];
+      console.log(`${project.name}: actual parcel boundary (source: ${project.sourceType})`);
+    } else {
+      // Generate estimated polygon for projects without real boundaries
+      let polygonAcreage = 100; // default
+
+      if (project.sourceType === 'Parkville Development') {
+        if (project.acres) {
+          polygonAcreage = project.acres;
+        } else if (project.lots) {
+          const totalLots = typeof project.lots === 'object' ? project.lots.total : project.lots;
+          polygonAcreage = Math.max(totalLots * 0.3, 5);
+        } else if (project.units) {
+          polygonAcreage = Math.max(project.units * 0.2, 10);
+        }
+      } else {
+        polygonAcreage = project.acresCleared || project.acresApproved || 100;
+      }
+
+      polygonBounds = generateParcelPolygon(lat, lon, polygonAcreage);
+      console.log(`${project.name}: ${polygonAcreage} acres (source: ${project.sourceType})`);
+    }
 
     // Create land parcel polygon with minimal opacity to keep map readable
     const polygon = L.polygon(polygonBounds, {
