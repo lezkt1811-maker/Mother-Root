@@ -208,6 +208,9 @@ async function initMap() {
   // Display projects on map
   displayProjectsOnMap(currentProjects);
 
+  // Real building outlines around Parkville (OpenStreetMap)
+  loadParkvilleFootprints(mapInstance);
+
   // Setup zoom-based label visibility
   const updateLabelVisibility = () => {
     const zoom = mapInstance.getZoom();
@@ -230,6 +233,35 @@ async function initMap() {
   setupMobileNavigation();
 
   console.log('✓ Map initialized with Leaflet');
+}
+
+// Real building footprints from OpenStreetMap (ODbL). Fetched in the visitor's
+// browser at load time. These are building outlines, not legal parcel lines.
+const PARKVILLE_BBOX = '39.17,-94.72,39.22,-94.66'; // south, west, north, east
+
+async function loadParkvilleFootprints(map) {
+  const query = `[out:json][timeout:25];way["building"](${PARKVILLE_BBOX});out geom;`;
+  try {
+    const res = await fetch(`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+
+    const footprints = L.layerGroup();
+    data.elements.forEach(way => {
+      if (!way.geometry || way.geometry.length < 3) return;
+      L.polygon(way.geometry.map(p => [p.lat, p.lon]), {
+        color: '#1d4ed8',
+        weight: 1,
+        fillColor: '#3b82f6',
+        fillOpacity: 0.35,
+        interactive: false
+      }).addTo(footprints);
+    });
+    footprints.addTo(map);
+    console.log(`✓ Loaded ${footprints.getLayers().length} Parkville building footprints (OSM)`);
+  } catch (error) {
+    console.log('Parkville footprints not available:', error.message);
+  }
 }
 
 // Display projects as markers on the map
