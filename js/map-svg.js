@@ -278,17 +278,15 @@ function displayProjectsOnMap(projects) {
 
     // Draw only real parcel boundaries (GeoJSON polygons). Projects without
     // one get markers and labels but no estimated block.
-    const isLot = project.sourceType === 'Parkville Parcel';
     let polygon = null;
 
     if (isPolygon) {
-      // For lots: even lighter fill to show grid, for projects: normal
       polygon = L.polygon(project.geometry.coordinates[0], {
         color: statusColor,
         fillColor: statusColor,
-        fillOpacity: isLot ? 0.05 : 0.08,  // Lots even more transparent
-        weight: isLot ? 0.8 : 1.5,  // Lots have thinner borders
-        opacity: 0.85
+        fillOpacity: 0.15,
+        weight: 1.5,
+        opacity: 0.9
       });
 
       // Create popup content
