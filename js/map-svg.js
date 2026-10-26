@@ -112,44 +112,6 @@ function truncateProjectName(name) {
   return shorterNames[name] || name.substring(0, 20);
 }
 
-// Generate polygon boundary for cleared land parcel based on acreage
-function generateParcelPolygon(centerLat, centerLng, acresCleared) {
-  // Convert acres to approximate square meters (1 acre ≈ 4047 m²)
-  const areaSqMeters = Math.max(1, acresCleared) * 4047;
-
-  // Approximate side length in meters (assuming roughly square parcel)
-  const sideLengthMeters = Math.sqrt(areaSqMeters);
-
-  // Convert meters to degrees (rough approximation: 1 degree ≈ 111 km)
-  const degreesPerMeter = 1 / 111000;
-  // Scale up by 5x for visibility at zoom level 4 - creates dramatic size differentiation
-  const halfSideDegrees = ((sideLengthMeters / 2) * degreesPerMeter) * 5;
-
-  // Create irregular polygon shape (8 points around rectangle with slight variations)
-  const polygon = [
-    // NW corner
-    [centerLat + halfSideDegrees * 1.1, centerLng - halfSideDegrees * 0.95],
-    // N side
-    [centerLat + halfSideDegrees * 1.05, centerLng - halfSideDegrees * 0.5],
-    // NE corner
-    [centerLat + halfSideDegrees * 0.9, centerLng + halfSideDegrees * 0.95],
-    // E side
-    [centerLat + halfSideDegrees * 0.5, centerLng + halfSideDegrees * 1.1],
-    // SE corner
-    [centerLat - halfSideDegrees * 0.95, centerLng + halfSideDegrees * 0.9],
-    // S side
-    [centerLat - halfSideDegrees * 1.05, centerLng + halfSideDegrees * 0.45],
-    // SW corner
-    [centerLat - halfSideDegrees * 0.85, centerLng - halfSideDegrees * 0.95],
-    // W side
-    [centerLat - halfSideDegrees * 0.5, centerLng - halfSideDegrees * 1.05],
-    // Back to start
-    [centerLat + halfSideDegrees * 1.1, centerLng - halfSideDegrees * 0.95]
-  ];
-
-  return polygon;
-}
-
 // Get Indigenous burial and sacred sites
 function getBurialSites() {
   return [
@@ -314,51 +276,28 @@ function displayProjectsOnMap(projects) {
       lon = coords.reduce((sum, c) => sum + c[1], 0) / coords.length;
     }
 
-    // Use actual polygon for Parkville parcels, generated for others
-    let polygonBounds;
-
-    if (isPolygon && project.geometry.type === 'Polygon') {
-      // Use actual parcel boundary from GeoJSON
-      polygonBounds = project.geometry.coordinates[0];
-      console.log(`${project.name}: actual parcel boundary (source: ${project.sourceType})`);
-    } else {
-      // Generate estimated polygon for projects without real boundaries
-      let polygonAcreage = 100; // default
-
-      if (project.sourceType === 'Parkville Development') {
-        if (project.acres) {
-          polygonAcreage = project.acres;
-        } else if (project.lots) {
-          const totalLots = typeof project.lots === 'object' ? project.lots.total : project.lots;
-          polygonAcreage = Math.max(totalLots * 0.3, 5);
-        } else if (project.units) {
-          polygonAcreage = Math.max(project.units * 0.2, 10);
-        }
-      } else {
-        polygonAcreage = project.acresCleared || project.acresApproved || 100;
-      }
-
-      polygonBounds = generateParcelPolygon(lat, lon, polygonAcreage);
-      console.log(`${project.name}: ${polygonAcreage} acres (source: ${project.sourceType})`);
-    }
-
-    // Create land parcel polygon with minimal opacity
-    // For lots: even lighter fill to show grid, for projects: normal
+    // Draw only real parcel boundaries (GeoJSON polygons). Projects without
+    // one get markers and labels but no estimated block.
     const isLot = project.sourceType === 'Parkville Parcel';
-    const polygon = L.polygon(polygonBounds, {
-      color: statusColor,
-      fillColor: statusColor,
-      fillOpacity: isLot ? 0.05 : 0.08,  // Lots even more transparent
-      weight: isLot ? 0.8 : 1.5,  // Lots have thinner borders
-      opacity: 0.85
-    });
+    let polygon = null;
 
-    // Create popup content
-    const popupContent = getProjectPopup(project);
-    polygon.bindPopup(popupContent, {
-      maxWidth: 350,
-      className: 'project-popup'
-    });
+    if (isPolygon) {
+      // For lots: even lighter fill to show grid, for projects: normal
+      polygon = L.polygon(project.geometry.coordinates[0], {
+        color: statusColor,
+        fillColor: statusColor,
+        fillOpacity: isLot ? 0.05 : 0.08,  // Lots even more transparent
+        weight: isLot ? 0.8 : 1.5,  // Lots have thinner borders
+        opacity: 0.85
+      });
+
+      // Create popup content
+      const popupContent = getProjectPopup(project);
+      polygon.bindPopup(popupContent, {
+        maxWidth: 350,
+        className: 'project-popup'
+      });
+    }
 
     // Add project-level numbered markers (not for individual lots)
     let marker = null;
@@ -403,11 +342,11 @@ function displayProjectsOnMap(projects) {
       }
     };
 
-    polygon.on('click', handleClick);
+    if (polygon) polygon.on('click', handleClick);
     marker.on('click', handleClick);
     label.on('click', handleClick);
 
-    polygon.addTo(projectsLayerGroup);
+    if (polygon) polygon.addTo(projectsLayerGroup);
     if (marker) {
       // Add to cluster group only for project-level markers, not lots
       if (project.sourceType !== 'Parkville Parcel') {
@@ -421,7 +360,7 @@ function displayProjectsOnMap(projects) {
     // Add to layer groups based on categories
     const categories = project.layerCategories || [];
     activeLayers.forEach(layer => {
-      if (categories.includes(layer)) {
+      if (polygon && categories.includes(layer)) {
         if (layerGroups[layer]) {
           polygon.addTo(layerGroups[layer]);
         }
