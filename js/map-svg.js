@@ -16,29 +16,13 @@ let layerGroups = {};
 async function loadProjectData() {
   const allProjects = [];
 
-  // Load Parkville PARCEL BOUNDARIES (lot-level GeoJSON)
-  try {
-    const parcelResponse = await fetch('data/parkville-parcels.geojson');
-    if (parcelResponse.ok) {
-      const parcelData = await parcelResponse.json();
-      const parcels = parcelData.features.map(feature => {
-        return {
-          id: feature.properties.projectId * 1000 + feature.properties.lotNumber,
-          name: `${feature.properties.projectName} - Lot ${feature.properties.lotNumber}`,
-          sourceType: 'Parkville Parcel',
-          status: feature.properties.status,
-          acres: feature.properties.acresPerLot,
-          parcel: feature.properties.parcelId,
-          geometry: feature.geometry,
-          properties: feature.properties
-        };
-      });
-      allProjects.push(...parcels);
-      console.log(`✓ Loaded ${parcels.length} Parkville parcel boundaries (lot-level)`);
-    }
-  } catch (error) {
-    console.log('Parkville parcels not available:', error.message);
-  }
+  // Parkville lot outlines are disabled: data/parkville-parcels.geojson is a
+  // synthetic grid, not real parcel boundaries. Re-enable this block once
+  // the county's real parcel file replaces it.
+  // try {
+  //   const parcelResponse = await fetch('data/parkville-parcels.geojson');
+  //   ...
+  // } catch (error) { ... }
 
   // Load Parkville development projects (for metadata)
   try {
